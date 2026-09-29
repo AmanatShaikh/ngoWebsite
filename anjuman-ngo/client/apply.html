@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta
+    name="description"
+    content="Apply for assistance through Anjuman Bashindgan-E-Bihar."
+  />
+
+  <title>
+    Request Assistance | Anjuman Bashindgan-E-Bihar
+  </title>
+
+
+  <link
+    rel="stylesheet"
+    href="./css/main.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="./css/dashboard.css"
+  />
+
+</head>
+
+
+<body>
+
+  <div id="site-header"></div>
+
+
+  <main
+    id="main-content"
+    class="portal-page"
+  >
+
+    <div class="portal-container">
+
+
+      <header class="portal-header">
+
+        <div class="portal-header__content">
+
+          <span class="portal-header__eyebrow">
+            Assistance Application
+          </span>
+
+          <h1 class="portal-header__title">
+            Request assistance
+          </h1>
+
+          <p class="portal-header__description">
+            Select the appropriate service and provide
+            accurate information so the request can be
+            reviewed by Anjuman Bashindgan-E-Bihar.
+          </p>
+
+        </div>
+
+
+        <div class="portal-header__actions">
+
+          <a
+            href="dashboard.html"
+            class="btn btn--outline"
+          >
+            My Dashboard
+          </a>
+
+        </div>
+
+      </header>
+
+
+      <div class="portal-notice">
+
+        <span class="portal-notice__mark">
+          i
+        </span>
+
+        <div class="portal-notice__content">
+
+          <strong>
+            Before submitting
+          </strong>
+
+          <p>
+            Provide genuine information and only upload
+            documents related to your request. Applications
+            can be reviewed by the selected Nagpada or
+            Dharavi branch.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        id="application-alert"
+        class="application-alert"
+        role="alert"
+        aria-live="polite"
+      ></div>
+
+
+      <div class="application-layout">
+
+
+        <article class="card application-card">
+
+          <form
+            id="application-form"
+            novalidate
+          >
+
+
+            <!-- ============================================
+                 STEP 1 — SERVICE
+            ============================================= -->
+
+            <section class="application-section">
+
+              <header class="application-section__header">
+
+                <span class="application-section__step">
+                  Step 1
+                </span>
+
+                <h2 class="application-section__title">
+                  Select assistance type
+                </h2>
+
+                <p class="application-section__description">
+                  Choose the service that best matches your
+                  request.
+                </p>
+
+              </header>
+
+
+              <div class="service-selector">
+
+
+                <label class="service-option">
+
+                  <input
+                    type="radio"
+                    name="serviceType"
+                    value="MEDICAL"
+                    required
+                  />
+
+                  <span class="service-option__card">
+
+                    <span class="service-option__label">
+                      Medical Assistance
+                    </span>
+
+                    <span class="service-option__description">
+                      Healthcare and treatment-related
+                      assistance.
+                    </span>
+
+                  </span>
+
+                </label>
+
+
+                <label class="service-option">
+
+                  <input
+                    type="radio"
+                    name="serviceType"
+                    value="SCHOLARSHIP"
+                    required
+                  />
+
+                  <span class="service-option__card">
+
+                    <span class="service-option__label">
+                      Scholarship / Education
+                    </span>
+
+                    <span class="service-option__description">
+                      Educational and academic support.
+                    </span>
+
+                  </span>
+
+                </label>
+
+
+                <label class="service-option">
+
+                  <input
+                    type="radio"
+                    name="serviceType"
+                    value="LIVELIHOOD"
+                    required
+                  />
+
+                  <span class="service-option__card">
+
+                    <span class="service-option__label">
+                      Livelihood / Work
+                    </span>
+
+                    <span class="service-option__description">
+                      Employment and livelihood-related
+                      support.
+                    </span>
+
+                  </span>
+
+                </label>
+
+
+                <label class="service-option">
+
+                  <input
+                    type="radio"
+                    name="serviceType"
+                    value="TRAVEL"
+                    required
+                  />
+
+                  <span class="service-option__card">
+
+                    <span class="service-option__label">
+                      Travel Assistance
+                    </span>
+
+                    <span class="service-option__description">
+                      Support for essential travel needs.
+                    </span>
+
+                  </span>
+
+                </label>
+
+              </div>
+
+
+              <p
+                id="service-type-error"
+                class="application-error"
+              ></p>
+
+            </section>
+
+
+            <!-- ============================================
+                 STEP 2 — BRANCH
+            ============================================= -->
+
+            <section class="application-section">
+
+              <header class="application-section__header">
+
+                <span class="application-section__step">
+                  Step 2
+                </span>
+
+                <h2 class="application-section__title">
+                  Select branch
+                </h2>
+
+                <p class="application-section__description">
+                  Choose the branch through which you want
+                  your application to be reviewed.
+                </p>
+
+              </header>
+
+
+              <div class="application-form-grid">
+
+                <div class="application-field application-field--full">
+
+                  <label
+                    for="application-branch"
+                    class="application-label"
+                  >
+                    Preferred branch
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+
+                  <select
+                    id="application-branch"
+                    name="branch"
+                    class="application-control"
+                    required
+                    aria-describedby="application-branch-error"
+                  >
+
+                    <option value="">
+                      Select branch
+                    </option>
+
+                    <option value="NAGPADA">
+                      Nagpada Head Office
+                    </option>
+
+                    <option value="DHARAVI">
+                      Dharavi Branch
+                    </option>
+
+                  </select>
+
+
+                  <p
+                    id="application-branch-error"
+                    class="application-error"
+                  ></p>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- ============================================
+                 STEP 3 — APPLICANT
+            ============================================= -->
+
+            <section class="application-section">
+
+              <header class="application-section__header">
+
+                <span class="application-section__step">
+                  Step 3
+                </span>
+
+                <h2 class="application-section__title">
+                  Applicant information
+                </h2>
+
+                <p class="application-section__description">
+                  Enter the information of the person
+                  requesting assistance.
+                </p>
+
+              </header>
+
+
+              <div class="application-form-grid">
+
+
+                <div class="application-field">
+
+                  <label
+                    for="applicant-name"
+                    class="application-label"
+                  >
+                    Full name
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <input
+                    type="text"
+                    id="applicant-name"
+                    name="applicantName"
+                    class="application-control"
+                    autocomplete="name"
+                    maxlength="100"
+                    required
+                    aria-describedby="applicant-name-error"
+                  />
+
+                  <p
+                    id="applicant-name-error"
+                    class="application-error"
+                  ></p>
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="applicant-phone"
+                    class="application-label"
+                  >
+                    Mobile number
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <input
+                    type="tel"
+                    id="applicant-phone"
+                    name="phone"
+                    class="application-control"
+                    inputmode="numeric"
+                    autocomplete="tel"
+                    maxlength="10"
+                    required
+                    aria-describedby="applicant-phone-error"
+                  />
+
+                  <p
+                    id="applicant-phone-error"
+                    class="application-error"
+                  ></p>
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="applicant-email"
+                    class="application-label"
+                  >
+                    Email address
+                  </label>
+
+                  <input
+                    type="email"
+                    id="applicant-email"
+                    name="email"
+                    class="application-control"
+                    autocomplete="email"
+                    maxlength="150"
+                    aria-describedby="applicant-email-error"
+                  />
+
+                  <p
+                    id="applicant-email-error"
+                    class="application-error"
+                  ></p>
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="applicant-age"
+                    class="application-label"
+                  >
+                    Age
+                  </label>
+
+                  <input
+                    type="number"
+                    id="applicant-age"
+                    name="age"
+                    class="application-control"
+                    min="1"
+                    max="120"
+                  />
+
+                </div>
+
+
+                <div class="application-field application-field--full">
+
+                  <label
+                    for="applicant-address"
+                    class="application-label"
+                  >
+                    Residential address
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <textarea
+                    id="applicant-address"
+                    name="address"
+                    class="application-control"
+                    required
+                    aria-describedby="applicant-address-error"
+                  ></textarea>
+
+                  <p
+                    id="applicant-address-error"
+                    class="application-error"
+                  ></p>
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="applicant-city"
+                    class="application-label"
+                  >
+                    City
+                  </label>
+
+                  <input
+                    type="text"
+                    id="applicant-city"
+                    name="city"
+                    class="application-control"
+                    value="Mumbai"
+                  />
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="applicant-pincode"
+                    class="application-label"
+                  >
+                    PIN code
+                  </label>
+
+                  <input
+                    type="text"
+                    id="applicant-pincode"
+                    name="pincode"
+                    class="application-control"
+                    inputmode="numeric"
+                    maxlength="6"
+                  />
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- ============================================
+                 STEP 4 — MEDICAL
+            ============================================= -->
+
+            <section
+              id="medical-fields"
+              class="application-section service-fields"
+              data-service-fields="MEDICAL"
+            >
+
+              <header class="application-section__header">
+
+                <span class="application-section__step">
+                  Medical Details
+                </span>
+
+                <h2 class="application-section__title">
+                  Medical assistance information
+                </h2>
+
+              </header>
+
+
+              <div class="application-form-grid">
+
+
+                <div class="application-field">
+
+                  <label
+                    for="medical-hospital"
+                    class="application-label"
+                  >
+                    Hospital / clinic name
+                  </label>
+
+                  <input
+                    type="text"
+                    id="medical-hospital"
+                    class="application-control"
+                    data-detail="hospitalName"
+                  />
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="medical-cost"
+                    class="application-label"
+                  >
+                    Estimated treatment cost (₹)
+                  </label>
+
+                  <input
+                    type="number"
+                    id="medical-cost"
+                    class="application-control"
+                    min="0"
+                    data-detail="estimatedCost"
+                  />
+
+                </div>
+
+
+                <div class="application-field application-field--full">
+
+                  <label
+                    for="medical-condition"
+                    class="application-label"
+                  >
+                    Medical condition / treatment required
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <textarea
+                    id="medical-condition"
+                    class="application-control"
+                    data-detail="medicalCondition"
+                    data-service-required="MEDICAL"
+                  ></textarea>
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="medical-urgency"
+                    class="application-label"
+                  >
+                    Urgency
+                  </label>
+
+                  <select
+                    id="medical-urgency"
+                    class="application-control"
+                    data-detail="urgency"
+                  >
+
+                    <option value="">
+                      Select urgency
+                    </option>
+
+                    <option value="ROUTINE">
+                      Routine
+                    </option>
+
+                    <option value="URGENT">
+                      Urgent
+                    </option>
+
+                    <option value="EMERGENCY">
+                      Emergency
+                    </option>
+
+                  </select>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- ============================================
+                 SCHOLARSHIP
+            ============================================= -->
+
+            <section
+              id="scholarship-fields"
+              class="application-section service-fields"
+              data-service-fields="SCHOLARSHIP"
+            >
+
+              <header class="application-section__header">
+
+                <span class="application-section__step">
+                  Education Details
+                </span>
+
+                <h2 class="application-section__title">
+                  Scholarship / education information
+                </h2>
+
+              </header>
+
+
+              <div class="application-form-grid">
+
+
+                <div class="application-field">
+
+                  <label
+                    for="education-institution"
+                    class="application-label"
+                  >
+                    School / college / institution
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <input
+                    type="text"
+                    id="education-institution"
+                    class="application-control"
+                    data-detail="institution"
+                    data-service-required="SCHOLARSHIP"
+                  />
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="education-course"
+                    class="application-label"
+                  >
+                    Course / class
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <input
+                    type="text"
+                    id="education-course"
+                    class="application-control"
+                    data-detail="course"
+                    data-service-required="SCHOLARSHIP"
+                  />
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="education-year"
+                    class="application-label"
+                  >
+                    Academic year
+                  </label>
+
+                  <input
+                    type="text"
+                    id="education-year"
+                    class="application-control"
+                    placeholder="e.g. 2026–27"
+                    data-detail="academicYear"
+                  />
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="education-fees"
+                    class="application-label"
+                  >
+                    Fees / amount requested (₹)
+                  </label>
+
+                  <input
+                    type="number"
+                    id="education-fees"
+                    class="application-control"
+                    min="0"
+                    data-detail="fees"
+                  />
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- ============================================
+                 LIVELIHOOD
+            ============================================= -->
+
+            <section
+              id="livelihood-fields"
+              class="application-section service-fields"
+              data-service-fields="LIVELIHOOD"
+            >
+
+              <header class="application-section__header">
+
+                <span class="application-section__step">
+                  Livelihood Details
+                </span>
+
+                <h2 class="application-section__title">
+                  Livelihood / work information
+                </h2>
+
+              </header>
+
+
+              <div class="application-form-grid">
+
+
+                <div class="application-field">
+
+                  <label
+                    for="livelihood-status"
+                    class="application-label"
+                  >
+                    Current work status
+                  </label>
+
+                  <select
+                    id="livelihood-status"
+                    class="application-control"
+                    data-detail="employmentStatus"
+                  >
+
+                    <option value="">
+                      Select status
+                    </option>
+
+                    <option value="UNEMPLOYED">
+                      Unemployed
+                    </option>
+
+                    <option value="EMPLOYED">
+                      Employed
+                    </option>
+
+                    <option value="SELF_EMPLOYED">
+                      Self-employed
+                    </option>
+
+                    <option value="DAILY_WAGE">
+                      Daily wage
+                    </option>
+
+                  </select>
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="livelihood-income"
+                    class="application-label"
+                  >
+                    Approx. monthly income (₹)
+                  </label>
+
+                  <input
+                    type="number"
+                    id="livelihood-income"
+                    class="application-control"
+                    min="0"
+                    data-detail="monthlyIncome"
+                  />
+
+                </div>
+
+
+                <div class="application-field application-field--full">
+
+                  <label
+                    for="livelihood-skills"
+                    class="application-label"
+                  >
+                    Skills / experience
+                  </label>
+
+                  <textarea
+                    id="livelihood-skills"
+                    class="application-control"
+                    data-detail="skills"
+                  ></textarea>
+
+                </div>
+
+
+                <div class="application-field application-field--full">
+
+                  <label
+                    for="livelihood-support"
+                    class="application-label"
+                  >
+                    What support do you need?
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <textarea
+                    id="livelihood-support"
+                    class="application-control"
+                    data-detail="supportNeeded"
+                    data-service-required="LIVELIHOOD"
+                  ></textarea>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- ============================================
+                 TRAVEL
+            ============================================= -->
+
+            <section
+              id="travel-fields"
+              class="application-section service-fields"
+              data-service-fields="TRAVEL"
+            >
+
+              <header class="application-section__header">
+
+                <span class="application-section__step">
+                  Travel Details
+                </span>
+
+                <h2 class="application-section__title">
+                  Travel assistance information
+                </h2>
+
+              </header>
+
+
+              <div class="application-form-grid">
+
+
+                <div class="application-field">
+
+                  <label
+                    for="travel-origin"
+                    class="application-label"
+                  >
+                    Travelling from
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <input
+                    type="text"
+                    id="travel-origin"
+                    class="application-control"
+                    data-detail="origin"
+                    data-service-required="TRAVEL"
+                  />
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="travel-destination"
+                    class="application-label"
+                  >
+                    Destination
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <input
+                    type="text"
+                    id="travel-destination"
+                    class="application-control"
+                    data-detail="destination"
+                    data-service-required="TRAVEL"
+                  />
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="travel-date"
+                    class="application-label"
+                  >
+                    Expected travel date
+                  </label>
+
+                  <input
+                    type="date"
+                    id="travel-date"
+                    class="application-control"
+                    data-detail="travelDate"
+                  />
+
+                </div>
+
+
+                <div class="application-field">
+
+                  <label
+                    for="travel-passengers"
+                    class="application-label"
+                  >
+                    Number of travellers
+                  </label>
+
+                  <input
+                    type="number"
+                    id="travel-passengers"
+                    class="application-control"
+                    min="1"
+                    max="20"
+                    data-detail="passengers"
+                  />
+
+                </div>
+
+
+                <div class="application-field application-field--full">
+
+                  <label
+                    for="travel-reason"
+                    class="application-label"
+                  >
+                    Reason for travel
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <textarea
+                    id="travel-reason"
+                    class="application-control"
+                    data-detail="travelReason"
+                    data-service-required="TRAVEL"
+                  ></textarea>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- ============================================
+                 REQUEST DESCRIPTION
+            ============================================= -->
+
+            <section class="application-section">
+
+              <header class="application-section__header">
+
+                <span class="application-section__step">
+                  Step 4
+                </span>
+
+                <h2 class="application-section__title">
+                  Explain your request
+                </h2>
+
+              </header>
+
+
+              <div class="application-form-grid">
+
+                <div class="application-field application-field--full">
+
+                  <label
+                    for="application-description"
+                    class="application-label"
+                  >
+                    Description
+                    <span class="application-label__required">
+                      *
+                    </span>
+                  </label>
+
+                  <textarea
+                    id="application-description"
+                    name="description"
+                    class="application-control"
+                    placeholder="Explain your situation and the assistance you are requesting."
+                    maxlength="3000"
+                    required
+                    aria-describedby="application-description-error"
+                  ></textarea>
+
+                  <p
+                    id="application-description-error"
+                    class="application-error"
+                  ></p>
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            <!-- ============================================
+                 DOCUMENTS
+            ============================================= -->
+
+            <section class="application-section">
+
+              <header class="application-section__header">
+
+                <span class="application-section__step">
+                  Step 5
+                </span>
+
+                <h2 class="application-section__title">
+                  Supporting documents
+                </h2>
+
+                <p class="application-section__description">
+                  Upload only documents relevant to this
+                  request. Files will be securely processed
+                  by the backend when document storage is
+                  implemented.
+                </p>
+
+              </header>
+
+
+              <div class="upload-grid">
+
+
+                <label class="upload-box">
+
+                  <input
+                    type="file"
+                    id="identity-document"
+                    name="identityDocument"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                  />
+
+                  <span>
+
+                    <span class="upload-box__icon">
+                      ID
+                    </span>
+
+                    <span class="upload-box__title">
+                      Identity document
+                    </span>
+
+                    <span class="upload-box__text">
+                      PDF, JPG or PNG
+                    </span>
+
+                    <span
+                      id="identity-document-name"
+                      class="upload-file-name"
+                    ></span>
+
+                  </span>
+
+                </label>
+
+
+                <label class="upload-box">
+
+                  <input
+                    type="file"
+                    id="supporting-document"
+                    name="supportingDocument"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                  />
+
+                  <span>
+
+                    <span class="upload-box__icon">
+                      +
+                    </span>
+
+                    <span class="upload-box__title">
+                      Supporting document
+                    </span>
+
+                    <span class="upload-box__text">
+                      Medical, education or other
+                      supporting proof
+                    </span>
+
+                    <span
+                      id="supporting-document-name"
+                      class="upload-file-name"
+                    ></span>
+
+                  </span>
+
+                </label>
+
+              </div>
+
+            </section>
+
+
+            <!-- ============================================
+                 CONSENT
+            ============================================= -->
+
+            <section class="application-section">
+
+              <div class="application-consent">
+
+                <input
+                  type="checkbox"
+                  id="application-consent"
+                  required
+                />
+
+                <label for="application-consent">
+
+                  I confirm that the information provided
+                  in this application is accurate to the
+                  best of my knowledge and I understand that
+                  supporting information may be reviewed by
+                  Anjuman Bashindgan-E-Bihar.
+
+                </label>
+
+              </div>
+
+
+              <p
+                id="application-consent-error"
+                class="application-error"
+              ></p>
+
+
+              <div class="application-submit-row">
+
+                <p class="application-submit-note">
+
+                  Submitting an application does not
+                  automatically guarantee approval.
+                  Applications are subject to review.
+
+                </p>
+
+
+                <button
+                  type="submit"
+                  id="application-submit"
+                  class="btn btn--primary application-submit"
+                >
+
+                  <span class="application-submit__loader"></span>
+
+                  <span class="application-submit__text">
+                    Submit Application
+                  </span>
+
+                </button>
+
+              </div>
+
+            </section>
+
+
+          </form>
+
+        </article>
+
+
+        <!-- ================================================
+             SIDEBAR
+        ================================================= -->
+
+        <aside class="application-sidebar">
+
+
+          <div class="card application-sidebar__card">
+
+            <h2>
+              Application process
+            </h2>
+
+
+            <div class="application-sidebar__list">
+
+
+              <div class="application-sidebar__item">
+
+                <span class="application-sidebar__number">
+                  1
+                </span>
+
+                <div>
+
+                  <strong>
+                    Submit
+                  </strong>
+
+                  <p>
+                    Complete your application and attach
+                    relevant documents.
+                  </p>
+
+                </div>
+
+              </div>
+
+
+              <div class="application-sidebar__item">
+
+                <span class="application-sidebar__number">
+                  2
+                </span>
+
+                <div>
+
+                  <strong>
+                    Review
+                  </strong>
+
+                  <p>
+                    Your selected branch reviews the
+                    information submitted.
+                  </p>
+
+                </div>
+
+              </div>
+
+
+              <div class="application-sidebar__item">
+
+                <span class="application-sidebar__number">
+                  3
+                </span>
+
+                <div>
+
+                  <strong>
+                    Track
+                  </strong>
+
+                  <p>
+                    Follow the status through your
+                    dashboard.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="card application-sidebar__card">
+
+            <h2>
+              Need help?
+            </h2>
+
+            <p>
+              If you are unsure which service applies to
+              your situation, contact the organization
+              before submitting.
+            </p>
+
+            <div class="content-split__actions">
+
+              <a
+                href="contact.html"
+                class="btn btn--outline btn--full"
+              >
+                Contact Anjuman
+              </a>
+
+            </div>
+
+          </div>
+
+        </aside>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <div id="site-footer"></div>
+
+
+  <script
+    src="./js/main.js"
+    defer
+  ></script>
+
+  <script
+    src="./js/applications.js"
+    defer
+  ></script>
+
+</body>
+
+</html>

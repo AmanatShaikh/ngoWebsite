@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Environment secrets
+server/.env
+
+# Generated Prisma Client
+server/src/generated/prisma/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Private uploaded applicant documents
+server/storage/*
+!server/storage/.gitkeep

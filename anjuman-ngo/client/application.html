@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta
+    name="description"
+    content="View your Anjuman Bashindgan-E-Bihar assistance application."
+  />
+
+  <title>
+    Application Details | Anjuman Bashindgan-E-Bihar
+  </title>
+
+
+  <link
+    rel="stylesheet"
+    href="./css/main.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="./css/dashboard.css"
+  />
+
+</head>
+
+
+<body>
+
+  <div id="site-header"></div>
+
+
+  <main
+    id="main-content"
+    class="portal-page"
+  >
+
+    <div class="portal-container">
+
+
+      <header class="portal-header">
+
+        <div class="portal-header__content">
+
+          <span class="portal-header__eyebrow">
+            Applicant Portal
+          </span>
+
+          <h1 class="portal-header__title">
+            Application details
+          </h1>
+
+          <p class="portal-header__description">
+            Review the information and current status of
+            your assistance request.
+          </p>
+
+        </div>
+
+
+        <div class="portal-header__actions">
+
+          <a
+            href="dashboard.html"
+            class="btn btn--outline"
+          >
+            Back to Dashboard
+          </a>
+
+        </div>
+
+      </header>
+
+
+      <div
+        id="application-alert"
+        class="application-alert"
+        role="alert"
+        aria-live="polite"
+      ></div>
+
+
+      <div
+        id="application-detail-root"
+        class="portal-loading"
+      >
+
+        <div>
+
+          <div
+            class="portal-spinner"
+            aria-hidden="true"
+          ></div>
+
+          <p>
+            Loading application...
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <div id="site-footer"></div>
+
+
+  <script
+    src="./js/main.js"
+    defer
+  ></script>
+
+  <script
+    src="./js/applications.js"
+    defer
+  ></script>
+
+</body>
+
+</html>

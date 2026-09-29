@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta
+    name="description"
+    content="Create your Anjuman Bashindgan-E-Bihar account to request and track assistance."
+  />
+
+  <meta
+    name="theme-color"
+    content="#0b2748"
+  />
+
+  <title>
+    Create Account | Anjuman Bashindgan-E-Bihar
+  </title>
+
+
+  <link
+    rel="stylesheet"
+    href="./css/main.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="./css/auth.css"
+  />
+
+</head>
+
+
+<body>
+
+  <div id="site-header"></div>
+
+
+  <main
+    id="main-content"
+    class="page-main"
+  >
+
+    <section class="auth-page">
+
+      <div class="auth-container">
+
+
+        <!-- ================================================
+             LEFT PANEL
+        ================================================= -->
+
+        <aside class="auth-info">
+
+          <div class="auth-info__brand">
+
+            <img
+              src="./assets/images/branding/logo.png"
+              alt=""
+              class="auth-info__logo"
+              width="64"
+              height="64"
+            />
+
+            <div>
+
+              <div class="auth-info__organization">
+                Anjuman Bashindgan-E-Bihar
+              </div>
+
+              <div class="auth-info__location">
+                Nagpada • Dharavi • Mumbai
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="auth-info__content">
+
+            <span class="auth-info__eyebrow">
+              Applicant Registration
+            </span>
+
+            <h1 class="auth-info__title">
+              Create one account for all assistance
+              services.
+            </h1>
+
+            <p class="auth-info__description">
+              Once registered, you will be able to apply
+              for medical, educational, livelihood and
+              essential travel assistance.
+            </p>
+
+          </div>
+
+
+          <div class="auth-benefits">
+
+            <div class="auth-benefit">
+
+              <span class="auth-benefit__icon">
+                01
+              </span>
+
+              <div>
+
+                <strong>
+                  One account
+                </strong>
+
+                <p>
+                  Use the same account for every assistance
+                  category.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="auth-benefit">
+
+              <span class="auth-benefit__icon">
+                02
+              </span>
+
+              <div>
+
+                <strong>
+                  Application history
+                </strong>
+
+                <p>
+                  Your submitted applications remain
+                  available in your dashboard.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="auth-benefit">
+
+              <span class="auth-benefit__icon">
+                03
+              </span>
+
+              <div>
+
+                <strong>
+                  Status tracking
+                </strong>
+
+                <p>
+                  Follow application review progress
+                  without repeatedly submitting details.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="auth-info__branches">
+
+            <span class="auth-branch">
+              Nagpada Head Office
+            </span>
+
+            <span class="auth-branch">
+              Dharavi Branch
+            </span>
+
+          </div>
+
+        </aside>
+
+
+        <!-- ================================================
+             SIGNUP FORM
+        ================================================= -->
+
+        <div class="auth-panel">
+
+          <div class="auth-form-wrap">
+
+            <header class="auth-heading">
+
+              <span class="auth-heading__eyebrow">
+                New Applicant
+              </span>
+
+              <h2>
+                Create your account
+              </h2>
+
+              <p>
+                Enter your information exactly as you want
+                it associated with future applications.
+              </p>
+
+            </header>
+
+
+            <div
+              id="auth-alert"
+              class="auth-alert"
+              role="alert"
+              aria-live="polite"
+            ></div>
+
+
+            <form
+              id="signup-form"
+              class="auth-form"
+              novalidate
+            >
+
+
+              <div class="auth-field">
+
+                <label
+                  for="signup-name"
+                  class="auth-label"
+                >
+                  Full name
+                  <span class="auth-required">
+                    *
+                  </span>
+                </label>
+
+
+                <input
+                  type="text"
+                  id="signup-name"
+                  name="name"
+                  class="auth-input"
+                  placeholder="Your full name"
+                  autocomplete="name"
+                  maxlength="100"
+                  required
+                  aria-describedby="signup-name-error"
+                />
+
+
+                <p
+                  id="signup-name-error"
+                  class="auth-field-error"
+                ></p>
+
+              </div>
+
+
+              <div class="auth-field-row">
+
+
+                <div class="auth-field">
+
+                  <label
+                    for="signup-username"
+                    class="auth-label"
+                  >
+                    Username
+                    <span class="auth-required">
+                      *
+                    </span>
+                  </label>
+
+
+                  <input
+                    type="text"
+                    id="signup-username"
+                    name="username"
+                    class="auth-input"
+                    placeholder="e.g. abdul123"
+                    autocomplete="username"
+                    minlength="3"
+                    maxlength="30"
+                    required
+                    aria-describedby="signup-username-help signup-username-error"
+                  />
+
+
+                  <p
+                    id="signup-username-help"
+                    class="auth-field-help"
+                  >
+                    3–30 characters. Letters, numbers,
+                    dots, underscores and hyphens.
+                  </p>
+
+
+                  <p
+                    id="signup-username-error"
+                    class="auth-field-error"
+                  ></p>
+
+                </div>
+
+
+                <div class="auth-field">
+
+                  <label
+                    for="signup-phone"
+                    class="auth-label"
+                  >
+                    Mobile number
+                  </label>
+
+
+                  <input
+                    type="tel"
+                    id="signup-phone"
+                    name="phone"
+                    class="auth-input"
+                    placeholder="10-digit mobile number"
+                    autocomplete="tel"
+                    inputmode="numeric"
+                    maxlength="10"
+                    aria-describedby="signup-phone-error"
+                  />
+
+
+                  <p
+                    id="signup-phone-error"
+                    class="auth-field-error"
+                  ></p>
+
+                </div>
+
+              </div>
+
+
+              <div class="auth-field">
+
+                <label
+                  for="signup-email"
+                  class="auth-label"
+                >
+                  Email address
+                  <span class="auth-required">
+                    *
+                  </span>
+                </label>
+
+
+                <input
+                  type="email"
+                  id="signup-email"
+                  name="email"
+                  class="auth-input"
+                  placeholder="name@example.com"
+                  autocomplete="email"
+                  maxlength="150"
+                  required
+                  aria-describedby="signup-email-error"
+                />
+
+
+                <p
+                  id="signup-email-error"
+                  class="auth-field-error"
+                ></p>
+
+              </div>
+
+
+              <div class="auth-field">
+
+                <label
+                  for="signup-password"
+                  class="auth-label"
+                >
+                  Create password
+                  <span class="auth-required">
+                    *
+                  </span>
+                </label>
+
+
+                <div class="auth-input-wrap">
+
+                  <input
+                    type="password"
+                    id="signup-password"
+                    name="password"
+                    class="auth-input auth-input--password"
+                    placeholder="Minimum 8 characters"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                    aria-describedby="signup-password-help signup-password-error"
+                  />
+
+
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    data-password-toggle="signup-password"
+                    aria-label="Show password"
+                  >
+                    Show
+                  </button>
+
+                </div>
+
+
+                <div
+                  id="password-strength"
+                  class="password-strength"
+                  data-level="0"
+                >
+
+                  <div class="password-strength__bars">
+
+                    <span class="password-strength__bar"></span>
+                    <span class="password-strength__bar"></span>
+                    <span class="password-strength__bar"></span>
+                    <span class="password-strength__bar"></span>
+
+                  </div>
+
+
+                  <span
+                    id="password-strength-label"
+                    class="password-strength__label"
+                  >
+                    Password strength
+                  </span>
+
+                </div>
+
+
+                <p
+                  id="signup-password-help"
+                  class="auth-field-help"
+                >
+                  Use at least 8 characters. A longer,
+                  unique password is recommended.
+                </p>
+
+
+                <p
+                  id="signup-password-error"
+                  class="auth-field-error"
+                ></p>
+
+              </div>
+
+
+              <div class="auth-field">
+
+                <label
+                  for="signup-confirm-password"
+                  class="auth-label"
+                >
+                  Confirm password
+                  <span class="auth-required">
+                    *
+                  </span>
+                </label>
+
+
+                <div class="auth-input-wrap">
+
+                  <input
+                    type="password"
+                    id="signup-confirm-password"
+                    name="confirmPassword"
+                    class="auth-input auth-input--password"
+                    placeholder="Enter the password again"
+                    autocomplete="new-password"
+                    required
+                    aria-describedby="signup-confirm-password-error"
+                  />
+
+
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    data-password-toggle="signup-confirm-password"
+                    aria-label="Show password"
+                  >
+                    Show
+                  </button>
+
+                </div>
+
+
+                <p
+                  id="signup-confirm-password-error"
+                  class="auth-field-error"
+                ></p>
+
+              </div>
+
+
+              <div class="auth-field">
+
+                <label class="auth-checkbox">
+
+                  <input
+                    type="checkbox"
+                    id="signup-terms"
+                    name="terms"
+                    required
+                    aria-describedby="signup-terms-error"
+                  />
+
+                  <span>
+                    I confirm that the information provided
+                    is accurate and I agree to use the
+                    applicant portal responsibly.
+                  </span>
+
+                </label>
+
+
+                <p
+                  id="signup-terms-error"
+                  class="auth-field-error"
+                ></p>
+
+              </div>
+
+
+              <button
+                type="submit"
+                id="signup-submit"
+                class="btn btn--primary btn--full auth-submit"
+              >
+
+                <span class="auth-submit__loader"></span>
+
+                <span class="auth-submit__text">
+                  Create Account
+                </span>
+
+              </button>
+
+            </form>
+
+
+            <div class="auth-switch">
+
+              <p>
+                Already have an account?
+
+                <a href="login.html">
+                  Sign in
+                </a>
+              </p>
+
+            </div>
+
+
+            <p class="auth-privacy-note">
+              Your password will be hashed on the backend.
+              It will never be saved as readable plain
+              text in PostgreSQL.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <div id="site-footer"></div>
+
+
+  <script
+    src="./js/main.js"
+    defer
+  ></script>
+
+  <script
+    src="./js/auth.js"
+    defer
+  ></script>
+
+</body>
+
+</html>

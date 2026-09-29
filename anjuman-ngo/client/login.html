@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="Login to the Anjuman Bashindgan-E-Bihar assistance portal."
+  >
+
+  <title>
+    Login | Anjuman Bashindgan-E-Bihar
+  </title>
+
+
+  <link
+    rel="stylesheet"
+    href="./css/main.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./css/auth.css"
+  >
+</head>
+
+
+<body>
+
+  <a
+    class="skip-link"
+    href="#main-content"
+  >
+    Skip to main content
+  </a>
+
+
+  <div id="site-header"></div>
+
+
+  <main
+    id="main-content"
+    class="auth-page"
+  >
+
+    <div class="auth-layout">
+
+
+      <!-- =================================================
+           LEFT SIDE
+      ================================================== -->
+
+      <section class="auth-side-panel">
+
+        <div class="auth-side-panel__content">
+
+          <a
+            href="./index.html"
+            class="auth-brand"
+            aria-label="Anjuman Bashindgan-E-Bihar home"
+          >
+
+            <img
+              src="./assets/images/branding/logo.png"
+              alt="Anjuman Bashindgan-E-Bihar logo"
+              class="auth-brand__logo"
+            >
+
+            <div>
+              <span class="auth-brand__name">
+                Anjuman Bashindgan-E-Bihar
+              </span>
+
+              <span class="auth-brand__location">
+                Nagpada • Dharavi • Mumbai
+              </span>
+            </div>
+
+          </a>
+
+
+          <div class="auth-side-panel__body">
+
+            <span class="section-eyebrow">
+              Assistance Portal
+            </span>
+
+            <h1>
+              Welcome back
+            </h1>
+
+            <p>
+              Sign in to manage your assistance applications,
+              view updates and access your account.
+            </p>
+
+
+            <div class="auth-branch-list">
+
+              <div class="auth-branch-item">
+                <strong>
+                  Nagpada Head Office
+                </strong>
+
+                <span>
+                  Medical, education, livelihood and travel assistance
+                </span>
+              </div>
+
+
+              <div class="auth-branch-item">
+                <strong>
+                  Dharavi Branch
+                </strong>
+
+                <span>
+                  Community assistance and application support
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="auth-side-panel__footer">
+            <p>
+              Your account helps you securely track the
+              status of your submitted requests.
+            </p>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =================================================
+           LOGIN FORM
+      ================================================== -->
+
+      <section class="auth-form-panel">
+
+        <div class="auth-form-wrapper">
+
+
+          <div class="auth-form-header">
+
+            <span class="section-eyebrow">
+              Account Login
+            </span>
+
+            <h2>
+              Sign in to your account
+            </h2>
+
+            <p>
+              Use your username or registered email address.
+            </p>
+
+          </div>
+
+
+          <div
+            id="auth-alert"
+            class="auth-alert"
+            role="alert"
+            aria-live="polite"
+          ></div>
+
+
+          <form
+            id="login-form"
+            class="auth-form"
+            novalidate
+          >
+
+
+            <!-- ===========================================
+                 USERNAME / EMAIL
+            ============================================ -->
+
+            <div class="auth-field">
+
+              <label
+                for="login-identifier"
+                class="auth-label"
+              >
+                Username or Email
+              </label>
+
+
+              <input
+                type="text"
+                id="login-identifier"
+                name="identifier"
+                class="auth-control"
+                placeholder="Enter username or email"
+                autocomplete="username"
+                maxlength="150"
+                required
+              >
+
+
+              <p
+                id="login-identifier-error"
+                class="auth-field-error"
+              ></p>
+
+            </div>
+
+
+            <!-- ===========================================
+                 PASSWORD
+            ============================================ -->
+
+            <div class="auth-field">
+
+              <div class="auth-label-row">
+
+                <label
+                  for="login-password"
+                  class="auth-label"
+                >
+                  Password
+                </label>
+
+              </div>
+
+
+              <div class="auth-password">
+
+                <input
+                  type="password"
+                  id="login-password"
+                  name="password"
+                  class="auth-control auth-password__input"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  maxlength="128"
+                  required
+                >
+
+
+                <button
+                  type="button"
+                  class="auth-password__toggle"
+                  data-password-toggle="login-password"
+                  aria-label="Show password"
+                >
+                  Show
+                </button>
+
+              </div>
+
+
+              <p
+                id="login-password-error"
+                class="auth-field-error"
+              ></p>
+
+            </div>
+
+
+            <!-- ===========================================
+                 REMEMBER
+            ============================================ -->
+
+            <div class="auth-options">
+
+              <label class="auth-checkbox">
+
+                <input
+                  type="checkbox"
+                  id="login-remember"
+                  name="remember"
+                >
+
+                <span>
+                  Keep me signed in
+                </span>
+
+              </label>
+
+            </div>
+
+
+            <!-- ===========================================
+                 SUBMIT
+            ============================================ -->
+
+            <button
+              type="submit"
+              id="login-submit"
+              class="btn btn--primary auth-submit"
+            >
+              <span class="auth-submit__text">
+                Sign In
+              </span>
+
+              <span
+                class="auth-submit__loading"
+                aria-hidden="true"
+              >
+                Signing in...
+              </span>
+            </button>
+
+
+          </form>
+
+
+          <!-- =================================================
+               REGISTER
+          ================================================== -->
+
+          <div class="auth-form-footer">
+
+            <p>
+              Don't have an account?
+              <a href="./signup.html">
+                Create an account
+              </a>
+            </p>
+
+          </div>
+
+
+          <div class="auth-security-note">
+
+            <strong>
+              Secure account access
+            </strong>
+
+            <p>
+              Your password is transmitted to the secure
+              server and is never stored in plain text.
+            </p>
+
+          </div>
+
+
+          <a
+            href="./index.html"
+            class="auth-back-link"
+          >
+            ← Back to website
+          </a>
+
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <script
+    src="./js/main.js"
+    defer
+  ></script>
+
+  <script
+    src="./js/auth.js"
+    defer
+  ></script>
+
+</body>
+
+</html>

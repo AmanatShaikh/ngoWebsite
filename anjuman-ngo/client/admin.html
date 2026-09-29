@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta
+    name="description"
+    content="Administration portal for Anjuman Bashindgan-E-Bihar Nagpada and Dharavi branches."
+  />
+
+  <meta
+    name="theme-color"
+    content="#0b2748"
+  />
+
+  <title>
+    Admin Portal | Anjuman Bashindgan-E-Bihar
+  </title>
+
+
+  <link
+    rel="stylesheet"
+    href="./css/main.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="./css/dashboard.css"
+  />
+
+</head>
+
+
+<body>
+
+  <div id="site-header"></div>
+
+
+  <main
+    id="main-content"
+    class="portal-page"
+  >
+
+    <div class="portal-container">
+
+
+      <!-- =================================================
+           ADMIN PAGE HEADER
+      ================================================== -->
+
+      <header class="admin-header">
+
+        <div class="admin-header__content">
+
+          <span class="portal-header__eyebrow">
+            Administration
+          </span>
+
+          <h1 class="admin-header__title">
+            Anjuman Admin Portal
+          </h1>
+
+          <p class="admin-header__description">
+            Review assistance applications, manage users
+            and oversee donations across the Nagpada and
+            Dharavi branches.
+          </p>
+
+        </div>
+
+
+        <span
+          id="admin-identity"
+          class="admin-header__badge"
+        >
+          Admin
+        </span>
+
+      </header>
+
+
+      <div
+        id="admin-alert"
+        class="application-alert"
+        role="alert"
+        aria-live="polite"
+      ></div>
+
+
+      <div class="admin-shell">
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside class="admin-sidebar">
+
+          <div class="admin-sidebar__header">
+
+            <span class="admin-sidebar__title">
+              Administration
+            </span>
+
+            <span class="admin-sidebar__subtitle">
+              Nagpada & Dharavi
+            </span>
+
+          </div>
+
+
+          <nav
+            class="admin-nav"
+            aria-label="Admin portal"
+          >
+
+            <button
+              type="button"
+              class="admin-nav__button is-active"
+              data-admin-view="overview"
+            >
+              Overview
+            </button>
+
+
+            <button
+              type="button"
+              class="admin-nav__button"
+              data-admin-view="applications"
+            >
+              Applications
+            </button>
+
+
+            <button
+              type="button"
+              class="admin-nav__button"
+              data-admin-view="users"
+            >
+              Users
+            </button>
+
+
+            <button
+              type="button"
+              class="admin-nav__button"
+              data-admin-view="donations"
+            >
+              Donations
+            </button>
+
+
+            <button
+              type="button"
+              id="admin-logout"
+              class="admin-nav__button admin-nav__button--danger"
+            >
+              Sign Out
+            </button>
+
+          </nav>
+
+        </aside>
+
+
+        <!-- =================================================
+             MAIN ADMIN CONTENT
+        ================================================== -->
+
+        <div>
+
+
+          <!-- ===============================================
+               OVERVIEW
+          ================================================ -->
+
+          <section
+            id="admin-view-overview"
+            class="admin-view is-active"
+          >
+
+            <header class="admin-view__header">
+
+              <div>
+
+                <h2>
+                  Overview
+                </h2>
+
+                <p>
+                  Current activity across both branches.
+                </p>
+
+              </div>
+
+            </header>
+
+
+            <div class="admin-stats">
+
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">
+                  Applications
+                </span>
+
+                <strong
+                  id="admin-stat-applications"
+                  class="admin-stat-card__value"
+                >
+                  0
+                </strong>
+
+                <span class="admin-stat-card__meta">
+                  Total submitted
+                </span>
+
+              </article>
+
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">
+                  Pending
+                </span>
+
+                <strong
+                  id="admin-stat-pending"
+                  class="admin-stat-card__value"
+                >
+                  0
+                </strong>
+
+                <span class="admin-stat-card__meta">
+                  Awaiting review
+                </span>
+
+              </article>
+
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">
+                  Users
+                </span>
+
+                <strong
+                  id="admin-stat-users"
+                  class="admin-stat-card__value"
+                >
+                  0
+                </strong>
+
+                <span class="admin-stat-card__meta">
+                  Registered accounts
+                </span>
+
+              </article>
+
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">
+                  Donations
+                </span>
+
+                <strong
+                  id="admin-stat-donations"
+                  class="admin-stat-card__value"
+                >
+                  ₹0
+                </strong>
+
+                <span class="admin-stat-card__meta">
+                  Verified donations
+                </span>
+
+              </article>
+
+            </div>
+
+
+            <div class="admin-branch-grid">
+
+
+              <article class="card admin-branch-card">
+
+                <div class="admin-branch-card__top">
+
+                  <div>
+
+                    <span class="portal-header__eyebrow">
+                      Branch
+                    </span>
+
+                    <h3>
+                      Nagpada Head Office
+                    </h3>
+
+                  </div>
+
+
+                  <strong
+                    id="nagpada-total"
+                    class="admin-branch-card__number"
+                  >
+                    0
+                  </strong>
+
+                </div>
+
+
+                <div class="admin-branch-card__stats">
+
+                  <div class="admin-branch-mini-stat">
+
+                    <strong id="nagpada-pending">
+                      0
+                    </strong>
+
+                    <span>
+                      Pending
+                    </span>
+
+                  </div>
+
+
+                  <div class="admin-branch-mini-stat">
+
+                    <strong id="nagpada-review">
+                      0
+                    </strong>
+
+                    <span>
+                      Under review
+                    </span>
+
+                  </div>
+
+
+                  <div class="admin-branch-mini-stat">
+
+                    <strong id="nagpada-approved">
+                      0
+                    </strong>
+
+                    <span>
+                      Approved
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </article>
+
+
+              <article class="card admin-branch-card">
+
+                <div class="admin-branch-card__top">
+
+                  <div>
+
+                    <span class="portal-header__eyebrow">
+                      Branch
+                    </span>
+
+                    <h3>
+                      Dharavi Branch
+                    </h3>
+
+                  </div>
+
+
+                  <strong
+                    id="dharavi-total"
+                    class="admin-branch-card__number"
+                  >
+                    0
+                  </strong>
+
+                </div>
+
+
+                <div class="admin-branch-card__stats">
+
+                  <div class="admin-branch-mini-stat">
+
+                    <strong id="dharavi-pending">
+                      0
+                    </strong>
+
+                    <span>
+                      Pending
+                    </span>
+
+                  </div>
+
+
+                  <div class="admin-branch-mini-stat">
+
+                    <strong id="dharavi-review">
+                      0
+                    </strong>
+
+                    <span>
+                      Under review
+                    </span>
+
+                  </div>
+
+
+                  <div class="admin-branch-mini-stat">
+
+                    <strong id="dharavi-approved">
+                      0
+                    </strong>
+
+                    <span>
+                      Approved
+                    </span>
+
+                  </div>
+
+                </div>
+
+              </article>
+
+            </div>
+
+
+            <div class="admin-table-card">
+
+              <div class="dashboard-panel__header">
+
+                <h2>
+                  Recent applications
+                </h2>
+
+                <button
+                  type="button"
+                  class="btn btn--outline"
+                  data-admin-view="applications"
+                >
+                  View All
+                </button>
+
+              </div>
+
+
+              <div
+                id="admin-recent-applications"
+                class="admin-loading"
+              >
+                Loading recent applications...
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- ===============================================
+               APPLICATIONS
+          ================================================ -->
+
+          <section
+            id="admin-view-applications"
+            class="admin-view"
+          >
+
+            <header class="admin-view__header">
+
+              <div>
+
+                <h2>
+                  Applications
+                </h2>
+
+                <p>
+                  Review requests from Nagpada and Dharavi.
+                </p>
+
+              </div>
+
+            </header>
+
+
+            <div class="admin-filters">
+
+
+              <input
+                type="search"
+                id="admin-application-search"
+                class="admin-filter-control"
+                placeholder="Search applicant or reference..."
+                aria-label="Search applications"
+              />
+
+
+              <select
+                id="admin-branch-filter"
+                class="admin-filter-control"
+                aria-label="Filter by branch"
+              >
+
+                <option value="">
+                  All branches
+                </option>
+
+                <option value="NAGPADA">
+                  Nagpada
+                </option>
+
+                <option value="DHARAVI">
+                  Dharavi
+                </option>
+
+              </select>
+
+
+              <select
+                id="admin-service-filter"
+                class="admin-filter-control"
+                aria-label="Filter by service"
+              >
+
+                <option value="">
+                  All services
+                </option>
+
+                <option value="MEDICAL">
+                  Medical
+                </option>
+
+                <option value="SCHOLARSHIP">
+                  Education
+                </option>
+
+                <option value="LIVELIHOOD">
+                  Livelihood
+                </option>
+
+                <option value="TRAVEL">
+                  Travel
+                </option>
+
+              </select>
+
+
+              <select
+                id="admin-status-filter"
+                class="admin-filter-control"
+                aria-label="Filter by status"
+              >
+
+                <option value="">
+                  All statuses
+                </option>
+
+                <option value="PENDING">
+                  Pending
+                </option>
+
+                <option value="UNDER_REVIEW">
+                  Under Review
+                </option>
+
+                <option value="APPROVED">
+                  Approved
+                </option>
+
+                <option value="REJECTED">
+                  Rejected
+                </option>
+
+                <option value="COMPLETED">
+                  Completed
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div class="admin-table-card">
+
+              <div
+                id="admin-applications-root"
+                class="admin-loading"
+              >
+                Loading applications...
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- ===============================================
+               USERS
+          ================================================ -->
+
+          <section
+            id="admin-view-users"
+            class="admin-view"
+          >
+
+            <header class="admin-view__header">
+
+              <div>
+
+                <h2>
+                  Users
+                </h2>
+
+                <p>
+                  Registered applicant and administrative
+                  accounts.
+                </p>
+
+              </div>
+
+            </header>
+
+
+            <div class="admin-table-card">
+
+              <div
+                id="admin-users-root"
+                class="admin-loading"
+              >
+                Loading users...
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- ===============================================
+               DONATIONS
+          ================================================ -->
+
+          <section
+            id="admin-view-donations"
+            class="admin-view"
+          >
+
+            <header class="admin-view__header">
+
+              <div>
+
+                <h2>
+                  Donations
+                </h2>
+
+                <p>
+                  Verified donation transactions will
+                  appear here after Razorpay and UPI payment
+                  integration is connected.
+                </p>
+
+              </div>
+
+            </header>
+
+
+            <div class="admin-table-card">
+
+              <div
+                id="admin-donations-root"
+                class="admin-loading"
+              >
+                Loading donations...
+              </div>
+
+            </div>
+
+          </section>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <div id="site-footer"></div>
+
+
+  <!-- =====================================================
+       APPLICATION DETAIL DRAWER
+  ====================================================== -->
+
+  <div
+    id="admin-application-overlay"
+    class="admin-overlay"
+    aria-hidden="true"
+  >
+
+    <aside
+      class="admin-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="admin-drawer-title"
+    >
+
+      <header class="admin-drawer__header">
+
+        <div>
+
+          <span
+            id="admin-drawer-reference"
+            class="admin-drawer__reference"
+          >
+            Application
+          </span>
+
+          <h2 id="admin-drawer-title">
+            Application Details
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          id="admin-drawer-close"
+          class="admin-drawer__close"
+          aria-label="Close application details"
+        >
+          ×
+        </button>
+
+      </header>
+
+
+      <div
+        id="admin-drawer-body"
+        class="admin-drawer__body"
+      >
+
+        <div class="admin-loading">
+          Loading...
+        </div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+
+  <script
+    src="./js/main.js"
+    defer
+  ></script>
+
+  <script
+    src="./js/admin.js"
+    defer
+  ></script>
+
+</body>
+
+</html>
