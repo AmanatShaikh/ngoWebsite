@@ -2,7 +2,7 @@
    ANJUMAN BASHINDGAN-E-BIHAR
    Admin Portal Frontend
 
-   Backend endpoints expected later:
+   Admin API endpoints:
 
    GET   /api/admin/me
    GET   /api/admin/overview
@@ -19,7 +19,7 @@
 
 
 const ADMIN_API_BASE_URL =
-  "http://localhost:5500/api";
+  "/api";
 
 
 const ADMIN_SERVICE_NAMES = {
@@ -304,11 +304,12 @@ async function verifyAdminAccess() {
       error instanceof TypeError
     ) {
       showAdminAlert(
-        "The backend is not running yet. The admin frontend is ready and will become protected when the Express API is connected.",
-        "info"
+        "Unable to connect to the server. Please check your connection and try again.",
+        "error"
       );
 
-      return true;
+
+      return false;
     }
 
 
@@ -334,7 +335,7 @@ async function verifyAdminAccess() {
 
     showAdminAlert(
       error.message ||
-        "Unable to verify admin access.",
+      "Unable to verify admin access.",
       "error"
     );
 
@@ -359,7 +360,7 @@ function activateAdminView(
       view.classList.toggle(
         "is-active",
         view.id ===
-          `admin-view-${viewName}`
+        `admin-view-${viewName}`
       );
     });
 
@@ -372,7 +373,7 @@ function activateAdminView(
       button.classList.toggle(
         "is-active",
         button.dataset.adminView ===
-          viewName
+        viewName
       );
     });
 
@@ -542,30 +543,47 @@ function renderAdminOverview(
 ) {
   const overview =
     data?.overview ||
-    data;
+    data ||
+    {};
+
+
+  const applications =
+    overview.applications ||
+    {};
 
 
   updateOverviewValue(
     "admin-stat-applications",
-    overview?.applications?.total ||
-      overview?.totalApplications ||
-      0
+    applications.total ??
+    0
   );
 
 
   updateOverviewValue(
     "admin-stat-pending",
-    overview?.applications?.pending ||
-      overview?.pendingApplications ||
-      0
+    applications.pending ??
+    0
+  );
+
+
+  updateOverviewValue(
+    "admin-stat-review",
+    applications.underReview ??
+    0
+  );
+
+
+  updateOverviewValue(
+    "admin-stat-approved",
+    applications.approved ??
+    0
   );
 
 
   updateOverviewValue(
     "admin-stat-users",
-    overview?.totalUsers ||
-      overview?.users ||
-      0
+    overview?.users?.total ??
+    0
   );
 
 
@@ -578,70 +596,139 @@ function renderAdminOverview(
   if (donations) {
     donations.textContent =
       adminFormatCurrency(
-        overview?.donationTotal ||
-        overview?.donations?.totalAmount ||
+        overview?.donations
+          ?.totalAmount ??
         0
       );
   }
 
 
+  const donationCount =
+    adminGet(
+      "admin-stat-donation-count"
+    );
+
+
+  if (donationCount) {
+    const count =
+      overview?.donations
+        ?.verifiedCount ??
+      0;
+
+
+    donationCount.textContent =
+      `${count} verified ${count === 1
+        ? "transaction"
+        : "transactions"
+      }`;
+  }
+
+
   const branches =
-    overview?.branches || {};
+    overview.branches ||
+    {};
 
 
   const nagpada =
-    branches.NAGPADA || {};
+    branches.NAGPADA ||
+    {};
 
 
   const dharavi =
-    branches.DHARAVI || {};
+    branches.DHARAVI ||
+    {};
 
 
   updateOverviewValue(
     "nagpada-total",
-    nagpada.total || 0
+    nagpada.total ??
+    0
   );
+
 
   updateOverviewValue(
     "nagpada-pending",
-    nagpada.pending || 0
+    nagpada.pending ??
+    0
   );
+
 
   updateOverviewValue(
     "nagpada-review",
-    nagpada.underReview || 0
+    nagpada.underReview ??
+    0
   );
+
 
   updateOverviewValue(
     "nagpada-approved",
-    nagpada.approved || 0
+    nagpada.approved ??
+    0
+  );
+
+
+  updateOverviewValue(
+    "nagpada-completed",
+    nagpada.completed ??
+    0
+  );
+
+
+  updateOverviewValue(
+    "nagpada-rejected",
+    nagpada.rejected ??
+    0
   );
 
 
   updateOverviewValue(
     "dharavi-total",
-    dharavi.total || 0
+    dharavi.total ??
+    0
   );
+
 
   updateOverviewValue(
     "dharavi-pending",
-    dharavi.pending || 0
+    dharavi.pending ??
+    0
   );
+
 
   updateOverviewValue(
     "dharavi-review",
-    dharavi.underReview || 0
+    dharavi.underReview ??
+    0
   );
+
 
   updateOverviewValue(
     "dharavi-approved",
-    dharavi.approved || 0
+    dharavi.approved ??
+    0
+  );
+
+
+  updateOverviewValue(
+    "dharavi-completed",
+    dharavi.completed ??
+    0
+  );
+
+
+  updateOverviewValue(
+    "dharavi-rejected",
+    dharavi.rejected ??
+    0
   );
 
 
   const recent =
-    overview?.recentApplications ||
-    [];
+    Array.isArray(
+      overview.recentApplications
+    )
+      ? overview.recentApplications
+      : [];
 
 
   renderRecentApplications(
@@ -676,8 +763,8 @@ async function loadAdminOverview() {
       if (recent) {
         renderAdminEmpty(
           recent,
-          "Backend not connected yet",
-          "Recent applications will appear here after the admin API is running."
+          "Unable to load overview",
+          "We could not connect to the server. Please refresh and try again."
         );
       }
 
@@ -707,7 +794,7 @@ async function loadAdminOverview() {
 
     showAdminAlert(
       error.message ||
-        "Unable to load the admin overview.",
+      "Unable to load the admin overview.",
       "error"
     );
   }
@@ -902,7 +989,7 @@ function createApplicationTableRow(
 
   serviceCell.textContent =
     ADMIN_SERVICE_NAMES[
-      application.type
+    application.type
     ] ||
     adminText(
       application.type
@@ -915,7 +1002,7 @@ function createApplicationTableRow(
 
   branchCell.textContent =
     ADMIN_BRANCH_NAMES[
-      application.branch
+    application.branch
     ] ||
     adminText(
       application.branch
@@ -1099,8 +1186,8 @@ async function loadAdminApplications() {
     ) {
       renderAdminEmpty(
         root,
-        "Backend not connected yet",
-        "Applications will load here when the Express admin API is running."
+        "Unable to load applications",
+        "We could not connect to the server. Please refresh and try again."
       );
 
       return;
@@ -1136,6 +1223,29 @@ async function loadAdminApplications() {
 }
 
 
+function updateAdminApplicationCount(
+  count
+) {
+  const element =
+    adminGet(
+      "admin-application-filter-count"
+    );
+
+
+  if (!element) {
+    return;
+  }
+
+
+  element.textContent =
+    `${count} ${count === 1
+      ? "application"
+      : "applications"
+    }`;
+}
+
+
+
 function renderAdminApplications(
   applications
 ) {
@@ -1148,6 +1258,10 @@ function renderAdminApplications(
   if (!root) {
     return;
   }
+
+  updateAdminApplicationCount(
+    applications.length
+  );
 
 
   if (!applications.length) {
@@ -1176,9 +1290,10 @@ function renderAdminApplications(
       "Service",
       "Branch",
       "Status",
-      "Submitted",
-      "",
+      "Dates",
+      "Action",
     ]);
+
 
 
   applications.forEach(
@@ -1194,6 +1309,8 @@ function renderAdminApplications(
 
   root.append(wrapper);
 }
+
+
 
 
 /* =========================================================
@@ -1225,8 +1342,17 @@ function initializeApplicationFilters() {
     );
 
 
-  let searchTimer = null;
+  const clear =
+    adminGet(
+      "admin-application-clear-filters"
+    );
 
+
+  let searchTimer =
+    null;
+
+
+  /* Search with debounce */
 
   search?.addEventListener(
     "input",
@@ -1247,18 +1373,90 @@ function initializeApplicationFilters() {
   );
 
 
+  /* Escape clears search */
+
+  search?.addEventListener(
+    "keydown",
+    (event) => {
+
+      if (
+        event.key !== "Escape"
+      ) {
+        return;
+      }
+
+
+      search.value =
+        "";
+
+
+      window.clearTimeout(
+        searchTimer
+      );
+
+
+      loadAdminApplications();
+    }
+  );
+
+
+  /* Dropdown filters */
+
   [
     branch,
     service,
     status,
-  ].forEach((element) => {
-    element?.addEventListener(
-      "change",
-      loadAdminApplications
-    );
-  });
-}
+  ].forEach(
+    (element) => {
 
+      element?.addEventListener(
+        "change",
+        loadAdminApplications
+      );
+
+    }
+  );
+
+
+  /* Clear all filters */
+
+  clear?.addEventListener(
+    "click",
+    () => {
+
+      if (search) {
+        search.value =
+          "";
+      }
+
+
+      if (branch) {
+        branch.value =
+          "";
+      }
+
+
+      if (service) {
+        service.value =
+          "";
+      }
+
+
+      if (status) {
+        status.value =
+          "";
+      }
+
+
+      window.clearTimeout(
+        searchTimer
+      );
+
+
+      loadAdminApplications();
+    }
+  );
+}
 
 /* =========================================================
    APPLICATION DRAWER
@@ -1472,8 +1670,8 @@ async function openAdminApplication(
     ) {
       renderAdminEmpty(
         body,
-        "Backend not connected yet",
-        "Application details will be available after the admin API is connected."
+        "Unable to load application",
+        "We could not connect to the server. Please close this panel and try again."
       );
 
       return;
@@ -1525,7 +1723,7 @@ function renderAdminApplicationDetail(
   if (title) {
     title.textContent =
       ADMIN_SERVICE_NAMES[
-        application.type
+      application.type
       ] ||
       "Application Details";
   }
@@ -1643,7 +1841,7 @@ function renderAdminApplicationDetail(
     createAdminDetailField(
       "Service",
       ADMIN_SERVICE_NAMES[
-        application.type
+      application.type
       ] ||
       application.type
     ),
@@ -1651,7 +1849,7 @@ function renderAdminApplicationDetail(
     createAdminDetailField(
       "Branch",
       ADMIN_BRANCH_NAMES[
-        application.branch
+      application.branch
       ] ||
       application.branch
     ),
@@ -1666,7 +1864,7 @@ function renderAdminApplicationDetail(
     createAdminDetailField(
       "Current Status",
       ADMIN_STATUS_NAMES[
-        application.status
+      application.status
       ] ||
       application.status
     )
@@ -1788,149 +1986,149 @@ function renderAdminApplicationDetail(
   );
 
 
-/* =========================================================
-   DOCUMENTS
-========================================================= */
+  /* =========================================================
+     DOCUMENTS
+  ========================================================= */
 
-const documents =
-  Array.isArray(
-    application.documents
-  )
-    ? application.documents
-    : [];
-
-
-if (
-  documents.length
-) {
-  const documentSection =
-    document.createElement(
-      "section"
-    );
+  const documents =
+    Array.isArray(
+      application.documents
+    )
+      ? application.documents
+      : [];
 
 
-  documentSection.className =
-    "admin-detail-section";
-
-
-  const heading =
-    document.createElement(
-      "h3"
-    );
-
-
-  heading.textContent =
-    "Supporting documents";
-
-
-  const list =
-    document.createElement(
-      "div"
-    );
-
-
-  list.className =
-    "document-list";
-
-
-  documents.forEach(
-    (documentData) => {
-
-      const item =
-        document.createElement(
-          "div"
-        );
-
-
-      item.className =
-        "document-item";
-
-
-      const info =
-        document.createElement(
-          "div"
-        );
-
-
-      const name =
-        document.createElement(
-          "div"
-        );
-
-
-      name.className =
-        "document-item__name";
-
-
-      name.textContent =
-        documentData.originalName;
-
-
-      const type =
-        document.createElement(
-          "div"
-        );
-
-
-      type.className =
-        "document-item__type";
-
-
-      type.textContent =
-        documentData.type;
-
-
-      info.append(
-        name,
-        type
+  if (
+    documents.length
+  ) {
+    const documentSection =
+      document.createElement(
+        "section"
       );
 
 
-      const download =
-        document.createElement(
-          "a"
+    documentSection.className =
+      "admin-detail-section";
+
+
+    const heading =
+      document.createElement(
+        "h3"
+      );
+
+
+    heading.textContent =
+      "Supporting documents";
+
+
+    const list =
+      document.createElement(
+        "div"
+      );
+
+
+    list.className =
+      "document-list";
+
+
+    documents.forEach(
+      (documentData) => {
+
+        const item =
+          document.createElement(
+            "div"
+          );
+
+
+        item.className =
+          "document-item";
+
+
+        const info =
+          document.createElement(
+            "div"
+          );
+
+
+        const name =
+          document.createElement(
+            "div"
+          );
+
+
+        name.className =
+          "document-item__name";
+
+
+        name.textContent =
+          documentData.originalName;
+
+
+        const type =
+          document.createElement(
+            "div"
+          );
+
+
+        type.className =
+          "document-item__type";
+
+
+        type.textContent =
+          documentData.type;
+
+
+        info.append(
+          name,
+          type
         );
 
 
-      download.className =
-        "btn btn--outline";
+        const download =
+          document.createElement(
+            "a"
+          );
 
 
-      download.href =
-        `/api/admin/applications/${encodeURIComponent(
-          application.id
-        )}/documents/${encodeURIComponent(
-          documentData.id
-        )}/download`;
+        download.className =
+          "btn btn--outline";
 
 
-      download.textContent =
-        "Download";
+        download.href =
+          `/api/admin/applications/${encodeURIComponent(
+            application.id
+          )}/documents/${encodeURIComponent(
+            documentData.id
+          )}/download`;
 
 
-      item.append(
-        info,
-        download
-      );
+        download.textContent =
+          "Download";
 
 
-      list.append(
-        item
-      );
-    }
-  );
+        item.append(
+          info,
+          download
+        );
 
 
-  documentSection.append(
-    heading,
-    list
-  );
+        list.append(
+          item
+        );
+      }
+    );
 
 
-  body.append(
-    documentSection
-  );
-}
+    documentSection.append(
+      heading,
+      list
+    );
+
+
+    body.append(
+      documentSection
+    );
+  }
 
   /* Status */
 
@@ -2114,7 +2312,7 @@ function createAdminStatusSection(
 
     option.textContent =
       ADMIN_STATUS_NAMES[
-        status
+      status
       ];
 
 
@@ -2139,12 +2337,11 @@ function createAdminStatusSection(
 
 
   note.placeholder =
-    "Internal admin note (optional)";
-
+    "Status note visible to applicant (optional)";
 
   note.setAttribute(
     "aria-label",
-    "Internal admin note"
+    "Status note visible to applicant"
   );
 
 
@@ -2235,9 +2432,10 @@ function createAdminStatusSection(
           error instanceof TypeError
         ) {
           showAdminAlert(
-            "Status updating will become active when the backend admin API is connected.",
-            "info"
+            "Unable to connect to the server. The application status was not changed.",
+            "error"
           );
+
 
           return;
         }
@@ -2245,7 +2443,7 @@ function createAdminStatusSection(
 
         showAdminAlert(
           error.message ||
-            "Unable to update application status.",
+          "Unable to update application status.",
           "error"
         );
 
@@ -2314,8 +2512,8 @@ async function loadAdminUsers() {
     ) {
       renderAdminEmpty(
         root,
-        "Backend not connected yet",
-        "Registered users will appear here after the admin API is connected."
+        "Unable to load users",
+        "We could not connect to the server. Please refresh and try again."
       );
 
       return;
@@ -2527,9 +2725,9 @@ async function loadAdminDonations() {
       error instanceof TypeError
     ) {
       renderAdminEmpty(
-        root,
-        "Payment backend not connected yet",
-        "Verified UPI and Razorpay donations will appear here after payment integration."
+        recent,
+        "Unable to load overview",
+        "We could not connect to the server. Please refresh and try again."
       );
 
       return;
@@ -2772,3 +2970,5 @@ document.addEventListener(
   "DOMContentLoaded",
   initializeAdminPortal
 );
+
+

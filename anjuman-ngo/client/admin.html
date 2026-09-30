@@ -6,35 +6,21 @@
 
   <meta charset="UTF-8" />
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta
-    name="description"
-    content="Administration portal for Anjuman Bashindgan-E-Bihar Nagpada and Dharavi branches."
-  />
+  <meta name="description"
+    content="Administration portal for Anjuman Bashindgan-E-Bihar Nagpada and Dharavi branches." />
 
-  <meta
-    name="theme-color"
-    content="#0b2748"
-  />
+  <meta name="theme-color" content="#0b2748" />
 
   <title>
     Admin Portal | Anjuman Bashindgan-E-Bihar
   </title>
 
 
-  <link
-    rel="stylesheet"
-    href="./css/main.css"
-  />
+  <link rel="stylesheet" href="./css/main.css" />
 
-  <link
-    rel="stylesheet"
-    href="./css/dashboard.css"
-  />
+  <link rel="stylesheet" href="./css/dashboard.css" />
 
 </head>
 
@@ -44,10 +30,7 @@
   <div id="site-header"></div>
 
 
-  <main
-    id="main-content"
-    class="portal-page"
-  >
+  <main id="main-content" class="portal-page">
 
     <div class="portal-container">
 
@@ -77,22 +60,14 @@
         </div>
 
 
-        <span
-          id="admin-identity"
-          class="admin-header__badge"
-        >
+        <span id="admin-identity" class="admin-header__badge">
           Admin
         </span>
 
       </header>
 
 
-      <div
-        id="admin-alert"
-        class="application-alert"
-        role="alert"
-        aria-live="polite"
-      ></div>
+      <div id="admin-alert" class="application-alert" role="alert" aria-live="polite"></div>
 
 
       <div class="admin-shell">
@@ -117,52 +92,29 @@
           </div>
 
 
-          <nav
-            class="admin-nav"
-            aria-label="Admin portal"
-          >
+          <nav class="admin-nav" aria-label="Admin portal">
 
-            <button
-              type="button"
-              class="admin-nav__button is-active"
-              data-admin-view="overview"
-            >
+            <button type="button" class="admin-nav__button is-active" data-admin-view="overview">
               Overview
             </button>
 
 
-            <button
-              type="button"
-              class="admin-nav__button"
-              data-admin-view="applications"
-            >
+            <button type="button" class="admin-nav__button" data-admin-view="applications">
               Applications
             </button>
 
 
-            <button
-              type="button"
-              class="admin-nav__button"
-              data-admin-view="users"
-            >
+            <button type="button" class="admin-nav__button" data-admin-view="users">
               Users
             </button>
 
 
-            <button
-              type="button"
-              class="admin-nav__button"
-              data-admin-view="donations"
-            >
+            <button type="button" class="admin-nav__button" data-admin-view="donations">
               Donations
             </button>
 
 
-            <button
-              type="button"
-              id="admin-logout"
-              class="admin-nav__button admin-nav__button--danger"
-            >
+            <button type="button" id="admin-logout" class="admin-nav__button admin-nav__button--danger">
               Sign Out
             </button>
 
@@ -182,10 +134,7 @@
                OVERVIEW
           ================================================ -->
 
-          <section
-            id="admin-view-overview"
-            class="admin-view is-active"
-          >
+          <section id="admin-view-overview" class="admin-view is-active">
 
             <header class="admin-view__header">
 
@@ -203,90 +152,57 @@
 
             </header>
 
+            <div class="admin-branch-mini-stat">
 
-            <div class="admin-stats">
+              <strong id="nagpada-completed">
+                0
+              </strong>
 
-
-              <article class="card admin-stat-card">
-
-                <span class="admin-stat-card__label">
-                  Applications
-                </span>
-
-                <strong
-                  id="admin-stat-applications"
-                  class="admin-stat-card__value"
-                >
-                  0
-                </strong>
-
-                <span class="admin-stat-card__meta">
-                  Total submitted
-                </span>
-
-              </article>
-
-
-              <article class="card admin-stat-card">
-
-                <span class="admin-stat-card__label">
-                  Pending
-                </span>
-
-                <strong
-                  id="admin-stat-pending"
-                  class="admin-stat-card__value"
-                >
-                  0
-                </strong>
-
-                <span class="admin-stat-card__meta">
-                  Awaiting review
-                </span>
-
-              </article>
-
-
-              <article class="card admin-stat-card">
-
-                <span class="admin-stat-card__label">
-                  Users
-                </span>
-
-                <strong
-                  id="admin-stat-users"
-                  class="admin-stat-card__value"
-                >
-                  0
-                </strong>
-
-                <span class="admin-stat-card__meta">
-                  Registered accounts
-                </span>
-
-              </article>
-
-
-              <article class="card admin-stat-card">
-
-                <span class="admin-stat-card__label">
-                  Donations
-                </span>
-
-                <strong
-                  id="admin-stat-donations"
-                  class="admin-stat-card__value"
-                >
-                  ₹0
-                </strong>
-
-                <span class="admin-stat-card__meta">
-                  Verified donations
-                </span>
-
-              </article>
+              <span>
+                Completed
+              </span>
 
             </div>
+
+
+            <div class="admin-branch-mini-stat">
+
+              <strong id="nagpada-rejected">
+                0
+              </strong>
+
+              <span>
+                Rejected
+              </span>
+
+            </div>
+
+            <div class="admin-branch-mini-stat">
+
+              <strong id="dharavi-completed">
+                0
+              </strong>
+
+              <span>
+                Completed
+              </span>
+
+            </div>
+
+
+            <div class="admin-branch-mini-stat">
+
+              <strong id="dharavi-rejected">
+                0
+              </strong>
+
+              <span>
+                Rejected
+              </span>
+
+            </div>
+
+
 
 
             <div class="admin-branch-grid">
@@ -309,10 +225,7 @@
                   </div>
 
 
-                  <strong
-                    id="nagpada-total"
-                    class="admin-branch-card__number"
-                  >
+                  <strong id="nagpada-total" class="admin-branch-card__number">
                     0
                   </strong>
 
@@ -381,10 +294,7 @@
                   </div>
 
 
-                  <strong
-                    id="dharavi-total"
-                    class="admin-branch-card__number"
-                  >
+                  <strong id="dharavi-total" class="admin-branch-card__number">
                     0
                   </strong>
 
@@ -446,21 +356,14 @@
                   Recent applications
                 </h2>
 
-                <button
-                  type="button"
-                  class="btn btn--outline"
-                  data-admin-view="applications"
-                >
+                <button type="button" class="btn btn--outline" data-admin-view="applications">
                   View All
                 </button>
 
               </div>
 
 
-              <div
-                id="admin-recent-applications"
-                class="admin-loading"
-              >
+              <div id="admin-recent-applications" class="admin-loading">
                 Loading recent applications...
               </div>
 
@@ -473,10 +376,7 @@
                APPLICATIONS
           ================================================ -->
 
-          <section
-            id="admin-view-applications"
-            class="admin-view"
-          >
+          <section id="admin-view-applications" class="admin-view">
 
             <header class="admin-view__header">
 
@@ -498,20 +398,12 @@
             <div class="admin-filters">
 
 
-              <input
-                type="search"
-                id="admin-application-search"
-                class="admin-filter-control"
-                placeholder="Search applicant or reference..."
-                aria-label="Search applications"
-              />
+              <input type="search" id="admin-application-search" class="admin-filter-control"
+                placeholder="Search name, reference, phone or email..." aria-label="Search applications"
+                autocomplete="off" />
 
 
-              <select
-                id="admin-branch-filter"
-                class="admin-filter-control"
-                aria-label="Filter by branch"
-              >
+              <select id="admin-branch-filter" class="admin-filter-control" aria-label="Filter by branch">
 
                 <option value="">
                   All branches
@@ -528,11 +420,7 @@
               </select>
 
 
-              <select
-                id="admin-service-filter"
-                class="admin-filter-control"
-                aria-label="Filter by service"
-              >
+              <select id="admin-service-filter" class="admin-filter-control" aria-label="Filter by service">
 
                 <option value="">
                   All services
@@ -557,11 +445,7 @@
               </select>
 
 
-              <select
-                id="admin-status-filter"
-                class="admin-filter-control"
-                aria-label="Filter by status"
-              >
+              <select id="admin-status-filter" class="admin-filter-control" aria-label="Filter by status">
 
                 <option value="">
                   All statuses
@@ -587,17 +471,26 @@
                   Completed
                 </option>
 
+                <button type="button" id="admin-application-clear-filters" class="btn btn--outline admin-filter-clear">
+                  Clear
+                </button>
+
               </select>
+
+            </div>
+
+            <div class="admin-filter-summary">
+
+              <span id="admin-application-filter-count">
+                0 applications
+              </span>
 
             </div>
 
 
             <div class="admin-table-card">
 
-              <div
-                id="admin-applications-root"
-                class="admin-loading"
-              >
+              <div id="admin-applications-root" class="admin-loading">
                 Loading applications...
               </div>
 
@@ -610,10 +503,7 @@
                USERS
           ================================================ -->
 
-          <section
-            id="admin-view-users"
-            class="admin-view"
-          >
+          <section id="admin-view-users" class="admin-view">
 
             <header class="admin-view__header">
 
@@ -635,10 +525,7 @@
 
             <div class="admin-table-card">
 
-              <div
-                id="admin-users-root"
-                class="admin-loading"
-              >
+              <div id="admin-users-root" class="admin-loading">
                 Loading users...
               </div>
 
@@ -651,10 +538,7 @@
                DONATIONS
           ================================================ -->
 
-          <section
-            id="admin-view-donations"
-            class="admin-view"
-          >
+          <section id="admin-view-donations" class="admin-view">
 
             <header class="admin-view__header">
 
@@ -665,9 +549,8 @@
                 </h2>
 
                 <p>
-                  Verified donation transactions will
-                  appear here after Razorpay and UPI payment
-                  integration is connected.
+                  Review UPI and Razorpay donation transactions,
+                  payment methods and verification status.
                 </p>
 
               </div>
@@ -677,10 +560,7 @@
 
             <div class="admin-table-card">
 
-              <div
-                id="admin-donations-root"
-                class="admin-loading"
-              >
+              <div id="admin-donations-root" class="admin-loading">
                 Loading donations...
               </div>
 
@@ -705,27 +585,15 @@
        APPLICATION DETAIL DRAWER
   ====================================================== -->
 
-  <div
-    id="admin-application-overlay"
-    class="admin-overlay"
-    aria-hidden="true"
-  >
+  <div id="admin-application-overlay" class="admin-overlay" aria-hidden="true">
 
-    <aside
-      class="admin-drawer"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="admin-drawer-title"
-    >
+    <aside class="admin-drawer" role="dialog" aria-modal="true" aria-labelledby="admin-drawer-title">
 
       <header class="admin-drawer__header">
 
         <div>
 
-          <span
-            id="admin-drawer-reference"
-            class="admin-drawer__reference"
-          >
+          <span id="admin-drawer-reference" class="admin-drawer__reference">
             Application
           </span>
 
@@ -736,22 +604,15 @@
         </div>
 
 
-        <button
-          type="button"
-          id="admin-drawer-close"
-          class="admin-drawer__close"
-          aria-label="Close application details"
-        >
+        <button type="button" id="admin-drawer-close" class="admin-drawer__close"
+          aria-label="Close application details">
           ×
         </button>
 
       </header>
 
 
-      <div
-        id="admin-drawer-body"
-        class="admin-drawer__body"
-      >
+      <div id="admin-drawer-body" class="admin-drawer__body">
 
         <div class="admin-loading">
           Loading...
@@ -764,15 +625,9 @@
   </div>
 
 
-  <script
-    src="./js/main.js"
-    defer
-  ></script>
+  <script src="./js/main.js" defer></script>
 
-  <script
-    src="./js/admin.js"
-    defer
-  ></script>
+  <script src="./js/admin.js" defer></script>
 
 </body>
 

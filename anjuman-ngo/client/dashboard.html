@@ -1,51 +1,37 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
 
   <meta charset="UTF-8" />
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta
-    name="description"
-    content="Manage your Anjuman Bashindgan-E-Bihar assistance applications."
-  />
+  <meta name="description" content="Manage your Anjuman Bashindgan-E-Bihar assistance applications." />
 
   <title>
     Dashboard | Anjuman Bashindgan-E-Bihar
   </title>
 
+  <link rel="stylesheet" href="./css/main.css" />
 
-  <link
-    rel="stylesheet"
-    href="./css/main.css"
-  />
-
-  <link
-    rel="stylesheet"
-    href="./css/dashboard.css"
-  />
+  <link rel="stylesheet" href="./css/dashboard.css" />
 
 </head>
-
 
 <body>
 
   <div id="site-header"></div>
 
 
-  <main
-    id="main-content"
-    class="portal-page"
-  >
+  <main id="main-content" class="portal-page">
 
     <div class="portal-container">
 
+
+      <!-- ================================================
+           DASHBOARD HEADER
+      ================================================= -->
 
       <header class="portal-header">
 
@@ -56,12 +42,16 @@
           </span>
 
           <h1 class="portal-header__title">
-            My dashboard
+            Welcome back,
+            <span id="dashboard-user-name">
+              Member
+            </span>
           </h1>
 
           <p class="portal-header__description">
-            Submit new assistance requests and follow the
-            progress of your existing applications.
+            Track your assistance requests, review status
+            updates and submit new applications from one
+            place.
           </p>
 
         </div>
@@ -69,10 +59,7 @@
 
         <div class="portal-header__actions">
 
-          <a
-            href="apply.html"
-            class="btn btn--primary"
-          >
+          <a href="apply.html" class="btn btn--primary">
             New Application
           </a>
 
@@ -81,16 +68,19 @@
       </header>
 
 
-      <div
-        id="application-alert"
-        class="application-alert"
-        role="alert"
-        aria-live="polite"
-      ></div>
+      <!-- ================================================
+           ALERT
+      ================================================= -->
+
+      <div id="application-alert" class="application-alert" role="alert" aria-live="polite"></div>
 
 
       <div class="dashboard-shell">
 
+
+        <!-- ================================================
+             SIDEBAR
+        ================================================= -->
 
         <aside class="dashboard-sidebar">
 
@@ -103,148 +93,338 @@
           </div>
 
 
-          <nav
-            class="dashboard-nav"
-            aria-label="Applicant dashboard"
-          >
+          <nav class="dashboard-nav" aria-label="Applicant dashboard">
 
-            <a
-              href="dashboard.html"
-              class="dashboard-nav__link is-active"
-            >
+            <a href="dashboard.html" class="dashboard-nav__link is-active">
               Dashboard
             </a>
 
-            <a
-              href="apply.html"
-              class="dashboard-nav__link"
-            >
+
+            <a href="apply.html" class="dashboard-nav__link">
               New Application
             </a>
 
-            <a
-              href="index.html"
-              class="dashboard-nav__link"
-            >
+
+            <a href="index.html" class="dashboard-nav__link">
               Public Website
             </a>
 
-            <button
-              type="button"
-              id="dashboard-logout"
-              class="dashboard-nav__button"
-            >
+
+            <button type="button" id="dashboard-logout" class="dashboard-nav__button">
               Sign Out
             </button>
 
           </nav>
 
+          
+          <section class="card dashboard-profile">
+            
+            <span class="dashboard-profile__eyebrow">
+              Your account
+            </span>
+            
+            <div class="dashboard-profile__identity">
+              
+              <div id="dashboard-profile-avatar" class="dashboard-profile__avatar" aria-hidden="true">
+                M
+              </div>
+              
+              <div class="dashboard-profile__primary">
+                
+                <strong id="dashboard-profile-name" class="dashboard-profile__name">
+                  Member
+                </strong>
+                
+                <span id="dashboard-profile-username" class="dashboard-profile__username">
+                  —
+                </span>
+                
+              </div>
+              
+            </div>
+            
+            <div class="dashboard-profile__details">
+              
+              <div class="dashboard-profile__detail">
+                
+                <span>
+                  Email
+                </span>
+                
+                <strong id="dashboard-profile-email">
+                  —
+                </strong>
+                
+              </div>
+              
+            </div>
+            
+          </section>
         </aside>
 
 
-        <div>
+        <!-- ================================================
+             MAIN DASHBOARD CONTENT
+        ================================================= -->
+
+        <div class="dashboard-content">
 
 
-          <section
-            class="dashboard-stats"
-            aria-label="Application statistics"
-          >
+          <!-- ==============================================
+               STATS
+          =============================================== -->
 
-            <article class="card dashboard-stat">
+          <section class="dashboard-stats" aria-label="Application statistics">
+
+            <!-- TOTAL -->
+            <article class="card dashboard-stat dashboard-stat--clickable" data-dashboard-status="" tabindex="0"
+              role="button">
 
               <span class="dashboard-stat__label">
-                Total
+                Total Applications
               </span>
 
-              <strong
-                id="stat-total"
-                class="dashboard-stat__value"
-              >
+              <strong id="stat-total" class="dashboard-stat__value">
                 0
               </strong>
+
+              <span class="dashboard-stat__hint">
+                All submitted requests
+              </span>
 
             </article>
 
 
-            <article class="card dashboard-stat">
+            <!-- PENDING -->
+            <article class="card dashboard-stat dashboard-stat--clickable" data-dashboard-status="PENDING" tabindex="0"
+              role="button">
 
               <span class="dashboard-stat__label">
                 Pending
               </span>
 
-              <strong
-                id="stat-pending"
-                class="dashboard-stat__value"
-              >
+              <strong id="stat-pending" class="dashboard-stat__value">
                 0
               </strong>
+
+              <span class="dashboard-stat__hint">
+                Waiting for review
+              </span>
 
             </article>
 
 
-            <article class="card dashboard-stat">
+            <!-- UNDER REVIEW -->
+            <article class="card dashboard-stat dashboard-stat--clickable" data-dashboard-status="UNDER_REVIEW"
+              tabindex="0" role="button">
 
               <span class="dashboard-stat__label">
                 Under Review
               </span>
 
-              <strong
-                id="stat-review"
-                class="dashboard-stat__value"
-              >
+              <strong id="stat-review" class="dashboard-stat__value">
                 0
               </strong>
+
+              <span class="dashboard-stat__hint">
+                Currently being reviewed
+              </span>
 
             </article>
 
 
-            <article class="card dashboard-stat">
+            <!-- APPROVED -->
+            <article class="card dashboard-stat dashboard-stat--clickable" data-dashboard-status="APPROVED" tabindex="0"
+              role="button">
 
               <span class="dashboard-stat__label">
                 Approved
               </span>
 
-              <strong
-                id="stat-approved"
-                class="dashboard-stat__value"
-              >
+              <strong id="stat-approved" class="dashboard-stat__value">
                 0
               </strong>
+
+              <span class="dashboard-stat__hint">
+                Assistance approved
+              </span>
+
+            </article>
+
+
+            <!-- COMPLETED -->
+            <article class="card dashboard-stat dashboard-stat--clickable" data-dashboard-status="COMPLETED"
+              tabindex="0" role="button">
+
+              <span class="dashboard-stat__label">
+                Completed
+              </span>
+
+              <strong id="stat-completed" class="dashboard-stat__value">
+                0
+              </strong>
+
+              <span class="dashboard-stat__hint">
+                Requests completed
+              </span>
+
+            </article>
+
+
+            <!-- REJECTED -->
+            <article class="card dashboard-stat dashboard-stat--clickable" data-dashboard-status="REJECTED" tabindex="0"
+              role="button">
+
+              <span class="dashboard-stat__label">
+                Rejected
+              </span>
+
+              <strong id="stat-rejected" class="dashboard-stat__value">
+                0
+              </strong>
+
+              <span class="dashboard-stat__hint">
+                Requests not approved
+              </span>
 
             </article>
 
           </section>
 
 
+          <!-- ==============================================
+               APPLICATIONS
+          =============================================== -->
+
           <section class="dashboard-panel">
 
             <header class="dashboard-panel__header">
 
-              <h2>
-                My applications
-              </h2>
+              <div>
 
-              <a
-                href="apply.html"
-                class="btn btn--outline"
-              >
+                <h2>
+                  My applications
+                </h2>
+
+                <p class="dashboard-panel__description">
+                  View and follow the progress of your
+                  assistance requests.
+                </p>
+
+              </div>
+
+
+              <a href="apply.html" class="btn btn--outline">
                 Submit New
               </a>
 
             </header>
 
+            <div class="dashboard-filters">
+
+              <div class="dashboard-search">
+
+                <label for="dashboard-search" class="sr-only">
+                  Search applications
+                </label>
+
+                <input type="search" id="dashboard-search" class="dashboard-filter-control"
+                  placeholder="Search reference or service..." autocomplete="off" />
+
+              </div>
+
+
+              <select id="dashboard-status-filter" class="dashboard-filter-control" aria-label="Filter by status">
+                <option value="">
+                  All statuses
+                </option>
+
+                <option value="PENDING">
+                  Pending
+                </option>
+
+                <option value="UNDER_REVIEW">
+                  Under Review
+                </option>
+
+                <option value="APPROVED">
+                  Approved
+                </option>
+
+                <option value="COMPLETED">
+                  Completed
+                </option>
+
+                <option value="REJECTED">
+                  Rejected
+                </option>
+
+              </select>
+
+
+              <select id="dashboard-service-filter" class="dashboard-filter-control" aria-label="Filter by service">
+                <option value="">
+                  All services
+                </option>
+
+                <option value="MEDICAL">
+                  Medical
+                </option>
+
+                <option value="SCHOLARSHIP">
+                  Scholarship
+                </option>
+
+                <option value="LIVELIHOOD">
+                  Livelihood
+                </option>
+
+                <option value="TRAVEL">
+                  Travel
+                </option>
+
+              </select>
+
+
+              <select id="dashboard-branch-filter" class="dashboard-filter-control" aria-label="Filter by branch">
+                <option value="">
+                  All branches
+                </option>
+
+                <option value="NAGPADA">
+                  Nagpada
+                </option>
+
+                <option value="DHARAVI">
+                  Dharavi
+                </option>
+
+              </select>
+
+
+              <button type="button" id="dashboard-clear-filters" class="btn btn--outline dashboard-clear-filter">
+                Clear
+              </button>
+
+            </div>
+
+
+            <div class="dashboard-filter-meta">
+
+              <span id="dashboard-filter-count">
+                0 applications
+              </span>
+
+            </div>
+
 
             <div id="dashboard-applications">
-
 
               <div class="portal-loading">
 
                 <div>
 
-                  <div
-                    class="portal-spinner"
-                    aria-hidden="true"
-                  ></div>
+                  <div class="portal-spinner" aria-hidden="true"></div>
 
                   <p>
                     Loading applications...
@@ -254,11 +434,9 @@
 
               </div>
 
-
             </div>
 
           </section>
-
 
         </div>
 
@@ -272,15 +450,9 @@
   <div id="site-footer"></div>
 
 
-  <script
-    src="./js/main.js"
-    defer
-  ></script>
+  <script src="./js/main.js" defer></script>
 
-  <script
-    src="./js/applications.js"
-    defer
-  ></script>
+  <script src="./js/applications.js" defer></script>
 
 </body>
 

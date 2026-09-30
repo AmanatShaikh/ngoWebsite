@@ -38,10 +38,88 @@ const STATUS_NAMES = {
   COMPLETED: "Completed",
 };
 
+const STATUS_DESCRIPTIONS = {
+  PENDING:
+    "Your application has been submitted and is waiting for review.",
+
+  UNDER_REVIEW:
+    "Your application is currently being reviewed by the organization.",
+
+  APPROVED:
+    "Your application has been approved.",
+
+  COMPLETED:
+    "Your assistance request has been completed.",
+
+  REJECTED:
+    "Your application was not approved. Review the latest update for more information.",
+};
+
+let dashboardApplications =
+  [];
+
 
 /* =========================================================
    BASIC HELPERS
 ========================================================= */
+
+
+async function requireUserSession() {
+  try {
+    const response =
+      await fetch(
+        "/api/auth/me",
+        {
+          credentials:
+            "include",
+
+          headers: {
+            Accept:
+              "application/json",
+          },
+        }
+      );
+
+
+    if (!response.ok) {
+      throw new Error(
+        "Unauthenticated"
+      );
+    }
+
+
+    const data =
+      await response.json();
+
+
+    return (
+      data?.user ||
+      null
+    );
+
+  } catch {
+    const currentPage =
+      window.location.pathname
+        .split("/")
+        .pop() ||
+      "dashboard.html";
+
+
+    const redirect =
+      currentPage +
+      window.location.search;
+
+
+    window.location.href =
+      `login.html?redirect=${encodeURIComponent(
+        redirect
+      )}`;
+
+
+    return null;
+  }
+}
+
 
 function appGetElement(id) {
   return document.getElementById(id);
@@ -106,6 +184,100 @@ function formatCurrency(value) {
       maximumFractionDigits: 0,
     }
   ).format(number);
+}
+
+
+function updateDashboardUser(
+  user
+) {
+  if (!user) {
+    return;
+  }
+
+
+  const displayName =
+    user.fullName ||
+    user.name ||
+    user.username ||
+    "Member";
+
+
+  const username =
+    user.username ||
+    "—";
+
+
+  const email =
+    user.email ||
+    "—";
+
+
+  const initial =
+    displayName
+      .trim()
+      .charAt(0)
+      .toUpperCase() ||
+    "M";
+
+
+  const welcomeName =
+    appGetElement(
+      "dashboard-user-name"
+    );
+
+
+  const profileName =
+    appGetElement(
+      "dashboard-profile-name"
+    );
+
+
+  const profileUsername =
+    appGetElement(
+      "dashboard-profile-username"
+    );
+
+
+  const profileEmail =
+    appGetElement(
+      "dashboard-profile-email"
+    );
+
+
+  const profileAvatar =
+    appGetElement(
+      "dashboard-profile-avatar"
+    );
+
+
+  if (welcomeName) {
+    welcomeName.textContent =
+      displayName;
+  }
+
+
+  if (profileName) {
+    profileName.textContent =
+      displayName;
+  }
+
+
+  if (profileUsername) {
+    profileUsername.textContent =
+      username;
+  }
+
+
+  if (profileEmail) {
+    profileEmail.textContent =
+      email;
+  }
+
+
+  if (profileAvatar) {
+    profileAvatar.textContent =
+      initial;
+  }
 }
 
 
@@ -1150,6 +1322,448 @@ function renderDashboardEmpty(
 }
 
 
+function renderPortalError(
+  container,
+  {
+    title = "Something went wrong",
+    message = "We could not load this information.",
+    retry = null,
+  } = {}
+) {
+  if (!container) {
+    return;
+  }
+
+
+  container.textContent = "";
+
+
+  const wrapper =
+    document.createElement(
+      "div"
+    );
+
+
+  wrapper.className =
+    "portal-state portal-state--error";
+
+
+  const mark =
+    document.createElement(
+      "div"
+    );
+
+
+  mark.className =
+    "portal-state__mark";
+
+
+  mark.textContent =
+    "!";
+
+
+  const heading =
+    document.createElement(
+      "h3"
+    );
+
+
+  heading.textContent =
+    title;
+
+
+  const description =
+    document.createElement(
+      "p"
+    );
+
+
+  description.textContent =
+    message;
+
+
+  wrapper.append(
+    mark,
+    heading,
+    description
+  );
+
+
+  if (
+    typeof retry ===
+    "function"
+  ) {
+    const button =
+      document.createElement(
+        "button"
+      );
+
+
+    button.type =
+      "button";
+
+
+    button.className =
+      "btn btn--outline";
+
+
+    button.textContent =
+      "Try Again";
+
+
+    button.addEventListener(
+      "click",
+      retry
+    );
+
+
+    wrapper.append(
+      button
+    );
+  }
+
+
+  container.append(
+    wrapper
+  );
+}
+
+/* =========================================================
+   DASHBOARD FILTERING
+========================================================= */
+
+function getDashboardFilteredApplications() {
+  const search =
+    appGetElement("dashboard-search")
+      ?.value
+      .trim()
+      .toLowerCase() || "";
+
+  const status =
+    appGetElement("dashboard-status-filter")
+      ?.value || "";
+
+  const service =
+    appGetElement("dashboard-service-filter")
+      ?.value || "";
+
+  const branch =
+    appGetElement("dashboard-branch-filter")
+      ?.value || "";
+
+
+  return dashboardApplications.filter(
+    (application) => {
+
+      const serviceName =
+        SERVICE_NAMES[application.type] ||
+        application.type ||
+        "";
+
+
+      const searchableText = [
+        application.referenceNumber,
+        serviceName,
+        application.applicantName,
+        application.type,
+        application.branch,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+
+      const matchesSearch =
+        !search ||
+        searchableText.includes(search);
+
+
+      const matchesStatus =
+        !status ||
+        application.status === status;
+
+
+      const matchesService =
+        !service ||
+        application.type === service;
+
+
+      const matchesBranch =
+        !branch ||
+        application.branch === branch;
+
+
+      return (
+        matchesSearch &&
+        matchesStatus &&
+        matchesService &&
+        matchesBranch
+      );
+    }
+  );
+}
+
+
+function updateDashboardFilterCount(
+  visible,
+  total
+) {
+  const element =
+    appGetElement(
+      "dashboard-filter-count"
+    );
+
+
+  if (!element) {
+    return;
+  }
+
+
+  if (visible === total) {
+    element.textContent =
+      `${total} ${total === 1
+        ? "application"
+        : "applications"
+      }`;
+
+    return;
+  }
+
+
+  element.textContent =
+    `${visible} of ${total} applications`;
+}
+
+
+function renderDashboardFilteredApplications() {
+  const filtered =
+    getDashboardFilteredApplications();
+  updateDashboardStatSelection();
+
+
+  updateDashboardFilterCount(
+    filtered.length,
+    dashboardApplications.length
+  );
+
+
+  if (
+    dashboardApplications.length === 0
+  ) {
+    renderApplicationList([]);
+
+    return;
+  }
+
+
+  if (filtered.length === 0) {
+    const container =
+      appGetElement(
+        "dashboard-applications"
+      );
+
+
+    if (!container) {
+      return;
+    }
+
+
+    container.innerHTML = `
+      <div class="dashboard-filter-empty">
+
+        <h3>
+          No matching applications
+        </h3>
+
+        <p>
+          Try changing your search or filters.
+        </p>
+
+      </div>
+    `;
+
+
+    return;
+  }
+
+
+  renderApplicationList(
+    filtered
+  );
+}
+
+
+function updateDashboardStatSelection() {
+  const status =
+    appGetElement(
+      "dashboard-status-filter"
+    )?.value || "";
+
+
+  document
+    .querySelectorAll(
+      "[data-dashboard-status]"
+    )
+    .forEach(
+      (card) => {
+
+        card.classList.toggle(
+          "is-active",
+          card.dataset.dashboardStatus ===
+          status
+        );
+
+      }
+    );
+}
+
+
+function initializeDashboardFilters() {
+  const search =
+    appGetElement(
+      "dashboard-search"
+    );
+
+
+  const status =
+    appGetElement(
+      "dashboard-status-filter"
+    );
+
+
+  const service =
+    appGetElement(
+      "dashboard-service-filter"
+    );
+
+
+  const branch =
+    appGetElement(
+      "dashboard-branch-filter"
+    );
+
+
+  const clear =
+    appGetElement(
+      "dashboard-clear-filters"
+    );
+
+
+  const statCards =
+    document.querySelectorAll(
+      "[data-dashboard-status]"
+    );
+
+
+  search?.addEventListener(
+    "input",
+    () => {
+      renderDashboardFilteredApplications();
+    }
+  );
+
+
+  status?.addEventListener(
+    "change",
+    () => {
+      renderDashboardFilteredApplications();
+    }
+  );
+
+
+  service?.addEventListener(
+    "change",
+    () => {
+      renderDashboardFilteredApplications();
+    }
+  );
+
+
+  branch?.addEventListener(
+    "change",
+    () => {
+      renderDashboardFilteredApplications();
+    }
+  );
+
+
+  clear?.addEventListener(
+    "click",
+    () => {
+
+      if (search) {
+        search.value = "";
+      }
+
+
+      if (status) {
+        status.value = "";
+      }
+
+
+      if (service) {
+        service.value = "";
+      }
+
+
+      if (branch) {
+        branch.value = "";
+      }
+
+
+      renderDashboardFilteredApplications();
+    }
+  );
+
+
+  statCards.forEach(
+    (card) => {
+
+      const applyStatusFilter =
+        () => {
+
+          const selectedStatus =
+            card.dataset.dashboardStatus ||
+            "";
+
+
+          if (status) {
+            status.value =
+              selectedStatus;
+          }
+
+
+          renderDashboardFilteredApplications();
+        };
+
+
+      card.addEventListener(
+        "click",
+        applyStatusFilter
+      );
+
+
+      card.addEventListener(
+        "keydown",
+        (event) => {
+
+          if (
+            event.key === "Enter" ||
+            event.key === " "
+          ) {
+            event.preventDefault();
+
+            applyStatusFilter();
+          }
+
+        }
+      );
+
+    }
+  );
+}
+
+
 /* =========================================================
    DASHBOARD LIST
 ========================================================= */
@@ -1329,72 +1943,103 @@ function renderApplicationList(
 ========================================================= */
 
 function updateDashboardStats(
-  applications
+  applications = []
 ) {
-  const total =
-    applications.length;
+  const list =
+    Array.isArray(applications)
+      ? applications
+      : [];
 
 
-  const pending =
-    applications.filter(
-      (item) =>
-        item.status === "PENDING"
-    ).length;
+  const counts = {
+    total: list.length,
+    pending: 0,
+    review: 0,
+    approved: 0,
+    completed: 0,
+    rejected: 0,
+  };
 
 
-  const review =
-    applications.filter(
-      (item) =>
-        item.status ===
-        "UNDER_REVIEW"
-    ).length;
+  list.forEach(
+    (application) => {
+
+      switch (
+      application.status
+      ) {
+
+        case "PENDING":
+          counts.pending += 1;
+          break;
 
 
-  const approved =
-    applications.filter(
-      (item) =>
-        item.status ===
-        "APPROVED"
-    ).length;
+        case "UNDER_REVIEW":
+          counts.review += 1;
+          break;
 
 
-  if (appGetElement("stat-total")) {
-    appGetElement(
-      "stat-total"
-    ).textContent =
-      String(total);
-  }
+        case "APPROVED":
+          counts.approved += 1;
+          break;
 
 
-  if (appGetElement("stat-pending")) {
-    appGetElement(
-      "stat-pending"
-    ).textContent =
-      String(pending);
-  }
+        case "COMPLETED":
+          counts.completed += 1;
+          break;
 
 
-  if (appGetElement("stat-review")) {
-    appGetElement(
-      "stat-review"
-    ).textContent =
-      String(review);
-  }
+        case "REJECTED":
+          counts.rejected += 1;
+          break;
+
+      }
+
+    }
+  );
 
 
-  if (appGetElement("stat-approved")) {
-    appGetElement(
-      "stat-approved"
-    ).textContent =
-      String(approved);
-  }
+  const values = {
+    "stat-total":
+      counts.total,
+
+    "stat-pending":
+      counts.pending,
+
+    "stat-review":
+      counts.review,
+
+    "stat-approved":
+      counts.approved,
+
+    "stat-completed":
+      counts.completed,
+
+    "stat-rejected":
+      counts.rejected,
+  };
+
+
+  Object.entries(
+    values
+  ).forEach(
+    ([id, value]) => {
+
+      const element =
+        appGetElement(id);
+
+
+      if (element) {
+        element.textContent =
+          String(value);
+      }
+
+    }
+  );
 }
-
 
 /* =========================================================
    LOAD DASHBOARD
 ========================================================= */
-
 async function loadDashboard() {
   const container =
     appGetElement(
@@ -1420,55 +2065,78 @@ async function loadDashboard() {
         : response?.applications || [];
 
 
+    dashboardApplications =
+      applications;
+
+
     updateDashboardStats(
       applications
     );
 
 
-    renderApplicationList(
-      applications
-    );
+    renderDashboardFilteredApplications();
 
   } catch (error) {
 
     if (
       error instanceof TypeError
     ) {
-      updateDashboardStats([]);
+      dashboardApplications =
+        [];
 
 
-      renderDashboardEmpty(
-        container
+      updateDashboardStats(
+        []
       );
 
 
-      showApplicationAlert(
-        "The backend is not running yet. When it is connected, your real applications will load here automatically.",
-        "info"
+      renderPortalError(
+        container,
+        {
+          title:
+            "Unable to load applications",
+
+          message:
+            "We could not connect to the server. Check your connection and try again.",
+
+          retry:
+            loadDashboard,
+        }
       );
+
 
       return;
     }
 
 
-    if (error.status === 401) {
+    if (
+      error.status === 401
+    ) {
       window.location.href =
         "login.html?redirect=dashboard.html";
 
+
       return;
     }
 
 
-    container.textContent = "";
+    renderPortalError(
+      container,
+      {
+        title:
+          "Unable to load applications",
 
+        message:
+          error.message ||
+          "Something went wrong while loading your applications.",
 
-    showApplicationAlert(
-      error.message ||
-      "Unable to load your applications.",
-      "error"
+        retry:
+          loadDashboard,
+      }
     );
   }
 }
+
 
 
 /* =========================================================
@@ -1651,6 +2319,115 @@ function detailLabel(key) {
 function renderApplicationDetail(
   application
 ) {
+
+  function formatFileSize(bytes) {
+    const size =
+      Number(bytes);
+
+
+    if (
+      !Number.isFinite(size) ||
+      size <= 0
+    ) {
+      return "Size unavailable";
+    }
+
+
+    if (size < 1024) {
+      return `${size} B`;
+    }
+
+
+    if (size < 1024 * 1024) {
+      return `${(
+        size / 1024
+      ).toFixed(1)} KB`;
+    }
+
+
+    return `${(
+      size /
+      (1024 * 1024)
+    ).toFixed(1)} MB`;
+  }
+
+
+  function getDocumentFileLabel(
+    documentData
+  ) {
+    const mimeType =
+      documentData?.mimeType ||
+      "";
+
+
+    const name =
+      documentData
+        ?.originalName
+        ?.toLowerCase() ||
+      "";
+
+
+    if (
+      mimeType.includes("pdf") ||
+      name.endsWith(".pdf")
+    ) {
+      return "PDF";
+    }
+
+
+    if (
+      mimeType.includes("png") ||
+      name.endsWith(".png")
+    ) {
+      return "PNG";
+    }
+
+
+    if (
+      mimeType.includes("jpeg") ||
+      mimeType.includes("jpg") ||
+      name.endsWith(".jpg") ||
+      name.endsWith(".jpeg")
+    ) {
+      return "JPG";
+    }
+
+
+    return "FILE";
+  }
+
+  function getDocumentTypeLabel(
+    type
+  ) {
+    const labels = {
+      IDENTITY:
+        "Identity Document",
+
+      SUPPORTING:
+        "Supporting Document",
+
+      MEDICAL:
+        "Medical Document",
+
+      EDUCATION:
+        "Education Document",
+
+      INCOME:
+        "Income Document",
+
+      TRAVEL:
+        "Travel Document",
+
+      OTHER:
+        "Other Document",
+    };
+
+
+    return (
+      labels[type] ||
+      "Document"
+    );
+  }
   const root =
     appGetElement(
       "application-detail-root"
@@ -1662,10 +2439,74 @@ function renderApplicationDetail(
   }
 
 
+  const statusHistory =
+    Array.isArray(
+      application.statusHistory
+    )
+      ? [...application.statusHistory]
+      : [];
+
+
+  statusHistory.sort(
+    (a, b) =>
+      new Date(
+        a.createdAt ||
+        a.updatedAt ||
+        0
+      ) -
+      new Date(
+        b.createdAt ||
+        b.updatedAt ||
+        0
+      )
+  );
+
+
   root.className =
     "application-detail-layout";
 
   root.textContent = "";
+
+
+  document
+    .querySelector(
+      ".application-detail-back"
+    )
+    ?.remove();
+
+
+  const backWrapper =
+    document.createElement(
+      "div"
+    );
+
+  backWrapper.className =
+    "application-detail-back";
+
+
+  const backLink =
+    document.createElement(
+      "a"
+    );
+
+  backLink.href =
+    "dashboard.html";
+
+  backLink.className =
+    "application-detail-back__link";
+
+  backLink.textContent =
+    "← Back to dashboard";
+
+
+  backWrapper.append(
+    backLink
+  );
+
+
+  root.before(
+    backWrapper
+  );
 
 
   const card =
@@ -1942,107 +2783,205 @@ function renderApplicationDetail(
       "status-timeline";
 
 
-    application.statusHistory
-      .forEach(
-        (
-          history,
-          index
-        ) => {
-
-          const item =
-            document.createElement(
-              "div"
-            );
+    if (!statusHistory.length) {
+      const empty =
+        document.createElement(
+          "p"
+        );
 
 
-          item.className =
-            "status-timeline__item";
+      empty.className =
+        "status-timeline__empty";
 
 
-          const marker =
-            document.createElement(
-              "div"
-            );
+      empty.textContent =
+        "No status updates are available yet.";
 
 
-          marker.className =
-            "status-timeline__marker";
+      timeline.append(
+        empty
+      );
+    }
 
 
-          marker.textContent =
-            String(
-              index + 1
-            );
+    statusHistory.forEach(
+      (history, index) => {
+
+        const isCurrent =
+          index ===
+          statusHistory.length - 1;
 
 
-          const content =
-            document.createElement(
-              "div"
-            );
+        const item =
+          document.createElement(
+            "article"
+          );
 
 
-          content.className =
-            "status-timeline__content";
+        item.className =
+          `status-timeline__item ${isCurrent
+            ? "is-current"
+            : "is-complete"
+          }`;
 
 
-          const status =
-            document.createElement(
-              "strong"
-            );
+        /* Marker */
+
+        const marker =
+          document.createElement(
+            "div"
+          );
 
 
-          status.textContent =
-            STATUS_NAMES[
-            history.toStatus
-            ] ||
-            history.toStatus;
+        marker.className =
+          "status-timeline__marker";
 
 
+        marker.textContent =
+          isCurrent
+            ? "●"
+            : "✓";
+
+
+        /* Content */
+
+        const content =
+          document.createElement(
+            "div"
+          );
+
+
+        content.className =
+          "status-timeline__content";
+
+
+        const heading =
+          document.createElement(
+            "div"
+          );
+
+
+        heading.className =
+          "status-timeline__heading";
+
+
+        const statusName =
+          document.createElement(
+            "strong"
+          );
+
+
+        statusName.textContent =
+          STATUS_NAMES[
+          history.status
+          ] ||
+          history.status ||
+          "Status update";
+
+
+        const currentBadge =
+          document.createElement(
+            "span"
+          );
+
+
+        if (isCurrent) {
+          currentBadge.className =
+            "status-timeline__current";
+
+          currentBadge.textContent =
+            "Current";
+        }
+
+
+        heading.append(
+          statusName
+        );
+
+
+        if (isCurrent) {
+          heading.append(
+            currentBadge
+          );
+        }
+
+
+        content.append(
+          heading
+        );
+
+
+        /* Optional note */
+
+        if (history.note) {
           const note =
             document.createElement(
               "p"
             );
 
 
+          note.className =
+            "status-timeline__note";
+
+
           note.textContent =
-            history.note ||
-            "Application status updated.";
-
-
-          const date =
-            document.createElement(
-              "span"
-            );
-
-
-          date.className =
-            "status-timeline__date";
-
-
-          date.textContent =
-            formatDate(
-              history.createdAt
-            );
+            history.note;
 
 
           content.append(
-            status,
-            note,
-            date
-          );
-
-
-          item.append(
-            marker,
-            content
-          );
-
-
-          timeline.append(
-            item
+            note
           );
         }
-      );
+
+
+        /* Date */
+
+        const date =
+          document.createElement(
+            "time"
+          );
+
+
+        date.className =
+          "status-timeline__date";
+
+
+        const historyDate =
+          history.createdAt ||
+          history.updatedAt;
+
+
+        date.textContent =
+          historyDate
+            ? formatDate(
+              historyDate
+            )
+            : "Date unavailable";
+
+
+        if (historyDate) {
+          date.dateTime =
+            historyDate;
+        }
+
+
+        content.append(
+          date
+        );
+
+
+        item.append(
+          marker,
+          content
+        );
+
+
+        timeline.append(
+          item
+        );
+
+      }
+    );
 
 
     historySection.append(
@@ -2060,33 +2999,140 @@ function renderApplicationDetail(
    DOCUMENTS
 ========================================================= */
 
-  if (
+  const documentsSection =
+    document.createElement(
+      "section"
+    );
+
+
+  documentsSection.className =
+    "application-detail-section";
+
+
+  const documentsHeader =
+    document.createElement(
+      "div"
+    );
+
+
+  documentsHeader.className =
+    "documents-header";
+
+
+  const documentsHeadingWrapper =
+    document.createElement(
+      "div"
+    );
+
+
+  const documentsHeading =
+    document.createElement(
+      "h2"
+    );
+
+
+  documentsHeading.textContent =
+    "Documents";
+
+
+  const documentsDescription =
+    document.createElement(
+      "p"
+    );
+
+
+  documentsDescription.className =
+    "documents-header__description";
+
+
+  documentsDescription.textContent =
+    "Documents attached to this assistance request.";
+
+
+  documentsHeadingWrapper.append(
+    documentsHeading,
+    documentsDescription
+  );
+
+
+  const documents =
     Array.isArray(
       application.documents
-    ) &&
-    application.documents.length
-  ) {
+    )
+      ? application.documents
+      : [];
 
-    const documentsSection =
+
+  const documentCount =
+    document.createElement(
+      "span"
+    );
+
+
+  documentCount.className =
+    "documents-count";
+
+
+  documentCount.textContent =
+    `${documents.length} ${documents.length === 1
+      ? "file"
+      : "files"
+    }`;
+
+
+  documentsHeader.append(
+    documentsHeadingWrapper,
+    documentCount
+  );
+
+
+  documentsSection.append(
+    documentsHeader
+  );
+
+
+  if (!documents.length) {
+    const empty =
       document.createElement(
-        "section"
+        "div"
       );
 
 
-    documentsSection.className =
-      "application-detail-section";
+    empty.className =
+      "documents-empty";
 
 
-    const documentsHeading =
+    const emptyTitle =
       document.createElement(
-        "h2"
+        "strong"
       );
 
 
-    documentsHeading.textContent =
-      "Documents";
+    emptyTitle.textContent =
+      "No documents attached";
 
 
+    const emptyText =
+      document.createElement(
+        "p"
+      );
+
+
+    emptyText.textContent =
+      "No documents were uploaded with this application.";
+
+
+    empty.append(
+      emptyTitle,
+      emptyText
+    );
+
+
+    documentsSection.append(
+      empty
+    );
+
+  } else {
     const documentList =
       document.createElement(
         "div"
@@ -2097,17 +3143,32 @@ function renderApplicationDetail(
       "document-list";
 
 
-    application.documents.forEach(
+    documents.forEach(
       (documentData) => {
-
         const item =
+          document.createElement(
+            "article"
+          );
+
+
+        item.className =
+          "document-card";
+
+
+        const fileBadge =
           document.createElement(
             "div"
           );
 
 
-        item.className =
-          "document-item";
+        fileBadge.className =
+          "document-card__type";
+
+
+        fileBadge.textContent =
+          getDocumentFileLabel(
+            documentData
+          );
 
 
         const info =
@@ -2116,38 +3177,101 @@ function renderApplicationDetail(
           );
 
 
+        info.className =
+          "document-card__info";
+
+
         const name =
           document.createElement(
-            "div"
+            "strong"
           );
 
 
         name.className =
-          "document-item__name";
+          "document-card__name";
 
 
         name.textContent =
-          documentData.originalName;
+          documentData.originalName ||
+          "Uploaded document";
 
 
-        const type =
+        name.title =
+          documentData.originalName ||
+          "Uploaded document";
+
+
+        const meta =
           document.createElement(
             "div"
           );
 
 
-        type.className =
-          "document-item__type";
+        meta.className =
+          "document-card__meta";
+
+
+        const type =
+          document.createElement(
+            "span"
+          );
 
 
         type.textContent =
-          documentData.type;
+          getDocumentTypeLabel(
+            documentData.type
+          );
+
+
+        const separator =
+          document.createElement(
+            "span"
+          );
+
+
+        separator.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
+
+        separator.textContent =
+          "•";
+
+
+        const size =
+          document.createElement(
+            "span"
+          );
+
+
+        size.textContent =
+          formatFileSize(
+            documentData.size
+          );
+
+
+        meta.append(
+          type,
+          separator,
+          size
+        );
 
 
         info.append(
           name,
-          type
+          meta
         );
+
+
+        const actions =
+          document.createElement(
+            "div"
+          );
+
+
+        actions.className =
+          "document-card__actions";
 
 
         const download =
@@ -2157,7 +3281,7 @@ function renderApplicationDetail(
 
 
         download.className =
-          "btn btn--outline";
+          "btn btn--outline document-download-button";
 
 
         download.href =
@@ -2172,9 +3296,23 @@ function renderApplicationDetail(
           "Download";
 
 
-        item.append(
-          info,
+        download.setAttribute(
+          "aria-label",
+          `Download ${documentData.originalName ||
+          "document"
+          }`
+        );
+
+
+        actions.append(
           download
+        );
+
+
+        item.append(
+          fileBadge,
+          info,
+          actions
         );
 
 
@@ -2186,17 +3324,16 @@ function renderApplicationDetail(
 
 
     documentsSection.append(
-      documentsHeading,
       documentList
-    );
-
-
-    card.append(
-      documentsSection
     );
   }
 
-  
+
+  card.append(
+    documentsSection
+  );
+
+
   /* Sidebar */
 
   const sidebar =
@@ -2231,8 +3368,13 @@ function renderApplicationDetail(
   const statusText =
     document.createElement("p");
 
+
+
   statusText.textContent =
-    "Status updates will appear here as the selected branch reviews your application.";
+    STATUS_DESCRIPTIONS[
+    application.status
+    ] ||
+    "Status updates will appear here.";
 
 
   statusCard.append(
@@ -2240,6 +3382,68 @@ function renderApplicationDetail(
     statusBadge,
     statusText
   );
+
+
+  const latestHistory =
+    statusHistory.length
+      ? statusHistory[
+      statusHistory.length - 1
+      ]
+      : null;
+
+
+  const latestNote =
+    latestHistory?.note ||
+    application.adminNote ||
+    null;
+
+
+  if (latestNote) {
+    const noteBox =
+      document.createElement(
+        "div"
+      );
+
+
+    noteBox.className =
+      "application-latest-note";
+
+
+    const noteLabel =
+      document.createElement(
+        "span"
+      );
+
+
+    noteLabel.className =
+      "application-latest-note__label";
+
+
+    noteLabel.textContent =
+      "Latest update";
+
+
+    const noteText =
+      document.createElement(
+        "p"
+      );
+
+
+    noteText.textContent =
+      latestNote;
+
+
+    noteBox.append(
+      noteLabel,
+      noteText
+    );
+
+
+    statusCard.append(
+      noteBox
+    );
+  }
+
 
 
   const infoCard =
@@ -2265,6 +3469,21 @@ function renderApplicationDetail(
 
   infoGrid.append(
     createDetailField(
+      "Reference",
+      application.referenceNumber
+    ),
+
+
+    createDetailField(
+      "Service",
+      SERVICE_NAMES[
+      application.type
+      ] ||
+      application.type
+    ),
+
+
+    createDetailField(
       "Branch",
       BRANCH_NAMES[
       application.branch
@@ -2272,10 +3491,19 @@ function renderApplicationDetail(
       application.branch
     ),
 
+
     createDetailField(
       "Submitted",
       formatDate(
         application.createdAt
+      )
+    ),
+
+
+    createDetailField(
+      "Last Updated",
+      formatDate(
+        application.updatedAt
       )
     )
   );
@@ -2303,7 +3531,6 @@ function renderApplicationDetail(
 /* =========================================================
    LOAD APPLICATION DETAIL
 ========================================================= */
-
 async function loadApplicationDetail() {
   const root =
     appGetElement(
@@ -2327,11 +3554,17 @@ async function loadApplicationDetail() {
 
 
   if (!id) {
-    root.className =
-      "dashboard-empty";
+    renderPortalError(
+      root,
+      {
+        title:
+          "No application selected",
 
-    root.textContent =
-      "No application was selected.";
+        message:
+          "Please return to your dashboard and select an application to view.",
+      }
+    );
+
 
     return;
   }
@@ -2340,7 +3573,9 @@ async function loadApplicationDetail() {
   try {
     const response =
       await applicationApi(
-        `/applications/${encodeURIComponent(id)}`
+        `/applications/${encodeURIComponent(
+          id
+        )}`
       );
 
 
@@ -2355,59 +3590,123 @@ async function loadApplicationDetail() {
 
   } catch (error) {
 
+    /* Network / server unavailable */
     if (
       error instanceof TypeError
     ) {
-      root.className =
-        "dashboard-empty";
+      renderPortalError(
+        root,
+        {
+          title:
+            "Unable to load application",
 
+          message:
+            "We could not connect to the server. Check your connection and try again.",
 
-      root.textContent =
-        "The backend is not running yet. Application details will appear here after the API is connected.";
-
-
-      showApplicationAlert(
-        "Frontend application detail view is ready. Backend connection will be added in the backend phase.",
-        "info"
+          retry:
+            loadApplicationDetail,
+        }
       );
 
+
       return;
     }
 
 
-    if (error.status === 401) {
+    /* User is not logged in */
+    if (
+      error.status === 401
+    ) {
+      const currentPage =
+        window.location.pathname
+          .split("/")
+          .pop() ||
+        "application.html";
+
+
+      const redirect =
+        currentPage +
+        window.location.search;
+
+
       window.location.href =
-        "login.html";
+        `login.html?redirect=${encodeURIComponent(
+          redirect
+        )}`;
+
 
       return;
     }
 
 
-    if (error.status === 404) {
-      root.className =
-        "dashboard-empty";
+    /* User does not own this application */
+    if (
+      error.status === 403
+    ) {
+      window.location.href =
+        "dashboard.html";
 
-      root.textContent =
-        "This application could not be found.";
 
       return;
     }
 
 
-    showApplicationAlert(
-      error.message ||
-      "Unable to load this application.",
-      "error"
+    /* Application does not exist */
+    if (
+      error.status === 404
+    ) {
+      renderPortalError(
+        root,
+        {
+          title:
+            "Application not found",
+
+          message:
+            "This application may have been removed or the link may be invalid.",
+        }
+      );
+
+
+      return;
+    }
+
+
+    /* Other unexpected API error */
+    renderPortalError(
+      root,
+      {
+        title:
+          "Unable to load application",
+
+        message:
+          error.message ||
+          "Something went wrong while loading this application.",
+
+        retry:
+          loadApplicationDetail,
+      }
     );
   }
 }
 
-
 /* =========================================================
    INITIALIZE
 ========================================================= */
+async function initializeApplicationPortal() {
+  const user =
+    await requireUserSession();
 
-function initializeApplicationPortal() {
+
+  if (!user) {
+    return;
+  }
+
+
+  updateDashboardUser(
+    user
+  );
+
+
   initializeServiceSelection();
 
   initializeFileInputs();
@@ -2417,6 +3716,9 @@ function initializeApplicationPortal() {
   initializeApplicationForm();
 
   initializeDashboardLogout();
+
+  initializeDashboardFilters();
+
 
   loadDashboard();
 

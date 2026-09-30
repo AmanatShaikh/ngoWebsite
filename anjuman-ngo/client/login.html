@@ -2,126 +2,169 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
+
+  <meta charset="UTF-8" />
 
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
-  >
+  />
 
   <meta
     name="description"
-    content="Login to the Anjuman Bashindgan-E-Bihar assistance portal."
-  >
+    content="Sign in to your Anjuman Bashindgan-E-Bihar account to manage assistance applications."
+  />
+
+  <meta
+    name="theme-color"
+    content="#0b2748"
+  />
 
   <title>
     Login | Anjuman Bashindgan-E-Bihar
   </title>
 
-
   <link
     rel="stylesheet"
     href="./css/main.css"
-  >
+  />
 
   <link
     rel="stylesheet"
     href="./css/auth.css"
-  >
+  />
+
 </head>
 
 
 <body>
-
-  <a
-    class="skip-link"
-    href="#main-content"
-  >
-    Skip to main content
-  </a>
-
 
   <div id="site-header"></div>
 
 
   <main
     id="main-content"
-    class="auth-page"
+    class="page-main"
   >
 
-    <div class="auth-layout">
+    <section class="auth-page">
+
+      <div class="auth-container">
 
 
-      <!-- =================================================
-           LEFT SIDE
-      ================================================== -->
+        <!-- ================================================
+             LEFT PANEL
+        ================================================= -->
 
-      <section class="auth-side-panel">
+        <aside class="auth-info">
 
-        <div class="auth-side-panel__content">
-
-          <a
-            href="./index.html"
-            class="auth-brand"
-            aria-label="Anjuman Bashindgan-E-Bihar home"
-          >
+          <div class="auth-info__brand">
 
             <img
               src="./assets/images/branding/logo.png"
-              alt="Anjuman Bashindgan-E-Bihar logo"
-              class="auth-brand__logo"
-            >
+              alt=""
+              class="auth-info__logo"
+              width="64"
+              height="64"
+            />
 
             <div>
-              <span class="auth-brand__name">
-                Anjuman Bashindgan-E-Bihar
-              </span>
 
-              <span class="auth-brand__location">
+              <div class="auth-info__organization">
+                Anjuman Bashindgan-E-Bihar
+              </div>
+
+              <div class="auth-info__location">
                 Nagpada • Dharavi • Mumbai
-              </span>
+              </div>
+
             </div>
 
-          </a>
+          </div>
 
 
-          <div class="auth-side-panel__body">
+          <div class="auth-info__content">
 
-            <span class="section-eyebrow">
-              Assistance Portal
+            <span class="auth-info__eyebrow">
+              Applicant Portal
             </span>
 
-            <h1>
-              Welcome back
+            <h1 class="auth-info__title">
+              Welcome back to your assistance account.
             </h1>
 
-            <p>
-              Sign in to manage your assistance applications,
-              view updates and access your account.
+            <p class="auth-info__description">
+              Sign in to manage your applications,
+              review their current status and continue
+              using community assistance services.
             </p>
 
+          </div>
 
-            <div class="auth-branch-list">
 
-              <div class="auth-branch-item">
+          <div class="auth-benefits">
+
+            <div class="auth-benefit">
+
+              <span class="auth-benefit__icon">
+                01
+              </span>
+
+              <div>
+
                 <strong>
-                  Nagpada Head Office
+                  Track applications
                 </strong>
 
-                <span>
-                  Medical, education, livelihood and travel assistance
-                </span>
+                <p>
+                  View every assistance request submitted
+                  from your account.
+                </p>
+
               </div>
 
+            </div>
 
-              <div class="auth-branch-item">
+
+            <div class="auth-benefit">
+
+              <span class="auth-benefit__icon">
+                02
+              </span>
+
+              <div>
+
                 <strong>
-                  Dharavi Branch
+                  Follow status updates
                 </strong>
 
-                <span>
-                  Community assistance and application support
-                </span>
+                <p>
+                  See when your application moves from
+                  pending to review, approval or completion.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="auth-benefit">
+
+              <span class="auth-benefit__icon">
+                03
+              </span>
+
+              <div>
+
+                <strong>
+                  Secure access
+                </strong>
+
+                <p>
+                  Your account is protected using secure
+                  server-side authentication.
+                </p>
+
               </div>
 
             </div>
@@ -129,238 +172,211 @@
           </div>
 
 
-          <div class="auth-side-panel__footer">
-            <p>
-              Your account helps you securely track the
-              status of your submitted requests.
-            </p>
-          </div>
+          <div class="auth-info__branches">
 
-        </div>
-
-      </section>
-
-
-      <!-- =================================================
-           LOGIN FORM
-      ================================================== -->
-
-      <section class="auth-form-panel">
-
-        <div class="auth-form-wrapper">
-
-
-          <div class="auth-form-header">
-
-            <span class="section-eyebrow">
-              Account Login
+            <span class="auth-branch">
+              Nagpada Head Office
             </span>
 
-            <h2>
-              Sign in to your account
-            </h2>
-
-            <p>
-              Use your username or registered email address.
-            </p>
+            <span class="auth-branch">
+              Dharavi Branch
+            </span>
 
           </div>
 
-
-          <div
-            id="auth-alert"
-            class="auth-alert"
-            role="alert"
-            aria-live="polite"
-          ></div>
+        </aside>
 
 
-          <form
-            id="login-form"
-            class="auth-form"
-            novalidate
-          >
+        <!-- ================================================
+             LOGIN FORM
+        ================================================= -->
+
+        <div class="auth-panel">
+
+          <div class="auth-form-wrap">
+
+            <header class="auth-heading">
+
+              <span class="auth-heading__eyebrow">
+                Account Login
+              </span>
+
+              <h1>
+                Sign in to your account
+              </h1>
+
+              <p>
+                Enter your username or registered email
+                address and password.
+              </p>
+
+            </header>
 
 
-            <!-- ===========================================
-                 USERNAME / EMAIL
-            ============================================ -->
-
-            <div class="auth-field">
-
-              <label
-                for="login-identifier"
-                class="auth-label"
-              >
-                Username or Email
-              </label>
+            <div
+              id="auth-alert"
+              class="auth-alert"
+              role="alert"
+              aria-live="polite"
+            ></div>
 
 
-              <input
-                type="text"
-                id="login-identifier"
-                name="identifier"
-                class="auth-control"
-                placeholder="Enter username or email"
-                autocomplete="username"
-                maxlength="150"
-                required
-              >
+            <form
+              id="login-form"
+              class="auth-form"
+              novalidate
+            >
 
 
-              <p
-                id="login-identifier-error"
-                class="auth-field-error"
-              ></p>
+              <div class="auth-field">
 
-            </div>
+                <label
+                  for="login-identifier"
+                  class="auth-label"
+                >
+                  Username or email
+                  <span class="auth-required">
+                    *
+                  </span>
+                </label>
 
 
-            <!-- ===========================================
-                 PASSWORD
-            ============================================ -->
+                <input
+                  type="text"
+                  id="login-identifier"
+                  name="identifier"
+                  class="auth-input"
+                  placeholder="Username or email address"
+                  autocomplete="username"
+                  maxlength="150"
+                  required
+                  aria-describedby="login-identifier-error"
+                />
 
-            <div class="auth-field">
 
-              <div class="auth-label-row">
+                <p
+                  id="login-identifier-error"
+                  class="auth-field-error"
+                ></p>
+
+              </div>
+
+
+              <div class="auth-field">
 
                 <label
                   for="login-password"
                   class="auth-label"
                 >
                   Password
+                  <span class="auth-required">
+                    *
+                  </span>
+                </label>
+
+
+                <div class="auth-input-wrap">
+
+                  <input
+                    type="password"
+                    id="login-password"
+                    name="password"
+                    class="auth-input auth-input--password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    maxlength="128"
+                    required
+                    aria-describedby="login-password-error"
+                  />
+
+
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    data-password-toggle="login-password"
+                    aria-label="Show password"
+                  >
+                    Show
+                  </button>
+
+                </div>
+
+
+                <p
+                  id="login-password-error"
+                  class="auth-field-error"
+                ></p>
+
+              </div>
+
+
+              <div class="auth-options">
+
+                <label class="auth-checkbox">
+
+                  <input
+                    type="checkbox"
+                    id="login-remember"
+                    name="remember"
+                  />
+
+                  <span>
+                    Keep me signed in
+                  </span>
+
                 </label>
 
               </div>
 
 
-              <div class="auth-password">
+              <button
+                type="submit"
+                id="login-submit"
+                class="btn btn--primary btn--full auth-submit"
+              >
 
-                <input
-                  type="password"
-                  id="login-password"
-                  name="password"
-                  class="auth-control auth-password__input"
-                  placeholder="Enter your password"
-                  autocomplete="current-password"
-                  maxlength="128"
-                  required
-                >
+                <span class="auth-submit__loader"></span>
 
-
-                <button
-                  type="button"
-                  class="auth-password__toggle"
-                  data-password-toggle="login-password"
-                  aria-label="Show password"
-                >
-                  Show
-                </button>
-
-              </div>
-
-
-              <p
-                id="login-password-error"
-                class="auth-field-error"
-              ></p>
-
-            </div>
-
-
-            <!-- ===========================================
-                 REMEMBER
-            ============================================ -->
-
-            <div class="auth-options">
-
-              <label class="auth-checkbox">
-
-                <input
-                  type="checkbox"
-                  id="login-remember"
-                  name="remember"
-                >
-
-                <span>
-                  Keep me signed in
+                <span class="auth-submit__text">
+                  Sign In
                 </span>
 
-              </label>
+              </button>
+
+            </form>
+
+
+            <div class="auth-switch">
+
+              <p>
+                Don't have an account?
+
+                <a href="signup.html">
+                  Create an account
+                </a>
+              </p>
 
             </div>
 
 
-            <!-- ===========================================
-                 SUBMIT
-            ============================================ -->
-
-            <button
-              type="submit"
-              id="login-submit"
-              class="btn btn--primary auth-submit"
-            >
-              <span class="auth-submit__text">
-                Sign In
-              </span>
-
-              <span
-                class="auth-submit__loading"
-                aria-hidden="true"
-              >
-                Signing in...
-              </span>
-            </button>
-
-
-          </form>
-
-
-          <!-- =================================================
-               REGISTER
-          ================================================== -->
-
-          <div class="auth-form-footer">
-
-            <p>
-              Don't have an account?
-              <a href="./signup.html">
-                Create an account
-              </a>
+            <p class="auth-privacy-note">
+              Your password is verified securely on the
+              server and is never stored as readable plain
+              text.
             </p>
 
           </div>
-
-
-          <div class="auth-security-note">
-
-            <strong>
-              Secure account access
-            </strong>
-
-            <p>
-              Your password is transmitted to the secure
-              server and is never stored in plain text.
-            </p>
-
-          </div>
-
-
-          <a
-            href="./index.html"
-            class="auth-back-link"
-          >
-            ← Back to website
-          </a>
-
 
         </div>
 
-      </section>
+      </div>
 
-    </div>
+    </section>
 
   </main>
+
+
+  <div id="site-footer"></div>
 
 
   <script

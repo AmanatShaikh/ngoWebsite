@@ -302,29 +302,6 @@ app.get(
 );
 
 
-/* =========================================================
-   API ROUTES
-========================================================= */
-
-app.use(
-  "/api/auth",
-  authRoutes
-);
-
-
-app.use(
-  "/api/applications",
-  applicationRoutes
-);
-
-
-app.use(
-  "/api/donations",
-  donationRoutes
-);
-
-
-
 
 /* =========================================================
    API ROUTES

@@ -162,29 +162,11 @@ export async function getAdminOverview(
   try {
     const [
       totalApplications,
-
-      pendingApplications,
-
+      applicationStatusGroups,
       totalUsers,
-
       verifiedDonationAggregate,
-
-      nagpadaTotal,
-
-      nagpadaPending,
-
-      nagpadaReview,
-
-      nagpadaApproved,
-
-      dharaviTotal,
-
-      dharaviPending,
-
-      dharaviReview,
-
-      dharaviApproved,
-
+      verifiedDonationCount,
+      branchStatusGroups,
       recentApplications,
     ] =
       await Promise.all([
@@ -194,17 +176,21 @@ export async function getAdminOverview(
         prisma.application.count(),
 
 
-        /* Pending applications */
+        /* Application counts by status */
 
-        prisma.application.count({
-          where: {
-            status:
-              "PENDING",
+        prisma.application.groupBy({
+          by: [
+            "status",
+          ],
+
+          _count: {
+            _all:
+              true,
           },
         }),
 
 
-        /* Users */
+        /* Normal users */
 
         prisma.user.count({
           where: {
@@ -214,7 +200,7 @@ export async function getAdminOverview(
         }),
 
 
-        /* Verified donation total */
+        /* Verified donation amount */
 
         prisma.donation.aggregate({
           where: {
@@ -229,87 +215,32 @@ export async function getAdminOverview(
         }),
 
 
-        /* Nagpada */
+        /* Verified donation count */
 
-        prisma.application.count({
+        prisma.donation.count({
           where: {
-            branch:
-              "NAGPADA",
-          },
-        }),
-
-        prisma.application.count({
-          where: {
-            branch:
-              "NAGPADA",
-
             status:
-              "PENDING",
-          },
-        }),
-
-        prisma.application.count({
-          where: {
-            branch:
-              "NAGPADA",
-
-            status:
-              "UNDER_REVIEW",
-          },
-        }),
-
-        prisma.application.count({
-          where: {
-            branch:
-              "NAGPADA",
-
-            status:
-              "APPROVED",
+              "VERIFIED",
           },
         }),
 
 
-        /* Dharavi */
+        /* Branch + status counts */
 
-        prisma.application.count({
-          where: {
-            branch:
-              "DHARAVI",
-          },
-        }),
+        prisma.application.groupBy({
+          by: [
+            "branch",
+            "status",
+          ],
 
-        prisma.application.count({
-          where: {
-            branch:
-              "DHARAVI",
-
-            status:
-              "PENDING",
-          },
-        }),
-
-        prisma.application.count({
-          where: {
-            branch:
-              "DHARAVI",
-
-            status:
-              "UNDER_REVIEW",
-          },
-        }),
-
-        prisma.application.count({
-          where: {
-            branch:
-              "DHARAVI",
-
-            status:
-              "APPROVED",
+          _count: {
+            _all:
+              true,
           },
         }),
 
 
-        /* Recent */
+        /* Recent applications */
 
         prisma.application.findMany({
           orderBy: {
@@ -347,6 +278,102 @@ export async function getAdminOverview(
       ]);
 
 
+    function getStatusCount(
+      status
+    ) {
+      return (
+        applicationStatusGroups
+          .find(
+            (item) =>
+              item.status ===
+              status
+          )
+          ?._count
+          ?._all ||
+        0
+      );
+    }
+
+
+    function getBranchStatusCount(
+      branch,
+      status
+    ) {
+      return (
+        branchStatusGroups
+          .find(
+            (item) =>
+              item.branch ===
+              branch &&
+              item.status ===
+              status
+          )
+          ?._count
+          ?._all ||
+        0
+      );
+    }
+
+
+    function buildBranchOverview(
+      branch
+    ) {
+      const pending =
+        getBranchStatusCount(
+          branch,
+          "PENDING"
+        );
+
+
+      const underReview =
+        getBranchStatusCount(
+          branch,
+          "UNDER_REVIEW"
+        );
+
+
+      const approved =
+        getBranchStatusCount(
+          branch,
+          "APPROVED"
+        );
+
+
+      const completed =
+        getBranchStatusCount(
+          branch,
+          "COMPLETED"
+        );
+
+
+      const rejected =
+        getBranchStatusCount(
+          branch,
+          "REJECTED"
+        );
+
+
+      return {
+        total:
+          pending +
+          underReview +
+          approved +
+          completed +
+          rejected,
+
+        pending,
+
+        underReview,
+
+        approved,
+
+        completed,
+
+        rejected,
+      };
+    }
+
+
     const donationTotal =
       decimalToNumber(
         verifiedDonationAggregate
@@ -355,64 +382,68 @@ export async function getAdminOverview(
       );
 
 
+    const applications = {
+      total:
+        totalApplications,
+
+      pending:
+        getStatusCount(
+          "PENDING"
+        ),
+
+      underReview:
+        getStatusCount(
+          "UNDER_REVIEW"
+        ),
+
+      approved:
+        getStatusCount(
+          "APPROVED"
+        ),
+
+      completed:
+        getStatusCount(
+          "COMPLETED"
+        ),
+
+      rejected:
+        getStatusCount(
+          "REJECTED"
+        ),
+    };
+
+
     return res.json({
       success:
         true,
 
       overview: {
 
-        applications: {
-          total:
-            totalApplications,
+        applications,
 
-          pending:
-            pendingApplications,
+        users: {
+          total:
+            totalUsers,
         },
 
-        totalApplications,
-
-        pendingApplications,
-
-        totalUsers,
-
-        donationTotal,
-
         donations: {
+          verifiedCount:
+            verifiedDonationCount,
+
           totalAmount:
             donationTotal,
         },
 
         branches: {
+          NAGPADA:
+            buildBranchOverview(
+              "NAGPADA"
+            ),
 
-          NAGPADA: {
-            total:
-              nagpadaTotal,
-
-            pending:
-              nagpadaPending,
-
-            underReview:
-              nagpadaReview,
-
-            approved:
-              nagpadaApproved,
-          },
-
-
-          DHARAVI: {
-            total:
-              dharaviTotal,
-
-            pending:
-              dharaviPending,
-
-            underReview:
-              dharaviReview,
-
-            approved:
-              dharaviApproved,
-          },
-
+          DHARAVI:
+            buildBranchOverview(
+              "DHARAVI"
+            ),
         },
 
         recentApplications,
@@ -423,7 +454,6 @@ export async function getAdminOverview(
     next(error);
   }
 }
-
 
 /* =========================================================
    ADMIN APPLICATIONS
@@ -1057,45 +1087,45 @@ export async function getAdminUsers(
     const where =
       search
         ? {
-            OR: [
-              {
-                name: {
-                  contains:
-                    search,
+          OR: [
+            {
+              name: {
+                contains:
+                  search,
 
-                  mode:
-                    "insensitive",
-                },
+                mode:
+                  "insensitive",
               },
+            },
 
-              {
-                username: {
-                  contains:
-                    search,
+            {
+              username: {
+                contains:
+                  search,
 
-                  mode:
-                    "insensitive",
-                },
+                mode:
+                  "insensitive",
               },
+            },
 
-              {
-                email: {
-                  contains:
-                    search,
+            {
+              email: {
+                contains:
+                  search,
 
-                  mode:
-                    "insensitive",
-                },
+                mode:
+                  "insensitive",
               },
+            },
 
-              {
-                phone: {
-                  contains:
-                    search,
-                },
+            {
+              phone: {
+                contains:
+                  search,
               },
-            ],
-          }
+            },
+          ],
+        }
         : {};
 
 
@@ -1389,9 +1419,9 @@ export async function updateUpiDonationStatus(
 
     if (
       donation.status !==
-        "PENDING" &&
+      "PENDING" &&
       donation.status !==
-        "FAILED"
+      "FAILED"
     ) {
       return res
         .status(409)
@@ -1424,7 +1454,7 @@ export async function updateUpiDonationStatus(
 
       message:
         updated.status ===
-        "VERIFIED"
+          "VERIFIED"
           ? "UPI donation marked as verified."
           : "UPI donation marked as failed.",
 

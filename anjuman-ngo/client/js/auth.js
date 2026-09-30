@@ -24,6 +24,81 @@ const AUTH_API_BASE_URL = "/api";
    ELEMENT HELPERS
 ========================================================= */
 
+
+function getSafeRedirectTarget() {
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const redirect =
+    params.get("redirect");
+
+
+  if (!redirect) {
+    return null;
+  }
+
+
+  try {
+    const target =
+      new URL(
+        redirect,
+        window.location.origin
+      );
+
+
+    /*
+      Only allow redirects
+      back to our own website.
+    */
+    if (
+      target.origin !==
+      window.location.origin
+    ) {
+      return null;
+    }
+
+
+    return (
+      target.pathname +
+      target.search +
+      target.hash
+    );
+
+  } catch {
+    return null;
+  }
+}
+
+
+
+function redirectAfterLogin(user) {
+  const redirect =
+    getSafeRedirectTarget();
+
+  if (redirect) {
+    window.location.href =
+      redirect;
+
+    return;
+  }
+
+  if (user?.role === "ADMIN") {
+    window.location.href =
+      "admin.html";
+
+    return;
+  }
+
+  window.location.href =
+    "dashboard.html";
+}
+
+
+
+
+
 function getElement(id) {
   return document.getElementById(id);
 }
@@ -279,6 +354,63 @@ function setSubmitLoading(
   );
 }
 
+// -------------------------------------------------------------
+
+async function redirectAuthenticatedUser() {
+  const page =
+    window.location.pathname
+      .split("/")
+      .pop();
+
+  if (
+    page !== "login.html" &&
+    page !== "signup.html"
+  ) {
+    return;
+  }
+
+  try {
+    const response =
+      await fetch(
+        "/api/auth/me",
+        {
+          credentials: "include",
+
+          headers: {
+            Accept:
+              "application/json",
+          },
+        }
+      );
+
+    if (!response.ok) {
+      return;
+    }
+
+    const data =
+      await response.json();
+
+    const user =
+      data?.user;
+
+    if (!user) {
+      return;
+    }
+
+    if (user.role === "ADMIN") {
+      window.location.href =
+        "admin.html";
+
+      return;
+    }
+
+    window.location.href =
+      "dashboard.html";
+
+  } catch {
+    // User is not authenticated.
+  }
+}
 
 /* =========================================================
    API REQUEST
@@ -494,28 +626,19 @@ function initializeLoginForm() {
 
 
         showAuthAlert(
-          "Login successful. Redirecting to your dashboard...",
+          "Login successful. Redirecting...",
           "success"
         );
 
 
-        window.setTimeout(() => {
-          const role =
-            response?.user?.role;
-
-
-          if (role === "ADMIN") {
-            window.location.href =
-              "admin.html";
-
-            return;
-          }
-
-
-          window.location.href =
-            "dashboard.html";
-
-        }, 600);
+        window.setTimeout(
+          () => {
+            redirectAfterLogin(
+              response?.user
+            );
+          },
+          600
+        );
 
       } catch (error) {
 
@@ -1012,12 +1135,13 @@ function initializeLiveErrorClearing() {
   });
 }
 
-
 /* =========================================================
    INITIALIZE
 ========================================================= */
 
 function initializeAuth() {
+  redirectAuthenticatedUser();
+
   initializePasswordToggles();
 
   initializePasswordStrength();
