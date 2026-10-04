@@ -549,13 +549,80 @@
                 </h2>
 
                 <p>
-                  Review UPI and Razorpay donation transactions,
-                  payment methods and verification status.
+                  Review UPI and Razorpay donations,
+                  payment references and verification status.
                 </p>
 
               </div>
 
             </header>
+
+
+            <div class="admin-filters admin-donation-filters">
+
+              <input type="search" id="admin-donation-search" class="admin-filter-control"
+                placeholder="Search donor, email, phone or reference..." aria-label="Search donations"
+                autocomplete="off" />
+
+
+              <select id="admin-donation-method-filter" class="admin-filter-control"
+                aria-label="Filter by payment method">
+
+                <option value="">
+                  All methods
+                </option>
+
+                <option value="UPI">
+                  UPI
+                </option>
+
+                <option value="RAZORPAY">
+                  Razorpay
+                </option>
+
+              </select>
+
+
+              <select id="admin-donation-status-filter" class="admin-filter-control"
+                aria-label="Filter by donation status">
+
+                <option value="">
+                  All statuses
+                </option>
+
+                <option value="PENDING">
+                  Pending
+                </option>
+
+                <option value="VERIFIED">
+                  Verified
+                </option>
+
+                <option value="FAILED">
+                  Failed
+                </option>
+
+                <option value="REFUNDED">
+                  Refunded
+                </option>
+
+              </select>
+
+
+              <button type="button" id="admin-donation-clear-filters" class="btn btn--outline admin-filter-clear">
+                Clear
+              </button>
+
+            </div>
+
+
+            <div class="admin-filter-summary">
+
+              <span id="admin-donation-filter-count">
+                0 donations
+              </span>
+
+            </div>
 
 
             <div class="admin-table-card">
@@ -567,7 +634,6 @@
             </div>
 
           </section>
-
 
         </div>
 

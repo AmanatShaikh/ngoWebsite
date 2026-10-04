@@ -10,6 +10,7 @@ import {
   getAdminDonations,
   getAdminOverview,
   getAdminUsers,
+  updateAdminUserStatus,
   updateApplicationStatus,
   updateUpiDonationStatus,
 } from "../controllers/admin.controller.js";
@@ -95,7 +96,10 @@ router.get(
   getAdminUsers
 );
 
-
+router.patch(
+  "/users/:id/status",
+  updateAdminUserStatus
+);
 /* =========================================================
    DONATIONS
 ========================================================= */

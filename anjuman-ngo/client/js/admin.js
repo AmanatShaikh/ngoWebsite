@@ -62,6 +62,25 @@ const ADMIN_STATUS_NAMES = {
     "Completed",
 };
 
+const ADMIN_STATUS_TRANSITIONS = {
+  PENDING: [
+    "UNDER_REVIEW",
+    "REJECTED",
+  ],
+
+  UNDER_REVIEW: [
+    "APPROVED",
+    "REJECTED",
+  ],
+
+  APPROVED: [
+    "COMPLETED",
+  ],
+
+  REJECTED: [],
+
+  COMPLETED: [],
+};
 
 /* =========================================================
    BASIC HELPERS
@@ -483,6 +502,111 @@ function createAdminStatusBadge(
 /* =========================================================
    EMPTY STATE
 ========================================================= */
+
+
+function renderAdminLoading(
+  root,
+  message = "Loading..."
+) {
+  if (!root) {
+    return;
+  }
+
+  root.className =
+    "admin-state admin-state--loading";
+
+  root.textContent = "";
+
+  const text =
+    document.createElement(
+      "p"
+    );
+
+  text.textContent =
+    message;
+
+  root.append(text);
+}
+
+
+function renderAdminError(
+  root,
+  {
+    title =
+    "Something went wrong",
+
+    message =
+    "Unable to load this information.",
+
+    retry = null,
+  } = {}
+) {
+  if (!root) {
+    return;
+  }
+
+  root.className =
+    "admin-state admin-state--error";
+
+  root.textContent = "";
+
+  const heading =
+    document.createElement(
+      "strong"
+    );
+
+  heading.className =
+    "admin-state__title";
+
+  heading.textContent =
+    title;
+
+
+  const description =
+    document.createElement(
+      "p"
+    );
+
+  description.className =
+    "admin-state__message";
+
+  description.textContent =
+    message;
+
+
+  root.append(
+    heading,
+    description
+  );
+
+
+  if (
+    typeof retry ===
+    "function"
+  ) {
+    const button =
+      document.createElement(
+        "button"
+      );
+
+    button.type =
+      "button";
+
+    button.className =
+      "btn btn--outline admin-state__action";
+
+    button.textContent =
+      "Try Again";
+
+    button.addEventListener(
+      "click",
+      retry
+    );
+
+    root.append(button);
+  }
+}
+
 
 function renderAdminEmpty(
   container,
@@ -976,7 +1100,7 @@ function createApplicationTableRow(
 
   serviceName.textContent =
     ADMIN_SERVICE_NAMES[
-      application.type
+    application.type
     ] ||
     adminText(
       application.type
@@ -1000,7 +1124,7 @@ function createApplicationTableRow(
 
   branchCell.textContent =
     ADMIN_BRANCH_NAMES[
-      application.branch
+    application.branch
     ] ||
     adminText(
       application.branch
@@ -1063,8 +1187,8 @@ function createApplicationTableRow(
   updated.textContent =
     application.updatedAt
       ? `Updated ${adminFormatDate(
-          application.updatedAt
-        )}`
+        application.updatedAt
+      )}`
       : "Not updated";
 
 
@@ -1108,10 +1232,9 @@ function createApplicationTableRow(
 
   button.setAttribute(
     "aria-label",
-    `Review application ${
-      application.referenceNumber ||
-      application.id ||
-      ""
+    `Review application ${application.referenceNumber ||
+    application.id ||
+    ""
     }`
   );
 
@@ -1149,143 +1272,7 @@ function createApplicationTableRow(
    APPLICATION TABLE ROW
 ========================================================= */
 
-function createApplicationTableRow(
-  application
-) {
-  const row =
-    document.createElement("tr");
 
-
-  const applicantCell =
-    document.createElement("td");
-
-
-  const applicantName =
-    document.createElement("span");
-
-
-  applicantName.className =
-    "admin-table__primary";
-
-
-  applicantName.textContent =
-    adminText(
-      application.applicantName
-    );
-
-
-  const reference =
-    document.createElement("span");
-
-
-  reference.className =
-    "admin-table__secondary";
-
-
-  reference.textContent =
-    application.referenceNumber ||
-    application.id ||
-    "—";
-
-
-  applicantCell.append(
-    applicantName,
-    reference
-  );
-
-
-  const serviceCell =
-    document.createElement("td");
-
-
-  serviceCell.textContent =
-    ADMIN_SERVICE_NAMES[
-    application.type
-    ] ||
-    adminText(
-      application.type
-    );
-
-
-  const branchCell =
-    document.createElement("td");
-
-
-  branchCell.textContent =
-    ADMIN_BRANCH_NAMES[
-    application.branch
-    ] ||
-    adminText(
-      application.branch
-    );
-
-
-  const statusCell =
-    document.createElement("td");
-
-
-  statusCell.append(
-    createAdminStatusBadge(
-      application.status
-    )
-  );
-
-
-  const dateCell =
-    document.createElement("td");
-
-
-  dateCell.textContent =
-    adminFormatDate(
-      application.createdAt
-    );
-
-
-  const actionCell =
-    document.createElement("td");
-
-
-  const button =
-    document.createElement("button");
-
-
-  button.type =
-    "button";
-
-
-  button.className =
-    "admin-table__action";
-
-
-  button.textContent =
-    "Review";
-
-
-  button.addEventListener(
-    "click",
-    () => {
-      openAdminApplication(
-        application.id
-      );
-    }
-  );
-
-
-  actionCell.append(button);
-
-
-  row.append(
-    applicantCell,
-    serviceCell,
-    branchCell,
-    statusCell,
-    dateCell,
-    actionCell
-  );
-
-
-  return row;
-}
 
 
 /* =========================================================
@@ -1365,12 +1352,10 @@ async function loadAdminApplications() {
   }
 
 
-  root.className =
-    "admin-loading";
-
-
-  root.textContent =
-    "Loading applications...";
+  renderAdminLoading(
+    root,
+    "Loading applications..."
+  );
 
 
   try {
@@ -1383,7 +1368,8 @@ async function loadAdminApplications() {
     const applications =
       Array.isArray(response)
         ? response
-        : response?.applications || [];
+        : response?.applications ||
+          [];
 
 
     renderAdminApplications(
@@ -1392,47 +1378,48 @@ async function loadAdminApplications() {
 
   } catch (error) {
 
+    updateAdminApplicationCount(
+      0
+    );
+
+
     if (
       error instanceof TypeError
     ) {
-      renderAdminEmpty(
+      renderAdminError(
         root,
-        "Unable to load applications",
-        "We could not connect to the server. Please refresh and try again."
+        {
+          title:
+            "Unable to load applications",
+
+          message:
+            "We could not connect to the server. Check your connection and try again.",
+
+          retry:
+            loadAdminApplications,
+        }
       );
 
       return;
     }
 
 
-    if (
-      error.status === 401
-    ) {
-      window.location.href =
-        "login.html?redirect=admin.html";
-
-      return;
-    }
-
-
-    if (
-      error.status === 403
-    ) {
-      window.location.href =
-        "dashboard.html";
-
-      return;
-    }
-
-
-    renderAdminEmpty(
+    renderAdminError(
       root,
-      "Unable to load applications",
-      error.message
+      {
+        title:
+          "Unable to load applications",
+
+        message:
+          error.message ||
+          "Something went wrong while loading applications.",
+
+        retry:
+          loadAdminApplications,
+      }
     );
   }
 }
-
 
 function updateAdminApplicationCount(
   count
@@ -1521,7 +1508,75 @@ function renderAdminApplications(
   root.append(wrapper);
 }
 
+function renderRecentApplications(
+  applications
+) {
+  const root =
+    adminGet(
+      "admin-recent-applications"
+    );
 
+
+  if (!root) {
+    return;
+  }
+
+
+  if (
+    !Array.isArray(
+      applications
+    ) ||
+    !applications.length
+  ) {
+    renderAdminEmpty(
+      root,
+      "No recent applications",
+      "New assistance applications will appear here."
+    );
+
+    return;
+  }
+
+
+  root.className =
+    "";
+
+
+  root.textContent =
+    "";
+
+
+  const {
+    wrapper,
+    tbody,
+  } =
+    createAdminTable([
+      "Applicant",
+      "Service",
+      "Branch",
+      "Status",
+      "Dates",
+      "Action",
+    ]);
+
+
+  applications.forEach(
+    (application) => {
+
+      tbody.append(
+        createApplicationTableRow(
+          application
+        )
+      );
+
+    }
+  );
+
+
+  root.append(
+    wrapper
+  );
+}
 
 
 /* =========================================================
@@ -1550,7 +1605,7 @@ function initializeApplicationFilters() {
 
 
 
-    
+
   const status =
     adminGet(
       "admin-status-filter"
@@ -1823,6 +1878,121 @@ function createAdminDetailField(
   return wrapper;
 }
 
+function adminFormatFileSize(
+  bytes
+) {
+  const size =
+    Number(bytes);
+
+
+  if (
+    !Number.isFinite(size) ||
+    size <= 0
+  ) {
+    return "Size unavailable";
+  }
+
+
+  if (size < 1024) {
+    return `${size} B`;
+  }
+
+
+  if (
+    size <
+    1024 * 1024
+  ) {
+    return `${(
+      size / 1024
+    ).toFixed(1)} KB`;
+  }
+
+
+  return `${(
+    size /
+    (1024 * 1024)
+  ).toFixed(1)} MB`;
+}
+
+
+function getAdminDocumentFileLabel(
+  documentData
+) {
+  const mimeType =
+    documentData?.mimeType ||
+    "";
+
+
+  const fileName =
+    documentData
+      ?.originalName
+      ?.toLowerCase() ||
+    "";
+
+
+  if (
+    mimeType.includes("pdf") ||
+    fileName.endsWith(".pdf")
+  ) {
+    return "PDF";
+  }
+
+
+  if (
+    mimeType.includes("png") ||
+    fileName.endsWith(".png")
+  ) {
+    return "PNG";
+  }
+
+
+  if (
+    mimeType.includes("jpeg") ||
+    mimeType.includes("jpg") ||
+    fileName.endsWith(".jpg") ||
+    fileName.endsWith(".jpeg")
+  ) {
+    return "JPG";
+  }
+
+
+  return "FILE";
+}
+
+
+function getAdminDocumentTypeLabel(
+  type
+) {
+  const labels = {
+    IDENTITY:
+      "Identity Document",
+
+    SUPPORTING:
+      "Supporting Document",
+
+    MEDICAL:
+      "Medical Document",
+
+    EDUCATION:
+      "Education Document",
+
+    INCOME:
+      "Income Document",
+
+    TRAVEL:
+      "Travel Document",
+
+    OTHER:
+      "Other Document",
+  };
+
+
+  return (
+    labels[type] ||
+    "Document"
+  );
+}
+
 
 /* =========================================================
    APPLICATION DETAILS
@@ -1847,21 +2017,21 @@ async function openAdminApplication(
   }
 
 
-  body.className =
-    "admin-drawer__body admin-loading";
-
-
-  body.textContent =
-    "Loading application...";
-
-
   openAdminDrawer();
+
+
+  renderAdminLoading(
+    body,
+    "Loading application details..."
+  );
 
 
   try {
     const response =
       await adminApi(
-        `/admin/applications/${encodeURIComponent(id)}`
+        `/admin/applications/${encodeURIComponent(
+          id
+        )}`
       );
 
 
@@ -1876,27 +2046,24 @@ async function openAdminApplication(
 
   } catch (error) {
 
-    body.className =
-      "admin-drawer__body";
-
-
-    if (
-      error instanceof TypeError
-    ) {
-      renderAdminEmpty(
-        body,
-        "Unable to load application",
-        "We could not connect to the server. Please close this panel and try again."
-      );
-
-      return;
-    }
-
-
-    renderAdminEmpty(
+    renderAdminError(
       body,
-      "Unable to load application",
-      error.message
+      {
+        title:
+          "Unable to load application",
+
+        message:
+          error instanceof TypeError
+            ? "We could not connect to the server."
+            : error.message ||
+              "Something went wrong while loading this application.",
+
+        retry: () => {
+          openAdminApplication(
+            id
+          );
+        },
+      }
     );
   }
 }
@@ -1932,14 +2099,20 @@ function renderAdminApplicationDetail(
     "admin-drawer__body";
 
 
-  body.textContent = "";
+  body.textContent =
+    "";
 
+
+  /* =======================================================
+     DRAWER HEADER
+  ======================================================= */
 
   if (title) {
     title.textContent =
       ADMIN_SERVICE_NAMES[
       application.type
       ] ||
+      application.type ||
       "Application Details";
   }
 
@@ -1952,7 +2125,93 @@ function renderAdminApplicationDetail(
   }
 
 
-  /* Applicant */
+  /* =======================================================
+     SUMMARY
+  ======================================================= */
+
+  const summary =
+    document.createElement(
+      "div"
+    );
+
+
+  summary.className =
+    "admin-detail-summary";
+
+
+  const summaryStatus =
+    document.createElement(
+      "div"
+    );
+
+
+  summaryStatus.className =
+    "admin-detail-summary__status";
+
+
+  summaryStatus.append(
+    createAdminStatusBadge(
+      application.status
+    )
+  );
+
+
+  const summaryMeta =
+    document.createElement(
+      "div"
+    );
+
+
+  summaryMeta.className =
+    "admin-detail-summary__meta";
+
+
+  const branchSummary =
+    document.createElement(
+      "span"
+    );
+
+
+  branchSummary.textContent =
+    ADMIN_BRANCH_NAMES[
+    application.branch
+    ] ||
+    application.branch ||
+    "—";
+
+
+  const submittedSummary =
+    document.createElement(
+      "span"
+    );
+
+
+  submittedSummary.textContent =
+    `Submitted ${adminFormatDate(
+      application.createdAt
+    )}`;
+
+
+  summaryMeta.append(
+    branchSummary,
+    submittedSummary
+  );
+
+
+  summary.append(
+    summaryStatus,
+    summaryMeta
+  );
+
+
+  body.append(
+    summary
+  );
+
+
+  /* =======================================================
+     APPLICANT INFORMATION
+  ======================================================= */
 
   const applicantSection =
     document.createElement(
@@ -1965,7 +2224,9 @@ function renderAdminApplicationDetail(
 
 
   const applicantHeading =
-    document.createElement("h3");
+    document.createElement(
+      "h3"
+    );
 
 
   applicantHeading.textContent =
@@ -1973,7 +2234,9 @@ function renderAdminApplicationDetail(
 
 
   const applicantGrid =
-    document.createElement("dl");
+    document.createElement(
+      "dl"
+    );
 
 
   applicantGrid.className =
@@ -1986,29 +2249,47 @@ function renderAdminApplicationDetail(
       application.applicantName
     ),
 
+
     createAdminDetailField(
       "Phone",
       application.phone
     ),
+
 
     createAdminDetailField(
       "Email",
       application.email
     ),
 
+
     createAdminDetailField(
       "Age",
       application.age
     ),
+
 
     createAdminDetailField(
       "Address",
       application.address
     ),
 
+
+    createAdminDetailField(
+      "City",
+      application.city
+    ),
+
+
     createAdminDetailField(
       "PIN Code",
       application.pincode
+    ),
+
+
+    createAdminDetailField(
+      "Account Username",
+      application.user
+        ?.username
     )
   );
 
@@ -2024,7 +2305,9 @@ function renderAdminApplicationDetail(
   );
 
 
-  /* Application */
+  /* =======================================================
+     APPLICATION INFORMATION
+  ======================================================= */
 
   const requestSection =
     document.createElement(
@@ -2037,7 +2320,9 @@ function renderAdminApplicationDetail(
 
 
   const requestHeading =
-    document.createElement("h3");
+    document.createElement(
+      "h3"
+    );
 
 
   requestHeading.textContent =
@@ -2045,7 +2330,9 @@ function renderAdminApplicationDetail(
 
 
   const requestGrid =
-    document.createElement("dl");
+    document.createElement(
+      "dl"
+    );
 
 
   requestGrid.className =
@@ -2054,12 +2341,19 @@ function renderAdminApplicationDetail(
 
   requestGrid.append(
     createAdminDetailField(
+      "Reference",
+      application.referenceNumber
+    ),
+
+
+    createAdminDetailField(
       "Service",
       ADMIN_SERVICE_NAMES[
       application.type
       ] ||
       application.type
     ),
+
 
     createAdminDetailField(
       "Branch",
@@ -2069,12 +2363,22 @@ function renderAdminApplicationDetail(
       application.branch
     ),
 
+
     createAdminDetailField(
       "Submitted",
       adminFormatDate(
         application.createdAt
       )
     ),
+
+
+    createAdminDetailField(
+      "Last Updated",
+      adminFormatDate(
+        application.updatedAt
+      )
+    ),
+
 
     createAdminDetailField(
       "Current Status",
@@ -2097,14 +2401,19 @@ function renderAdminApplicationDetail(
   );
 
 
-  /* Service details */
+  /* =======================================================
+     SERVICE DETAILS
+  ======================================================= */
 
   const details =
-    application.details || {};
+    application.details ||
+    {};
 
 
   if (
-    Object.keys(details).length
+    Object.keys(
+      details
+    ).length
   ) {
     const detailSection =
       document.createElement(
@@ -2117,7 +2426,9 @@ function renderAdminApplicationDetail(
 
 
     const heading =
-      document.createElement("h3");
+      document.createElement(
+        "h3"
+      );
 
 
     heading.textContent =
@@ -2125,27 +2436,35 @@ function renderAdminApplicationDetail(
 
 
     const grid =
-      document.createElement("dl");
+      document.createElement(
+        "dl"
+      );
 
 
     grid.className =
       "admin-detail-grid";
 
 
-    Object.entries(details)
-      .forEach(
-        ([key, value]) => {
-          grid.append(
-            createAdminDetailField(
-              humanizeAdminKey(key),
-              formatAdminDetailValue(
-                key,
-                value
-              )
+    Object.entries(
+      details
+    ).forEach(
+      ([key, value]) => {
+
+        grid.append(
+          createAdminDetailField(
+            humanizeAdminKey(
+              key
+            ),
+
+            formatAdminDetailValue(
+              key,
+              value
             )
-          );
-        }
-      );
+          )
+        );
+
+      }
+    );
 
 
     detailSection.append(
@@ -2160,7 +2479,9 @@ function renderAdminApplicationDetail(
   }
 
 
-  /* Description */
+  /* =======================================================
+     APPLICATION DESCRIPTION
+  ======================================================= */
 
   const descriptionSection =
     document.createElement(
@@ -2173,21 +2494,24 @@ function renderAdminApplicationDetail(
 
 
   const descriptionHeading =
-    document.createElement("h3");
+    document.createElement(
+      "h3"
+    );
 
 
   descriptionHeading.textContent =
-    "Applicant explanation";
+    "Application description";
 
 
   const description =
-    document.createElement("p");
+    document.createElement(
+      "p"
+    );
 
 
   description.textContent =
-    adminText(
-      application.description
-    );
+    application.description ||
+    "No description provided.";
 
 
   descriptionSection.append(
@@ -2201,9 +2525,19 @@ function renderAdminApplicationDetail(
   );
 
 
-  /* =========================================================
+  /* =======================================================
      DOCUMENTS
-  ========================================================= */
+  ======================================================= */
+
+  const documentsSection =
+    document.createElement(
+      "section"
+    );
+
+
+  documentsSection.className =
+    "admin-detail-section";
+
 
   const documents =
     Array.isArray(
@@ -2213,36 +2547,131 @@ function renderAdminApplicationDetail(
       : [];
 
 
-  if (
-    documents.length
-  ) {
-    const documentSection =
-      document.createElement(
-        "section"
-      );
+  const documentsHeader =
+    document.createElement(
+      "div"
+    );
 
 
-    documentSection.className =
-      "admin-detail-section";
+  documentsHeader.className =
+    "documents-header";
 
 
-    const heading =
-      document.createElement(
-        "h3"
-      );
+  const documentsHeadingWrap =
+    document.createElement(
+      "div"
+    );
 
 
-    heading.textContent =
-      "Supporting documents";
+  const documentsHeading =
+    document.createElement(
+      "h3"
+    );
 
 
-    const list =
+  documentsHeading.textContent =
+    "Supporting documents";
+
+
+  const documentsDescription =
+    document.createElement(
+      "p"
+    );
+
+
+  documentsDescription.className =
+    "documents-header__description";
+
+
+  documentsDescription.textContent =
+    "Documents uploaded with this application.";
+
+
+  documentsHeadingWrap.append(
+    documentsHeading,
+    documentsDescription
+  );
+
+
+  const documentCount =
+    document.createElement(
+      "span"
+    );
+
+
+  documentCount.className =
+    "documents-count";
+
+
+  documentCount.textContent =
+    `${documents.length} ${documents.length === 1
+      ? "file"
+      : "files"
+    }`;
+
+
+  documentsHeader.append(
+    documentsHeadingWrap,
+    documentCount
+  );
+
+
+  documentsSection.append(
+    documentsHeader
+  );
+
+
+  if (!documents.length) {
+
+    const empty =
       document.createElement(
         "div"
       );
 
 
-    list.className =
+    empty.className =
+      "documents-empty";
+
+
+    const emptyTitle =
+      document.createElement(
+        "strong"
+      );
+
+
+    emptyTitle.textContent =
+      "No documents attached";
+
+
+    const emptyText =
+      document.createElement(
+        "p"
+      );
+
+
+    emptyText.textContent =
+      "The applicant did not upload any documents with this request.";
+
+
+    empty.append(
+      emptyTitle,
+      emptyText
+    );
+
+
+    documentsSection.append(
+      empty
+    );
+
+  } else {
+
+    const documentList =
+      document.createElement(
+        "div"
+      );
+
+
+    documentList.className =
       "document-list";
 
 
@@ -2251,13 +2680,33 @@ function renderAdminApplicationDetail(
 
         const item =
           document.createElement(
-            "div"
+            "article"
           );
 
 
         item.className =
-          "document-item";
+          "document-card";
 
+
+        /* File type */
+
+        const fileBadge =
+          document.createElement(
+            "div"
+          );
+
+
+        fileBadge.className =
+          "document-card__type";
+
+
+        fileBadge.textContent =
+          getAdminDocumentFileLabel(
+            documentData
+          );
+
+
+        /* Information */
 
         const info =
           document.createElement(
@@ -2265,38 +2714,103 @@ function renderAdminApplicationDetail(
           );
 
 
+        info.className =
+          "document-card__info";
+
+
         const name =
           document.createElement(
-            "div"
+            "strong"
           );
 
 
         name.className =
-          "document-item__name";
+          "document-card__name";
 
 
         name.textContent =
-          documentData.originalName;
+          documentData.originalName ||
+          "Uploaded document";
 
 
-        const type =
+        name.title =
+          documentData.originalName ||
+          "Uploaded document";
+
+
+        const meta =
           document.createElement(
             "div"
           );
 
 
-        type.className =
-          "document-item__type";
+        meta.className =
+          "document-card__meta";
 
 
-        type.textContent =
-          documentData.type;
+        const documentType =
+          document.createElement(
+            "span"
+          );
+
+
+        documentType.textContent =
+          getAdminDocumentTypeLabel(
+            documentData.type
+          );
+
+
+        const separator =
+          document.createElement(
+            "span"
+          );
+
+
+        separator.textContent =
+          "•";
+
+
+        separator.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
+
+        const fileSize =
+          document.createElement(
+            "span"
+          );
+
+
+        fileSize.textContent =
+          adminFormatFileSize(
+            documentData.size
+          );
+
+
+        meta.append(
+          documentType,
+          separator,
+          fileSize
+        );
 
 
         info.append(
           name,
-          type
+          meta
         );
+
+
+        /* Download */
+
+        const actions =
+          document.createElement(
+            "div"
+          );
+
+
+        actions.className =
+          "document-card__actions";
 
 
         const download =
@@ -2306,7 +2820,7 @@ function renderAdminApplicationDetail(
 
 
         download.className =
-          "btn btn--outline";
+          "btn btn--outline document-download-button";
 
 
         download.href =
@@ -2321,31 +2835,356 @@ function renderAdminApplicationDetail(
           "Download";
 
 
-        item.append(
-          info,
+        download.setAttribute(
+          "aria-label",
+          `Download ${documentData.originalName ||
+          "document"
+          }`
+        );
+
+
+        actions.append(
           download
         );
 
 
-        list.append(
+        item.append(
+          fileBadge,
+          info,
+          actions
+        );
+
+
+        documentList.append(
           item
         );
+
       }
     );
 
 
-    documentSection.append(
-      heading,
-      list
-    );
-
-
-    body.append(
-      documentSection
+    documentsSection.append(
+      documentList
     );
   }
 
-  /* Status */
+
+  body.append(
+    documentsSection
+  );
+
+
+  /* =======================================================
+     STATUS HISTORY
+  ======================================================= */
+
+  const historySection =
+    document.createElement(
+      "section"
+    );
+
+
+  historySection.className =
+    "admin-detail-section";
+
+
+  const historyHeading =
+    document.createElement(
+      "h3"
+    );
+
+
+  historyHeading.textContent =
+    "Status history";
+
+
+  const timeline =
+    document.createElement(
+      "div"
+    );
+
+
+  timeline.className =
+    "status-timeline";
+
+
+  const statusHistory =
+    Array.isArray(
+      application.statusHistory
+    )
+      ? [
+        ...application.statusHistory,
+      ]
+      : [];
+
+
+  statusHistory.sort(
+    (a, b) =>
+      new Date(
+        a.createdAt ||
+        0
+      ) -
+      new Date(
+        b.createdAt ||
+        0
+      )
+  );
+
+
+  if (
+    !statusHistory.length
+  ) {
+    const empty =
+      document.createElement(
+        "p"
+      );
+
+
+    empty.className =
+      "status-timeline__empty";
+
+
+    empty.textContent =
+      "No status history is available.";
+
+
+    timeline.append(
+      empty
+    );
+
+  } else {
+
+    statusHistory.forEach(
+      (
+        history,
+        index
+      ) => {
+
+        const isCurrent =
+          index ===
+          statusHistory.length - 1;
+
+
+        const item =
+          document.createElement(
+            "article"
+          );
+
+
+        item.className =
+          `status-timeline__item ${isCurrent
+            ? "is-current"
+            : "is-complete"
+          }`;
+
+
+        /* Marker */
+
+        const marker =
+          document.createElement(
+            "div"
+          );
+
+
+        marker.className =
+          "status-timeline__marker";
+
+
+        marker.textContent =
+          isCurrent
+            ? "●"
+            : "✓";
+
+
+        /* Content */
+
+        const content =
+          document.createElement(
+            "div"
+          );
+
+
+        content.className =
+          "status-timeline__content";
+
+
+        const heading =
+          document.createElement(
+            "div"
+          );
+
+
+        heading.className =
+          "status-timeline__heading";
+
+
+        const statusName =
+          document.createElement(
+            "strong"
+          );
+
+
+        statusName.textContent =
+          ADMIN_STATUS_NAMES[
+          history.toStatus
+          ] ||
+          history.toStatus ||
+          "Status update";
+
+
+        heading.append(
+          statusName
+        );
+
+
+        if (isCurrent) {
+
+          const currentBadge =
+            document.createElement(
+              "span"
+            );
+
+
+          currentBadge.className =
+            "status-timeline__current";
+
+
+          currentBadge.textContent =
+            "Current";
+
+
+          heading.append(
+            currentBadge
+          );
+        }
+
+
+        content.append(
+          heading
+        );
+
+
+        /* Transition */
+
+        if (
+          history.fromStatus
+        ) {
+          const transition =
+            document.createElement(
+              "p"
+            );
+
+
+          transition.className =
+            "admin-status-transition";
+
+
+          transition.textContent =
+            `${ADMIN_STATUS_NAMES[
+            history.fromStatus
+            ] ||
+            history.fromStatus} → ${ADMIN_STATUS_NAMES[
+            history.toStatus
+            ] ||
+            history.toStatus
+            }`;
+
+
+          content.append(
+            transition
+          );
+        }
+
+
+        /* Note */
+
+        if (
+          history.note
+        ) {
+          const note =
+            document.createElement(
+              "p"
+            );
+
+
+          note.className =
+            "status-timeline__note";
+
+
+          note.textContent =
+            history.note;
+
+
+          content.append(
+            note
+          );
+        }
+
+
+        /* Meta */
+
+        const meta =
+          document.createElement(
+            "span"
+          );
+
+
+        meta.className =
+          "status-timeline__date";
+
+
+        const changedBy =
+          history.changedBy
+            ?.name ||
+          history.changedBy
+            ?.username ||
+          null;
+
+
+        meta.textContent =
+          changedBy
+            ? `${adminFormatDate(
+              history.createdAt
+            )} • Updated by ${changedBy}`
+            : adminFormatDate(
+              history.createdAt
+            );
+
+
+        content.append(
+          meta
+        );
+
+
+        item.append(
+          marker,
+          content
+        );
+
+
+        timeline.append(
+          item
+        );
+
+      }
+    );
+  }
+
+
+  historySection.append(
+    historyHeading,
+    timeline
+  );
+
+
+  body.append(
+    historySection
+  );
+
+
+  /* =======================================================
+     STATUS MANAGEMENT
+  ======================================================= */
 
   body.append(
     createAdminStatusSection(
@@ -2466,7 +3305,6 @@ function formatAdminDetailValue(
 /* =========================================================
    STATUS UPDATE UI
 ========================================================= */
-
 function createAdminStatusSection(
   application
 ) {
@@ -2481,23 +3319,157 @@ function createAdminStatusSection(
 
 
   const heading =
-    document.createElement("h3");
+    document.createElement(
+      "h3"
+    );
 
 
   heading.textContent =
     "Manage application status";
 
 
+  /* =======================================================
+     CURRENT STATUS
+  ======================================================= */
+
+  const current =
+    document.createElement(
+      "div"
+    );
+
+
+  current.className =
+    "admin-status-current";
+
+
+  const currentLabel =
+    document.createElement(
+      "span"
+    );
+
+
+  currentLabel.textContent =
+    "Current status";
+
+
+  const currentBadge =
+    createAdminStatusBadge(
+      application.status
+    );
+
+
+  current.append(
+    currentLabel,
+    currentBadge
+  );
+
+
+  section.append(
+    heading,
+    current
+  );
+
+
+  /* =======================================================
+     ALLOWED TRANSITIONS
+  ======================================================= */
+
+  const allowedStatuses =
+    ADMIN_STATUS_TRANSITIONS[
+    application.status
+    ] ||
+    [];
+
+
+  /*
+   * REJECTED and COMPLETED are terminal.
+   */
+
+  if (!allowedStatuses.length) {
+    const terminal =
+      document.createElement(
+        "div"
+      );
+
+
+    terminal.className =
+      "admin-status-terminal";
+
+
+    const terminalTitle =
+      document.createElement(
+        "strong"
+      );
+
+
+    terminalTitle.textContent =
+      "No further status changes";
+
+
+    const terminalText =
+      document.createElement(
+        "p"
+      );
+
+
+    terminalText.textContent =
+      application.status ===
+        "COMPLETED"
+        ? "This application has been completed and the workflow is closed."
+        : "This application has been rejected and the workflow is closed.";
+
+
+    terminal.append(
+      terminalTitle,
+      terminalText
+    );
+
+
+    section.append(
+      terminal
+    );
+
+
+    return section;
+  }
+
+
+  /* =======================================================
+     FORM
+  ======================================================= */
+
   const form =
-    document.createElement("form");
+    document.createElement(
+      "form"
+    );
 
 
   form.className =
     "admin-status-form";
 
 
+  /* Status label */
+
+  const statusLabel =
+    document.createElement(
+      "label"
+    );
+
+
+  statusLabel.className =
+    "admin-status-label";
+
+
+  statusLabel.textContent =
+    "New status";
+
+
+  /* Status select */
+
   const select =
-    document.createElement("select");
+    document.createElement(
+      "select"
+    );
 
 
   select.className =
@@ -2506,53 +3478,100 @@ function createAdminStatusSection(
 
   select.setAttribute(
     "aria-label",
-    "Application status"
+    "New application status"
   );
 
 
-  [
-    "PENDING",
-    "UNDER_REVIEW",
-    "APPROVED",
-    "REJECTED",
-    "COMPLETED",
-  ].forEach((status) => {
-    const option =
-      document.createElement("option");
+  const placeholder =
+    document.createElement(
+      "option"
+    );
 
 
-    option.value =
-      status;
+  placeholder.value =
+    "";
 
 
-    option.textContent =
-      ADMIN_STATUS_NAMES[
-      status
-      ];
+  placeholder.textContent =
+    "Select next status";
 
 
-    option.selected =
-      application.status ===
-      status;
+  placeholder.disabled =
+    true;
 
 
-    select.append(option);
-  });
+  placeholder.selected =
+    true;
 
+
+  select.append(
+    placeholder
+  );
+
+
+  allowedStatuses.forEach(
+    (status) => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        status;
+
+
+      option.textContent =
+        ADMIN_STATUS_NAMES[
+        status
+        ] ||
+        status;
+
+
+      select.append(
+        option
+      );
+
+    }
+  );
+
+
+  /* Note label */
+
+  const noteLabel =
+    document.createElement(
+      "label"
+    );
+
+
+  noteLabel.className =
+    "admin-status-label";
+
+
+  noteLabel.textContent =
+    "Status note visible to applicant";
+
+
+  /* Note textarea */
 
   const note =
-    document.createElement("textarea");
+    document.createElement(
+      "textarea"
+    );
 
 
   note.className =
     "application-control";
 
 
-  note.rows = 4;
+  note.rows =
+    4;
 
 
   note.placeholder =
-    "Status note visible to applicant (optional)";
+    "Add a clear update for the applicant (optional unless rejecting).";
+
 
   note.setAttribute(
     "aria-label",
@@ -2560,8 +3579,28 @@ function createAdminStatusSection(
   );
 
 
+  /* Hint */
+
+  const hint =
+    document.createElement(
+      "p"
+    );
+
+
+  hint.className =
+    "admin-status-hint";
+
+
+  hint.textContent =
+    "Select the next status. A note is required when rejecting an application.";
+
+
+  /* Actions */
+
   const actions =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
 
   actions.className =
@@ -2569,7 +3608,9 @@ function createAdminStatusSection(
 
 
   const save =
-    document.createElement("button");
+    document.createElement(
+      "button"
+    );
 
 
   save.type =
@@ -2581,18 +3622,65 @@ function createAdminStatusSection(
 
 
   save.textContent =
-    "Save Status";
+    "Update Status";
 
 
-  actions.append(save);
+  save.disabled =
+    true;
+
+
+  actions.append(
+    save
+  );
 
 
   form.append(
+    statusLabel,
     select,
+    noteLabel,
     note,
+    hint,
     actions
   );
 
+
+  /* =======================================================
+     SELECTION BEHAVIOUR
+  ======================================================= */
+
+  select.addEventListener(
+    "change",
+    () => {
+
+      const selectedStatus =
+        select.value;
+
+
+      save.disabled =
+        !selectedStatus;
+
+
+      const rejection =
+        selectedStatus ===
+        "REJECTED";
+
+
+      note.required =
+        rejection;
+
+
+      hint.textContent =
+        rejection
+          ? "A note is required because this rejection reason will be shown to the applicant."
+          : "The note is optional and will be visible to the applicant.";
+
+    }
+  );
+
+
+  /* =======================================================
+     SUBMIT
+  ======================================================= */
 
   form.addEventListener(
     "submit",
@@ -2600,12 +3688,55 @@ function createAdminStatusSection(
       event.preventDefault();
 
 
-      save.disabled = true;
+      const nextStatus =
+        select.value;
+
+
+      const noteValue =
+        note.value.trim();
+
+
+      if (!nextStatus) {
+        showAdminAlert(
+          "Select the next application status.",
+          "error"
+        );
+
+
+        select.focus();
+
+
+        return;
+      }
+
+
+      if (
+        nextStatus ===
+        "REJECTED" &&
+        !noteValue
+      ) {
+        showAdminAlert(
+          "Enter a reason before rejecting the application.",
+          "error"
+        );
+
+
+        note.focus();
+
+
+        return;
+      }
+
+
+      save.disabled =
+        true;
 
 
       try {
         await adminApi(
-          `/admin/applications/${encodeURIComponent(application.id)}/status`,
+          `/admin/applications/${encodeURIComponent(
+            application.id
+          )}/status`,
           {
             method:
               "PATCH",
@@ -2613,10 +3744,10 @@ function createAdminStatusSection(
             body:
               JSON.stringify({
                 status:
-                  select.value,
+                  nextStatus,
 
                 note:
-                  note.value.trim() ||
+                  noteValue ||
                   null,
               }),
           }
@@ -2629,17 +3760,26 @@ function createAdminStatusSection(
         );
 
 
-        application.status =
-          select.value;
-
-
+        /*
+         * Refresh dashboard/table first.
+         */
         await Promise.all([
           loadAdminOverview(),
           loadAdminApplications(),
         ]);
 
 
-        closeAdminDrawer();
+        /*
+         * Reload the same drawer so the admin
+         * immediately sees:
+         *
+         * - new status
+         * - new history event
+         * - new allowed transition
+         */
+        await openAdminApplication(
+          application.id
+        );
 
       } catch (error) {
 
@@ -2663,14 +3803,14 @@ function createAdminStatusSection(
         );
 
       } finally {
-        save.disabled = false;
+        save.disabled =
+          false;
       }
     }
   );
 
 
   section.append(
-    heading,
     form
   );
 
@@ -2682,6 +3822,55 @@ function createAdminStatusSection(
 /* =========================================================
    USERS
 ========================================================= */
+
+function getAdminUserFilters() {
+  return {
+    search:
+      adminGet(
+        "admin-user-search"
+      )
+        ?.value
+        ?.trim() ||
+      "",
+
+    role:
+      adminGet(
+        "admin-user-role-filter"
+      )
+        ?.value ||
+      "",
+
+    status:
+      adminGet(
+        "admin-user-status-filter"
+      )
+        ?.value ||
+      "",
+  };
+}
+
+
+function updateAdminUserCount(
+  count
+) {
+  const element =
+    adminGet(
+      "admin-user-filter-count"
+    );
+
+
+  if (!element) {
+    return;
+  }
+
+
+  element.textContent =
+    `${count} ${count === 1
+      ? "user"
+      : "users"
+    }`;
+}
+
 
 async function loadAdminUsers() {
   const root =
@@ -2695,25 +3884,72 @@ async function loadAdminUsers() {
   }
 
 
-  root.className =
-    "admin-loading";
+  renderAdminLoading(
+    root,
+    "Loading users..."
+  );
 
 
-  root.textContent =
-    "Loading users...";
+  const {
+    search,
+    role,
+    status,
+  } =
+    getAdminUserFilters();
+
+
+  const params =
+    new URLSearchParams();
+
+
+  if (search) {
+    params.set(
+      "search",
+      search
+    );
+  }
+
+
+  if (role) {
+    params.set(
+      "role",
+      role
+    );
+  }
+
+
+  if (status) {
+    params.set(
+      "status",
+      status
+    );
+  }
+
+
+  const query =
+    params.toString();
 
 
   try {
     const response =
       await adminApi(
-        "/admin/users"
+        `/admin/users${query
+          ? `?${query}`
+          : ""
+        }`
       );
 
 
     const users =
       Array.isArray(response)
         ? response
-        : response?.users || [];
+        : response?.users ||
+        [];
+
+
+    updateAdminUserCount(
+      users.length
+    );
 
 
     renderAdminUsers(
@@ -2721,30 +3957,33 @@ async function loadAdminUsers() {
     );
 
   } catch (error) {
+    updateAdminUserCount(
+      0
+    );
 
-    if (
-      error instanceof TypeError
-    ) {
-      renderAdminEmpty(
-        root,
-        "Unable to load users",
-        "We could not connect to the server. Please refresh and try again."
-      );
-
-      return;
-    }
-
-
-    renderAdminEmpty(
+    renderAdminError(
       root,
-      "Unable to load users",
-      error.message
+      {
+        title:
+          "Unable to load users",
+
+        message:
+          error instanceof TypeError
+            ? "We could not connect to the server. Check your connection and try again."
+            : error.message ||
+            "Something went wrong while loading users.",
+
+        retry:
+          loadAdminUsers,
+      }
     );
   }
 }
 
 
-function renderAdminUsers(users) {
+function renderAdminUsers(
+  users
+) {
   const root =
     adminGet(
       "admin-users-root"
@@ -2760,17 +3999,19 @@ function renderAdminUsers(users) {
     renderAdminEmpty(
       root,
       "No users found",
-      "Registered accounts will appear here."
+      "No registered accounts match the selected filters."
     );
 
     return;
   }
 
 
-  root.className = "";
+  root.className =
+    "";
 
 
-  root.textContent = "";
+  root.textContent =
+    "";
 
 
   const {
@@ -2779,123 +4020,597 @@ function renderAdminUsers(users) {
   } =
     createAdminTable([
       "User",
-      "Username",
       "Phone",
       "Role",
+      "Account",
+      "Applications",
+      "Donations",
       "Joined",
+      "Action",
     ]);
 
 
-  users.forEach((user) => {
-    const row =
-      document.createElement("tr");
+  users.forEach(
+    (user) => {
+
+      const row =
+        document.createElement(
+          "tr"
+        );
 
 
-    const userCell =
-      document.createElement("td");
+      /* USER */
+
+      const userCell =
+        document.createElement(
+          "td"
+        );
 
 
-    const name =
-      document.createElement("span");
+      const name =
+        document.createElement(
+          "span"
+        );
 
 
-    name.className =
-      "admin-table__primary";
+      name.className =
+        "admin-table__primary";
 
 
-    name.textContent =
-      adminText(user.name);
+      name.textContent =
+        adminText(
+          user.name
+        );
 
 
-    const email =
-      document.createElement("span");
+      const email =
+        document.createElement(
+          "span"
+        );
 
 
-    email.className =
-      "admin-table__secondary";
+      email.className =
+        "admin-table__secondary";
 
 
-    email.textContent =
-      adminText(user.email);
+      email.textContent =
+        adminText(
+          user.email
+        );
 
 
-    userCell.append(
-      name,
-      email
-    );
+      const username =
+        document.createElement(
+          "span"
+        );
 
 
-    const username =
-      document.createElement("td");
+      username.className =
+        "admin-table__secondary";
 
 
-    username.textContent =
-      adminText(
+      username.textContent =
         user.username
+          ? `@${user.username}`
+          : "—";
+
+
+      userCell.append(
+        name,
+        email,
+        username
       );
 
 
-    const phone =
-      document.createElement("td");
+      /* PHONE */
+
+      const phone =
+        document.createElement(
+          "td"
+        );
 
 
-    phone.textContent =
-      adminText(
-        user.phone
+      phone.textContent =
+        adminText(
+          user.phone
+        );
+
+
+      /* ROLE */
+
+      const roleCell =
+        document.createElement(
+          "td"
+        );
+
+
+      const role =
+        document.createElement(
+          "span"
+        );
+
+
+      role.className =
+        `admin-user-role ${user.role ===
+          "ADMIN"
+          ? "admin-user-role--admin"
+          : ""
+        }`;
+
+
+      role.textContent =
+        user.role ===
+          "ADMIN"
+          ? "Admin"
+          : "User";
+
+
+      roleCell.append(
+        role
       );
 
 
-    const roleCell =
-      document.createElement("td");
+      /* ACCOUNT STATUS */
+
+      const statusCell =
+        document.createElement(
+          "td"
+        );
 
 
-    const role =
-      document.createElement("span");
+      const accountStatus =
+        document.createElement(
+          "span"
+        );
 
 
-    role.className =
-      "admin-user-role";
+      accountStatus.className =
+        `admin-user-status ${user.isActive
+          ? "is-active"
+          : "is-disabled"
+        }`;
 
 
-    role.textContent =
-      adminText(
-        user.role || "USER"
+      accountStatus.textContent =
+        user.isActive
+          ? "Active"
+          : "Disabled";
+
+
+      statusCell.append(
+        accountStatus
       );
 
 
-    roleCell.append(role);
+      /* APPLICATION COUNT */
+
+      const applications =
+        document.createElement(
+          "td"
+        );
 
 
-    const created =
-      document.createElement("td");
+      applications.textContent =
+        String(
+          user._count
+            ?.applications ??
+          0
+        );
 
 
-    created.textContent =
-      adminFormatDate(
-        user.createdAt
+      /* DONATION COUNT */
+
+      const donations =
+        document.createElement(
+          "td"
+        );
+
+
+      donations.textContent =
+        String(
+          user._count
+            ?.donations ??
+          0
+        );
+
+
+      /* JOINED */
+
+      const created =
+        document.createElement(
+          "td"
+        );
+
+
+      created.textContent =
+        adminFormatDate(
+          user.createdAt
+        );
+
+
+      /* ACTION */
+
+      const actionCell =
+        document.createElement(
+          "td"
+        );
+
+
+      actionCell.className =
+        "admin-table__action-cell";
+
+
+      if (
+        user.role ===
+        "ADMIN"
+      ) {
+        const protectedText =
+          document.createElement(
+            "span"
+          );
+
+
+        protectedText.className =
+          "admin-user-protected";
+
+
+        protectedText.textContent =
+          "Protected";
+
+
+        actionCell.append(
+          protectedText
+        );
+
+      } else {
+
+        const button =
+          document.createElement(
+            "button"
+          );
+
+
+        button.type =
+          "button";
+
+
+        button.className =
+          user.isActive
+            ? "btn btn--outline admin-user-toggle admin-user-toggle--disable"
+            : "btn btn--outline admin-user-toggle admin-user-toggle--enable";
+
+
+        button.textContent =
+          user.isActive
+            ? "Disable"
+            : "Activate";
+
+
+        button.addEventListener(
+          "click",
+          async () => {
+
+            const nextActive =
+              !user.isActive;
+
+
+            const confirmed =
+              window.confirm(
+                nextActive
+                  ? `Activate ${user.name}'s account?`
+                  : `Disable ${user.name}'s account? They will no longer be able to access protected pages.`
+              );
+
+
+            if (!confirmed) {
+              return;
+            }
+
+
+            button.disabled =
+              true;
+
+
+            try {
+              await adminApi(
+                `/admin/users/${encodeURIComponent(
+                  user.id
+                )}/status`,
+                {
+                  method:
+                    "PATCH",
+
+                  body:
+                    JSON.stringify({
+                      isActive:
+                        nextActive,
+                    }),
+                }
+              );
+
+
+              showAdminAlert(
+                nextActive
+                  ? "User account activated successfully."
+                  : "User account disabled successfully.",
+                "success"
+              );
+
+
+              await loadAdminUsers();
+
+            } catch (error) {
+
+              showAdminAlert(
+                error.message ||
+                "Unable to update user account.",
+                "error"
+              );
+
+
+              button.disabled =
+                false;
+            }
+          }
+        );
+
+
+        actionCell.append(
+          button
+        );
+      }
+
+
+      row.append(
+        userCell,
+        phone,
+        roleCell,
+        statusCell,
+        applications,
+        donations,
+        created,
+        actionCell
       );
 
 
-    row.append(
-      userCell,
-      username,
-      phone,
-      roleCell,
-      created
+      tbody.append(
+        row
+      );
+    }
+  );
+
+
+  root.append(
+    wrapper
+  );
+}
+
+
+function initializeUserFilters() {
+  const search =
+    adminGet(
+      "admin-user-search"
     );
 
 
-    tbody.append(row);
-  });
+  const role =
+    adminGet(
+      "admin-user-role-filter"
+    );
 
 
-  root.append(wrapper);
+  const status =
+    adminGet(
+      "admin-user-status-filter"
+    );
+
+
+  const clear =
+    adminGet(
+      "admin-user-clear-filters"
+    );
+
+
+  let timer =
+    null;
+
+
+  search?.addEventListener(
+    "input",
+    () => {
+      window.clearTimeout(
+        timer
+      );
+
+
+      timer =
+        window.setTimeout(
+          loadAdminUsers,
+          350
+        );
+    }
+  );
+
+
+  search?.addEventListener(
+    "keydown",
+    (event) => {
+
+      if (
+        event.key !==
+        "Escape"
+      ) {
+        return;
+      }
+
+
+      search.value =
+        "";
+
+
+      window.clearTimeout(
+        timer
+      );
+
+
+      loadAdminUsers();
+    }
+  );
+
+
+  [
+    role,
+    status,
+  ].forEach(
+    (element) => {
+      element?.addEventListener(
+        "change",
+        loadAdminUsers
+      );
+    }
+  );
+
+
+  clear?.addEventListener(
+    "click",
+    () => {
+
+      if (search) {
+        search.value =
+          "";
+      }
+
+
+      if (role) {
+        role.value =
+          "";
+      }
+
+
+      if (status) {
+        status.value =
+          "";
+      }
+
+
+      window.clearTimeout(
+        timer
+      );
+
+
+      loadAdminUsers();
+    }
+  );
 }
+
 
 
 /* =========================================================
    DONATIONS
 ========================================================= */
+
+const ADMIN_DONATION_STATUS_NAMES = {
+  PENDING:
+    "Pending",
+
+  VERIFIED:
+    "Verified",
+
+  FAILED:
+    "Failed",
+
+  REFUNDED:
+    "Refunded",
+};
+
+
+const ADMIN_DONATION_METHOD_NAMES = {
+  UPI:
+    "UPI",
+
+  RAZORPAY:
+    "Razorpay",
+};
+
+
+function getAdminDonationFilters() {
+  return {
+    search:
+      adminGet(
+        "admin-donation-search"
+      )
+        ?.value
+        ?.trim() ||
+      "",
+
+    method:
+      adminGet(
+        "admin-donation-method-filter"
+      )
+        ?.value ||
+      "",
+
+    status:
+      adminGet(
+        "admin-donation-status-filter"
+      )
+        ?.value ||
+      "",
+  };
+}
+
+
+function updateAdminDonationCount(
+  count
+) {
+  const element =
+    adminGet(
+      "admin-donation-filter-count"
+    );
+
+
+  if (!element) {
+    return;
+  }
+
+
+  element.textContent =
+    `${count} ${count === 1
+      ? "donation"
+      : "donations"
+    }`;
+}
+
+
+function createAdminDonationStatusBadge(
+  status
+) {
+  const badge =
+    document.createElement(
+      "span"
+    );
+
+
+  badge.className =
+    `admin-donation-status admin-donation-status--${String(
+      status ||
+      "unknown"
+    ).toLowerCase()
+    }`;
+
+
+  badge.textContent =
+    ADMIN_DONATION_STATUS_NAMES[
+    status
+    ] ||
+    adminText(
+      status
+    );
+
+
+  return badge;
+}
+
 
 async function loadAdminDonations() {
   const root =
@@ -2909,25 +4624,72 @@ async function loadAdminDonations() {
   }
 
 
-  root.className =
-    "admin-loading";
+renderAdminLoading(
+  root,
+  "Loading donations..."
+);
 
 
-  root.textContent =
-    "Loading donations...";
+  const {
+    search,
+    method,
+    status,
+  } =
+    getAdminDonationFilters();
+
+
+  const params =
+    new URLSearchParams();
+
+
+  if (search) {
+    params.set(
+      "search",
+      search
+    );
+  }
+
+
+  if (method) {
+    params.set(
+      "method",
+      method
+    );
+  }
+
+
+  if (status) {
+    params.set(
+      "status",
+      status
+    );
+  }
+
+
+  const query =
+    params.toString();
 
 
   try {
     const response =
       await adminApi(
-        "/admin/donations"
+        `/admin/donations${query
+          ? `?${query}`
+          : ""
+        }`
       );
 
 
     const donations =
       Array.isArray(response)
         ? response
-        : response?.donations || [];
+        : response?.donations ||
+        [];
+
+
+    updateAdminDonationCount(
+      donations.length
+    );
 
 
     renderAdminDonations(
@@ -2935,25 +4697,102 @@ async function loadAdminDonations() {
     );
 
   } catch (error) {
+  updateAdminDonationCount(
+    0
+  );
 
-    if (
-      error instanceof TypeError
-    ) {
-      renderAdminEmpty(
-        recent,
-        "Unable to load overview",
-        "We could not connect to the server. Please refresh and try again."
-      );
+  renderAdminError(
+    root,
+    {
+      title:
+        "Unable to load donations",
 
-      return;
+      message:
+        error instanceof TypeError
+          ? "We could not connect to the server. Check your connection and try again."
+          : error.message ||
+            "Something went wrong while loading donations.",
+
+      retry:
+        loadAdminDonations,
     }
+  );
+}
+}
 
 
-    renderAdminEmpty(
-      root,
-      "Unable to load donations",
-      error.message
+async function updateAdminUpiDonation(
+  donation,
+  nextStatus,
+  button
+) {
+  const actionName =
+    nextStatus ===
+      "VERIFIED"
+      ? "verify"
+      : "mark as failed";
+
+
+  const confirmed =
+    window.confirm(
+      `Are you sure you want to ${actionName} this ${adminFormatCurrency(
+        donation.amount
+      )} UPI donation?`
     );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  button.disabled =
+    true;
+
+
+  try {
+    await adminApi(
+      `/admin/donations/${encodeURIComponent(
+        donation.id
+      )}/status`,
+      {
+        method:
+          "PATCH",
+
+        body:
+          JSON.stringify({
+            status:
+              nextStatus,
+          }),
+      }
+    );
+
+
+    showAdminAlert(
+      nextStatus ===
+        "VERIFIED"
+        ? "UPI donation verified successfully."
+        : "UPI donation marked as failed.",
+      "success"
+    );
+
+
+    await Promise.all([
+      loadAdminDonations(),
+      loadAdminOverview(),
+    ]);
+
+  } catch (error) {
+
+    showAdminAlert(
+      error.message ||
+      "Unable to update the donation.",
+      "error"
+    );
+
+
+    button.disabled =
+      false;
   }
 }
 
@@ -2976,17 +4815,20 @@ function renderAdminDonations(
     renderAdminEmpty(
       root,
       "No donations found",
-      "Verified donations will appear here."
+      "No donation records match the selected filters."
     );
+
 
     return;
   }
 
 
-  root.className = "";
+  root.className =
+    "";
 
 
-  root.textContent = "";
+  root.textContent =
+    "";
 
 
   const {
@@ -2997,23 +4839,36 @@ function renderAdminDonations(
       "Donor",
       "Amount",
       "Method",
+      "Transaction",
       "Status",
       "Date",
+      "Action",
     ]);
 
 
   donations.forEach(
     (donation) => {
-      const row =
-        document.createElement("tr");
 
+      const row =
+        document.createElement(
+          "tr"
+        );
+
+
+      /* =====================================================
+         DONOR
+      ===================================================== */
 
       const donor =
-        document.createElement("td");
+        document.createElement(
+          "td"
+        );
 
 
       const donorName =
-        document.createElement("span");
+        document.createElement(
+          "span"
+        );
 
 
       donorName.className =
@@ -3023,13 +4878,15 @@ function renderAdminDonations(
       donorName.textContent =
         adminText(
           donation.donorName ||
-          donation.name ||
+          donation.user?.name ||
           "Anonymous"
         );
 
 
       const donorContact =
-        document.createElement("span");
+        document.createElement(
+          "span"
+        );
 
 
       donorContact.className =
@@ -3049,8 +4906,14 @@ function renderAdminDonations(
       );
 
 
+      /* =====================================================
+         AMOUNT
+      ===================================================== */
+
       const amount =
-        document.createElement("td");
+        document.createElement(
+          "td"
+        );
 
 
       amount.className =
@@ -3063,28 +4926,133 @@ function renderAdminDonations(
         );
 
 
+      /* =====================================================
+         METHOD
+      ===================================================== */
+
       const method =
-        document.createElement("td");
+        document.createElement(
+          "td"
+        );
 
 
-      method.textContent =
+      const methodBadge =
+        document.createElement(
+          "span"
+        );
+
+
+      methodBadge.className =
+        `admin-donation-method admin-donation-method--${String(
+          donation.method
+        ).toLowerCase()
+        }`;
+
+
+      methodBadge.textContent =
+        ADMIN_DONATION_METHOD_NAMES[
+        donation.method
+        ] ||
         adminText(
           donation.method
         );
 
 
-      const status =
-        document.createElement("td");
+      method.append(
+        methodBadge
+      );
 
 
-      status.textContent =
-        adminText(
-          donation.status
+      /* =====================================================
+         TRANSACTION REFERENCE
+      ===================================================== */
+
+      const transaction =
+        document.createElement(
+          "td"
         );
 
 
+      const transactionValue =
+        document.createElement(
+          "span"
+        );
+
+
+      transactionValue.className =
+        "admin-table__primary admin-donation-reference";
+
+
+      const transactionLabel =
+        document.createElement(
+          "span"
+        );
+
+
+      transactionLabel.className =
+        "admin-table__secondary";
+
+
+      if (
+        donation.method ===
+        "UPI"
+      ) {
+        transactionValue.textContent =
+          adminText(
+            donation.upiReference
+          );
+
+
+        transactionLabel.textContent =
+          "UPI reference";
+
+      } else {
+
+        transactionValue.textContent =
+          adminText(
+            donation.razorpayPaymentId ||
+            donation.razorpayOrderId
+          );
+
+
+        transactionLabel.textContent =
+          donation.razorpayPaymentId
+            ? "Razorpay payment ID"
+            : "Razorpay order ID";
+      }
+
+
+      transaction.append(
+        transactionValue,
+        transactionLabel
+      );
+
+
+      /* =====================================================
+         STATUS
+      ===================================================== */
+
+      const status =
+        document.createElement(
+          "td"
+        );
+
+
+      status.append(
+        createAdminDonationStatusBadge(
+          donation.status
+        )
+      );
+
+
+      /* =====================================================
+         DATE
+      ===================================================== */
+
       const date =
-        document.createElement("td");
+        document.createElement(
+          "td"
+        );
 
 
       date.textContent =
@@ -3093,22 +5061,317 @@ function renderAdminDonations(
         );
 
 
+      /* =====================================================
+         ACTIONS
+      ===================================================== */
+
+      const action =
+        document.createElement(
+          "td"
+        );
+
+
+      action.className =
+        "admin-table__action-cell";
+
+
+      const actions =
+        document.createElement(
+          "div"
+        );
+
+
+      actions.className =
+        "admin-donation-actions";
+
+
+      if (
+        donation.method ===
+        "UPI" &&
+        donation.status ===
+        "PENDING"
+      ) {
+        const verify =
+          document.createElement(
+            "button"
+          );
+
+
+        verify.type =
+          "button";
+
+
+        verify.className =
+          "btn btn--primary admin-donation-action";
+
+
+        verify.textContent =
+          "Verify";
+
+
+        verify.addEventListener(
+          "click",
+          () => {
+            updateAdminUpiDonation(
+              donation,
+              "VERIFIED",
+              verify
+            );
+          }
+        );
+
+
+        const fail =
+          document.createElement(
+            "button"
+          );
+
+
+        fail.type =
+          "button";
+
+
+        fail.className =
+          "btn btn--outline admin-donation-action";
+
+
+        fail.textContent =
+          "Mark Failed";
+
+
+        fail.addEventListener(
+          "click",
+          () => {
+            updateAdminUpiDonation(
+              donation,
+              "FAILED",
+              fail
+            );
+          }
+        );
+
+
+        actions.append(
+          verify,
+          fail
+        );
+
+      } else if (
+        donation.method ===
+        "UPI" &&
+        donation.status ===
+        "FAILED"
+      ) {
+        const verify =
+          document.createElement(
+            "button"
+          );
+
+
+        verify.type =
+          "button";
+
+
+        verify.className =
+          "btn btn--primary admin-donation-action";
+
+
+        verify.textContent =
+          "Verify";
+
+
+        verify.addEventListener(
+          "click",
+          () => {
+            updateAdminUpiDonation(
+              donation,
+              "VERIFIED",
+              verify
+            );
+          }
+        );
+
+
+        actions.append(
+          verify
+        );
+
+      } else {
+
+        const locked =
+          document.createElement(
+            "span"
+          );
+
+
+        locked.className =
+          "admin-donation-locked";
+
+
+        locked.textContent =
+          donation.method ===
+            "RAZORPAY"
+            ? "Automatic"
+            : "Final";
+
+
+        actions.append(
+          locked
+        );
+      }
+
+
+      action.append(
+        actions
+      );
+
+
       row.append(
         donor,
         amount,
         method,
+        transaction,
         status,
-        date
+        date,
+        action
       );
 
 
-      tbody.append(row);
+      tbody.append(
+        row
+      );
     }
   );
 
 
-  root.append(wrapper);
+  root.append(
+    wrapper
+  );
 }
+
+
+function initializeDonationFilters() {
+  const search =
+    adminGet(
+      "admin-donation-search"
+    );
+
+
+  const method =
+    adminGet(
+      "admin-donation-method-filter"
+    );
+
+
+  const status =
+    adminGet(
+      "admin-donation-status-filter"
+    );
+
+
+  const clear =
+    adminGet(
+      "admin-donation-clear-filters"
+    );
+
+
+  let timer =
+    null;
+
+
+  search?.addEventListener(
+    "input",
+    () => {
+
+      window.clearTimeout(
+        timer
+      );
+
+
+      timer =
+        window.setTimeout(
+          loadAdminDonations,
+          350
+        );
+    }
+  );
+
+
+  search?.addEventListener(
+    "keydown",
+    (event) => {
+
+      if (
+        event.key !==
+        "Escape"
+      ) {
+        return;
+      }
+
+
+      search.value =
+        "";
+
+
+      window.clearTimeout(
+        timer
+      );
+
+
+      loadAdminDonations();
+    }
+  );
+
+
+  [
+    method,
+    status,
+  ].forEach(
+    (element) => {
+
+      element?.addEventListener(
+        "change",
+        loadAdminDonations
+      );
+
+    }
+  );
+
+
+  clear?.addEventListener(
+    "click",
+    () => {
+
+      if (search) {
+        search.value =
+          "";
+      }
+
+
+      if (method) {
+        method.value =
+          "";
+      }
+
+
+      if (status) {
+        status.value =
+          "";
+      }
+
+
+      window.clearTimeout(
+        timer
+      );
+
+
+      loadAdminDonations();
+    }
+  );
+}
+
+
+
 
 
 /* =========================================================
@@ -3162,6 +5425,10 @@ async function initializeAdminPortal() {
   initializeAdminNavigation();
 
   initializeApplicationFilters();
+
+  initializeUserFilters();
+
+  initializeDonationFilters();
 
   initializeAdminDrawer();
 

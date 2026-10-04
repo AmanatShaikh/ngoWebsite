@@ -27,6 +27,25 @@ const APPLICATION_STATUSES = [
   "COMPLETED",
 ];
 
+const APPLICATION_STATUS_TRANSITIONS = {
+  PENDING: [
+    "UNDER_REVIEW",
+    "REJECTED",
+  ],
+
+  UNDER_REVIEW: [
+    "APPROVED",
+    "REJECTED",
+  ],
+
+  APPROVED: [
+    "COMPLETED",
+  ],
+
+  REJECTED: [],
+
+  COMPLETED: [],
+};
 
 const APPLICATION_TYPES = [
   "MEDICAL",
@@ -40,7 +59,6 @@ const BRANCHES = [
   "NAGPADA",
   "DHARAVI",
 ];
-
 
 /* =========================================================
    VALIDATION
@@ -74,6 +92,12 @@ const updateUpiDonationStatusSchema =
         "VERIFIED",
         "FAILED",
       ]),
+  });
+
+const updateUserStatusSchema =
+  z.object({
+    isActive:
+      z.boolean(),
   });
 
 
@@ -132,6 +156,16 @@ function normalizeApplication(
   };
 }
 
+function getAllowedApplicationStatuses(
+  currentStatus
+) {
+  return (
+    APPLICATION_STATUS_TRANSITIONS[
+    currentStatus
+    ] ||
+    []
+  );
+}
 
 /* =========================================================
    ADMIN CURRENT USER
@@ -890,19 +924,77 @@ export async function updateApplicationStatus(
     }
 
 
+    /* =====================================================
+       SAME STATUS
+    ===================================================== */
+
     if (
       existing.status ===
       status
     ) {
-      return res.json({
-        success:
-          true,
+      return res
+        .status(409)
+        .json({
+          success:
+            false,
 
-        message:
-          "Application already has this status.",
-      });
+          message:
+            "The application already has this status.",
+        });
     }
 
+
+    /* =====================================================
+       TRANSITION VALIDATION
+    ===================================================== */
+
+    const allowedStatuses =
+      getAllowedApplicationStatuses(
+        existing.status
+      );
+
+
+    if (
+      !allowedStatuses.includes(
+        status
+      )
+    ) {
+      return res
+        .status(409)
+        .json({
+          success:
+            false,
+
+          message:
+            `Cannot change application status from ${existing.status} to ${status}.`,
+        });
+    }
+
+
+    /* =====================================================
+       REJECTION NOTE REQUIRED
+    ===================================================== */
+
+    if (
+      status ===
+      "REJECTED" &&
+      !note
+    ) {
+      return res
+        .status(400)
+        .json({
+          success:
+            false,
+
+          message:
+            "A status note is required when rejecting an application.",
+        });
+    }
+
+
+    /* =====================================================
+       UPDATE + HISTORY
+    ===================================================== */
 
     const updatedApplication =
       await prisma.$transaction(
@@ -917,9 +1009,16 @@ export async function updateApplicationStatus(
               data: {
                 status,
 
+                /*
+                 * adminNote represents the latest
+                 * applicant-visible status note.
+                 *
+                 * Clear it when the new update
+                 * does not contain a note.
+                 */
                 adminNote:
                   note ||
-                  undefined,
+                  null,
               },
             });
 
@@ -965,7 +1064,6 @@ export async function updateApplicationStatus(
     next(error);
   }
 }
-
 
 /* =========================================================
    ADMIN DOCUMENT DOWNLOAD
@@ -1084,47 +1182,125 @@ export async function getAdminUsers(
       );
 
 
+    const role =
+      parseQueryValue(
+        req.query.role
+      ).toUpperCase();
+
+
+    const status =
+      parseQueryValue(
+        req.query.status
+      ).toUpperCase();
+
+
+    if (
+      role &&
+      ![
+        "USER",
+        "ADMIN",
+      ].includes(role)
+    ) {
+      return res
+        .status(400)
+        .json({
+          success:
+            false,
+
+          message:
+            "Invalid user role filter.",
+        });
+    }
+
+
+    if (
+      status &&
+      ![
+        "ACTIVE",
+        "DISABLED",
+      ].includes(status)
+    ) {
+      return res
+        .status(400)
+        .json({
+          success:
+            false,
+
+          message:
+            "Invalid account status filter.",
+        });
+    }
+
+
+    const filters =
+      [];
+
+
+    if (search) {
+      filters.push({
+        OR: [
+          {
+            name: {
+              contains:
+                search,
+
+              mode:
+                "insensitive",
+            },
+          },
+
+          {
+            username: {
+              contains:
+                search,
+
+              mode:
+                "insensitive",
+            },
+          },
+
+          {
+            email: {
+              contains:
+                search,
+
+              mode:
+                "insensitive",
+            },
+          },
+
+          {
+            phone: {
+              contains:
+                search,
+            },
+          },
+        ],
+      });
+    }
+
+
+    if (role) {
+      filters.push({
+        role,
+      });
+    }
+
+
+    if (status) {
+      filters.push({
+        isActive:
+          status ===
+          "ACTIVE",
+      });
+    }
+
+
     const where =
-      search
+      filters.length
         ? {
-          OR: [
-            {
-              name: {
-                contains:
-                  search,
-
-                mode:
-                  "insensitive",
-              },
-            },
-
-            {
-              username: {
-                contains:
-                  search,
-
-                mode:
-                  "insensitive",
-              },
-            },
-
-            {
-              email: {
-                contains:
-                  search,
-
-                mode:
-                  "insensitive",
-              },
-            },
-
-            {
-              phone: {
-                contains:
-                  search,
-              },
-            },
-          ],
+          AND:
+            filters,
         }
         : {};
 
@@ -1191,6 +1367,169 @@ export async function getAdminUsers(
   }
 }
 
+export async function updateAdminUserStatus(
+  req,
+  res,
+  next
+) {
+  try {
+    const validation =
+      updateUserStatusSchema.safeParse(
+        req.body
+      );
+
+
+    if (
+      !validation.success
+    ) {
+      return res
+        .status(400)
+        .json({
+          success:
+            false,
+
+          message:
+            validation.error
+              .issues[0]
+              ?.message ||
+            "Invalid account status.",
+        });
+    }
+
+
+    const user =
+      await prisma.user.findUnique({
+        where: {
+          id:
+            req.params.id,
+        },
+
+        select: {
+          id:
+            true,
+
+          role:
+            true,
+
+          isActive:
+            true,
+        },
+      });
+
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({
+          success:
+            false,
+
+          message:
+            "User not found.",
+        });
+    }
+
+
+    /*
+     * Admin accounts are protected.
+     * This screen only manages applicant accounts.
+     */
+    if (
+      user.role ===
+      "ADMIN"
+    ) {
+      return res
+        .status(403)
+        .json({
+          success:
+            false,
+
+          message:
+            "Administrator accounts cannot be changed from user management.",
+        });
+    }
+
+
+    const {
+      isActive,
+    } =
+      validation.data;
+
+
+    if (
+      user.isActive ===
+      isActive
+    ) {
+      return res
+        .status(409)
+        .json({
+          success:
+            false,
+
+          message:
+            isActive
+              ? "This user is already active."
+              : "This user is already disabled.",
+        });
+    }
+
+
+    const updated =
+      await prisma.user.update({
+        where: {
+          id:
+            user.id,
+        },
+
+        data: {
+          isActive,
+        },
+
+        select: {
+          id:
+            true,
+
+          name:
+            true,
+
+          username:
+            true,
+
+          email:
+            true,
+
+          phone:
+            true,
+
+          role:
+            true,
+
+          isActive:
+            true,
+
+          updatedAt:
+            true,
+        },
+      });
+
+
+    return res.json({
+      success:
+        true,
+
+      message:
+        isActive
+          ? "User account activated successfully."
+          : "User account disabled successfully.",
+
+      user:
+        updated,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
 
 /* =========================================================
    DONATIONS
@@ -1202,43 +1541,150 @@ export async function getAdminDonations(
   next
 ) {
   try {
+    const search =
+      parseQueryValue(
+        req.query.search
+      );
+
+
     const method =
       parseQueryValue(
         req.query.method
-      );
+      ).toUpperCase();
 
 
     const status =
       parseQueryValue(
         req.query.status
-      );
-
-
-    const where = {};
+      ).toUpperCase();
 
 
     if (
-      method === "UPI" ||
-      method === "RAZORPAY"
+      method &&
+      ![
+        "UPI",
+        "RAZORPAY",
+      ].includes(method)
     ) {
-      where.method =
-        method;
+      return res
+        .status(400)
+        .json({
+          success: false,
+
+          message:
+            "Invalid donation method.",
+        });
     }
 
 
     if (
-      [
+      status &&
+      ![
         "PENDING",
         "VERIFIED",
         "FAILED",
         "REFUNDED",
-      ].includes(
-        status
-      )
+      ].includes(status)
     ) {
-      where.status =
-        status;
+      return res
+        .status(400)
+        .json({
+          success: false,
+
+          message:
+            "Invalid donation status.",
+        });
     }
+
+
+    const filters = [];
+
+
+    if (method) {
+      filters.push({
+        method,
+      });
+    }
+
+
+    if (status) {
+      filters.push({
+        status,
+      });
+    }
+
+
+    if (search) {
+      filters.push({
+        OR: [
+          {
+            donorName: {
+              contains:
+                search,
+
+              mode:
+                "insensitive",
+            },
+          },
+
+          {
+            email: {
+              contains:
+                search,
+
+              mode:
+                "insensitive",
+            },
+          },
+
+          {
+            phone: {
+              contains:
+                search,
+            },
+          },
+
+          {
+            upiReference: {
+              contains:
+                search,
+
+              mode:
+                "insensitive",
+            },
+          },
+
+          {
+            razorpayOrderId: {
+              contains:
+                search,
+
+              mode:
+                "insensitive",
+            },
+          },
+
+          {
+            razorpayPaymentId: {
+              contains:
+                search,
+
+              mode:
+                "insensitive",
+            },
+          },
+        ],
+      });
+    }
+
+
+    const where =
+      filters.length
+        ? {
+          AND:
+            filters,
+        }
+        : {};
 
 
     const donations =
@@ -1434,6 +1880,19 @@ export async function updateUpiDonationStatus(
         });
     }
 
+    if (
+      donation.status ===
+      validation.data.status
+    ) {
+      return res
+        .status(409)
+        .json({
+          success: false,
+
+          message:
+            "The donation already has this status.",
+        });
+    }
 
     const updated =
       await prisma.donation.update({
