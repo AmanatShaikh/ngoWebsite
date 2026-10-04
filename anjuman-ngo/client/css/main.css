@@ -1281,7 +1281,40 @@ p {
   font-size: var(--text-sm);
 }
 
+.purpose-item {
+  padding: 0;
 
+  border-right: 1px solid var(--color-border);
+}
+
+
+.purpose-item__link {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  padding: var(--space-8);
+
+  color: inherit;
+
+  text-decoration: none;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.purpose-item__link:hover {
+  background: var(--color-surface-soft);
+}
+
+
+.purpose-item__link:focus-visible {
+  outline: 3px solid var(--color-primary-300);
+  outline-offset: -3px;
+}
 /* =========================================================
    SPLIT CONTENT SECTIONS
 ========================================================= */
