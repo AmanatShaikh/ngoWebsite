@@ -36,6 +36,11 @@
 
   align-items: stretch;
 
+  width: min(
+    calc(100% - 2rem),
+    1080px
+  );
+
   max-width: 1080px;
 
   margin-inline: auto;
@@ -274,6 +279,22 @@
   margin-inline: auto;
 }
 
+.auth-info,
+.auth-panel,
+.auth-form-wrap,
+.auth-form,
+.auth-field,
+.auth-field-row,
+.auth-field-row > *,
+.auth-input-wrap {
+  min-width: 0;
+}
+
+
+.auth-input {
+  min-width: 0;
+}
+
 .auth-heading {
   margin-bottom: var(--space-8);
 }
@@ -327,6 +348,12 @@
 }
 
 .auth-label {
+  display: inline-flex;
+
+  align-items: baseline;
+
+  gap: 0.25rem;
+
   color: var(--color-text);
 
   font-size: var(--text-sm);
@@ -686,7 +713,7 @@
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .auth-container {
     grid-template-columns: 1fr;
 
@@ -708,7 +735,8 @@
   }
 
   .auth-benefits {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns:
+      repeat(3, 1fr);
 
     gap: var(--space-4);
 
@@ -781,4 +809,59 @@
 
     gap: var(--space-3);
   }
+}
+
+/* =========================================================
+   SIGNUP FIELD ALIGNMENT FIX
+========================================================= */
+
+.auth-field-row {
+  align-items: start;
+}
+
+
+.auth-field-row > .auth-field {
+  min-width: 0;
+
+  align-self: start;
+}
+
+
+.auth-field {
+  align-content: start;
+
+  grid-auto-rows: max-content;
+}
+
+
+.auth-label {
+  display: inline-flex;
+  align-items: baseline;
+
+  min-height: 18px;
+
+  gap: 0.25rem;
+
+  line-height: 1.3;
+}
+
+
+.auth-input {
+  width: 100%;
+  height: 50px;
+  min-height: 50px;
+
+  align-self: start;
+}
+
+
+.auth-field-help {
+  margin: 0;
+
+  line-height: 1.55;
+}
+
+
+.auth-field-error {
+  margin: 0;
 }
