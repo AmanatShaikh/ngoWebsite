@@ -39,6 +39,44 @@ function getRazorpayConfig() {
   };
 }
 
+function isRazorpayConfigured() {
+  return Boolean(
+    optionalEnvironmentValue(
+      process.env.RAZORPAY_KEY_ID
+    ) &&
+    optionalEnvironmentValue(
+      process.env.RAZORPAY_KEY_SECRET
+    )
+  );
+}
+
+
+function isUpiConfigured() {
+  return Boolean(
+    optionalEnvironmentValue(
+      process.env.UPI_ID
+    )
+  );
+}
+
+
+function optionalEnvironmentValue(
+  value
+) {
+  if (
+    value === undefined ||
+    value === null
+  ) {
+    return null;
+  }
+
+
+  const normalized =
+    String(value).trim();
+
+
+  return normalized || null;
+}
 
 function getRazorpayClient() {
   const {
@@ -275,10 +313,29 @@ export function getDonationConfig(
   req,
   res
 ) {
-  const {
-    keyId,
-  } =
-    getRazorpayConfig();
+  const upiId =
+    optionalEnvironmentValue(
+      process.env.UPI_ID
+    );
+
+
+  const upiPayeeName =
+    optionalEnvironmentValue(
+      process.env.UPI_PAYEE_NAME
+    ) ||
+    "Anjuman Bashindgan-E-Bihar";
+
+
+  const razorpayConfigured =
+    isRazorpayConfigured();
+
+
+  const razorpayKeyId =
+    razorpayConfigured
+      ? optionalEnvironmentValue(
+        process.env.RAZORPAY_KEY_ID
+      )
+      : null;
 
 
   return res.json({
@@ -286,18 +343,23 @@ export function getDonationConfig(
 
     payment: {
 
-      razorpayKeyId:
-        keyId,
-
       upi: {
+        enabled:
+          Boolean(upiId),
+
         id:
-          process.env.UPI_ID ||
-          null,
+          upiId,
 
         payeeName:
-          process.env
-            .UPI_PAYEE_NAME ||
-          "Anjuman Bashindgan-E-Bihar",
+          upiPayeeName,
+      },
+
+      razorpay: {
+        enabled:
+          razorpayConfigured,
+
+        keyId:
+          razorpayKeyId,
       },
 
     },
@@ -340,8 +402,23 @@ export async function createRazorpayOrder(
       validation.data;
 
 
+    if (
+      !isRazorpayConfigured()
+    ) {
+      return res
+        .status(503)
+        .json({
+          success: false,
+
+          message:
+            "Online Razorpay donations are currently unavailable.",
+        });
+    }
+
+
     const razorpay =
       getRazorpayClient();
+
 
 
     const receipt =
@@ -518,16 +595,30 @@ export async function verifyRazorpayPayment(
 
     if (
       donation.status ===
-      "VERIFIED"
+      "REFUNDED"
     ) {
-      return res.json({
-        success: true,
+      return res
+        .status(409)
+        .json({
+          success: false,
 
-        message:
-          "Payment was already verified.",
+          message:
+            "This donation has already been refunded and cannot be verified again.",
+        });
+    }
 
-        donation,
-      });
+    if (
+      donation.method !==
+      "RAZORPAY"
+    ) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+
+          message:
+            "This donation is not a Razorpay donation.",
+        });
     }
 
 
@@ -730,18 +821,78 @@ export async function submitUpiDonationReference(
     }
 
 
+    if (
+      !isUpiConfigured()
+    ) {
+      return res
+        .status(503)
+        .json({
+          success: false,
+
+          message:
+            "Direct UPI donations are currently unavailable.",
+        });
+    }
+
+
     const input =
       validation.data;
 
 
-    /*
-      Important:
-      A typed UPI reference is NOT proof
-      that money was actually received.
+    const normalizedReference =
+      input
+        .upiReference
+        .trim()
+        .toUpperCase();
 
-      Therefore it stays PENDING until
-      an administrator/bank reconciliation
-      confirms it.
+
+    /*
+      Check before create so the user gets
+      a clear error instead of a database
+      constraint error.
+
+      The database UNIQUE constraint still
+      protects against race conditions.
+    */
+
+    const existingDonation =
+      await prisma.donation.findUnique({
+
+        where: {
+          upiReference:
+            normalizedReference,
+        },
+
+        select: {
+          id:
+            true,
+
+          status:
+            true,
+        },
+
+      });
+
+
+    if (existingDonation) {
+      return res
+        .status(409)
+        .json({
+          success: false,
+
+          message:
+            "This UPI transaction reference has already been submitted.",
+        });
+    }
+
+
+    /*
+      A typed UPI reference is NOT proof
+      that payment was actually received.
+
+      It therefore remains PENDING until
+      an administrator reconciles the
+      transaction with the bank account.
     */
 
     const donation =
@@ -782,7 +933,7 @@ export async function submitUpiDonationReference(
             "PENDING",
 
           upiReference:
-            input.upiReference,
+            normalizedReference,
 
         },
 
@@ -809,6 +960,31 @@ export async function submitUpiDonationReference(
       });
 
   } catch (error) {
+
+    /*
+      Prisma P2002 = unique constraint
+      violation.
+
+      This handles the race condition
+      where two identical references are
+      submitted at almost the same time.
+    */
+
+    if (
+      error?.code ===
+      "P2002"
+    ) {
+      return res
+        .status(409)
+        .json({
+          success: false,
+
+          message:
+            "This UPI transaction reference has already been submitted.",
+        });
+    }
+
+
     next(error);
   }
 }
@@ -838,14 +1014,14 @@ export async function razorpayWebhook(
 
     const signature =
       req.headers[
-        "x-razorpay-signature"
+      "x-razorpay-signature"
       ];
 
 
     if (
       !signature ||
       typeof signature !==
-        "string"
+      "string"
     ) {
       return res
         .status(400)
@@ -934,7 +1110,7 @@ export async function razorpayWebhook(
 
     if (
       eventType ===
-        "payment.captured" &&
+      "payment.captured" &&
       payment
     ) {
 
@@ -949,19 +1125,26 @@ export async function razorpayWebhook(
         });
 
 
-      if (donation) {
-
-        const expectedAmount =
-          amountToPaise(
-            donation.amount
-          );
+      if (
+        donation &&
+        donation.method ===
+        "RAZORPAY" &&
+        donation.status !==
+        "REFUNDED"
+      ) {
 
 
         if (
+          (
+            donation.status ===
+            "PENDING" ||
+            donation.status ===
+            "FAILED"
+          ) &&
           payment.currency ===
-            "INR" &&
+          "INR" &&
           Number(payment.amount) ===
-            expectedAmount
+          expectedAmount
         ) {
 
           await prisma.donation.update({
@@ -992,7 +1175,7 @@ export async function razorpayWebhook(
 
     if (
       eventType ===
-        "payment.failed" &&
+      "payment.failed" &&
       payment
     ) {
 
@@ -1009,8 +1192,10 @@ export async function razorpayWebhook(
 
       if (
         donation &&
+        donation.method ===
+        "RAZORPAY" &&
         donation.status ===
-          "PENDING"
+        "PENDING"
       ) {
 
         await prisma.donation.update({

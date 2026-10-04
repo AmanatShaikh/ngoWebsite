@@ -6,24 +6,16 @@
 
   <meta charset="UTF-8" />
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta
-    name="description"
-    content="Support the community work of Anjuman Bashindgan-E-Bihar through secure donations."
-  />
+  <meta name="description"
+    content="Support the community work of Anjuman Bashindgan-E-Bihar through secure UPI and online donations." />
 
   <title>
     Donate | Anjuman Bashindgan-E-Bihar
   </title>
 
-  <link
-    rel="stylesheet"
-    href="./css/main.css"
-  />
+  <link rel="stylesheet" href="./css/main.css" />
 
 </head>
 
@@ -33,10 +25,11 @@
   <div id="site-header"></div>
 
 
-  <main
-    id="main-content"
-    class="page-main"
-  >
+  <main id="main-content" class="page-main">
+
+    <!-- =====================================================
+         DONATION HERO
+    ====================================================== -->
 
     <section class="donation-hero">
 
@@ -49,13 +42,13 @@
           </span>
 
           <h1 class="section-title">
-            Help strengthen community assistance
+            Help us continue serving the community
           </h1>
 
           <p class="section-description">
-            Donations help support programs and assistance
-            initiatives for individuals and families facing
-            genuine needs.
+            Your contribution can support community welfare,
+            medical assistance, education, livelihood and
+            essential travel initiatives.
           </p>
 
         </div>
@@ -65,150 +58,723 @@
     </section>
 
 
+    <!-- =====================================================
+         DONATION CHECKOUT
+    ====================================================== -->
+
     <section class="section section--white">
 
       <div class="container donation-layout">
 
 
-        <article class="card donation-story">
+        <!-- =================================================
+             DONATION FORM
+        ================================================== -->
 
+        <article class="card donation-form-card">
 
-          <!-- IMAGE REQUIRED:
-               assets/images/general/donation-support.webp -->
-
-          <img
-            src="./assets/images/general/donation-support.webp"
-            alt="Community support activity"
-            class="donation-story__image"
-            width="1200"
-            height="800"
-          />
-
-
-          <div class="donation-story__content">
+          <div class="donation-form-card__header">
 
             <span class="section-eyebrow">
-              Why Give?
+              Make a Contribution
             </span>
 
             <h2>
-              Contribute to practical support
+              Donation details
             </h2>
 
             <p>
-              Contributions can help strengthen programs
-              related to medical assistance, education,
-              livelihood and essential travel support.
-            </p>
-
-            <p style="margin-top: 1rem;">
-              The completed donation system will provide
-              verified payment processing and donation
-              records through the backend.
+              Choose an amount and your preferred payment
+              method. Payment availability is verified
+              securely through the server.
             </p>
 
           </div>
 
-        </article>
 
-
-        <div class="donation-methods">
-
-
-          <article class="card donation-card">
-
-            <span class="section-eyebrow">
-              Method 01
-            </span>
-
-            <h2>
-              Donate through UPI
-            </h2>
-
-            <p>
-              Scan the organization's verified UPI QR code
-              using your preferred UPI application.
-            </p>
+          <form id="donation-form" novalidate>
 
 
             <!-- =============================================
-                 UPI QR WILL GO HERE
-
-                 DO NOT ADD A RANDOM QR CODE.
-
-                 When you provide the official UPI ID/QR,
-                 replace this block with:
-
-                 <img
-                   src="./assets/images/general/upi-qr.webp"
-                   alt="Anjuman Bashindgan-E-Bihar UPI QR"
-                 />
+                 DONOR INFORMATION
             ============================================== -->
 
-            <div class="upi-placeholder">
+            <fieldset class="donation-form-section">
 
-              <div>
+              <legend class="donation-form-section__legend">
+
+                <span class="donation-form-section__number">
+                  1
+                </span>
+
+                <span>
+                  Donor information
+                </span>
+
+              </legend>
+
+
+              <p class="donation-form-section__description">
+                These details are optional and help us
+                identify your donation record.
+              </p>
+
+
+              <div class="form-grid">
+
+
+                <div class="form-group">
+
+                  <label for="donor-name" class="form-label">
+                    Full name
+                    <span class="form-label__optional">
+                      Optional
+                    </span>
+                  </label>
+
+                  <input type="text" id="donor-name" name="donorName" class="form-control" maxlength="100"
+                    autocomplete="name" placeholder="Enter your full name" />
+
+                </div>
+
+
+                <div class="form-group">
+
+                  <label for="donor-phone" class="form-label">
+                    Phone number
+                    <span class="form-label__optional">
+                      Optional
+                    </span>
+                  </label>
+
+                  <input type="tel" id="donor-phone" name="phone" class="form-control" maxlength="10"
+                    inputmode="numeric" autocomplete="tel" placeholder="10-digit mobile number" />
+
+                  <span class="form-help">
+                    Indian mobile number without +91.
+                  </span>
+
+                </div>
+
+
+                <div class="form-group form-group--full">
+
+                  <label for="donor-email" class="form-label">
+                    Email address
+                    <span class="form-label__optional">
+                      Optional
+                    </span>
+                  </label>
+
+                  <input type="email" id="donor-email" name="email" class="form-control" maxlength="150"
+                    autocomplete="email" placeholder="name@example.com" />
+
+                </div>
+
+
+              </div>
+
+            </fieldset>
+
+
+            <!-- =============================================
+                 DONATION AMOUNT
+            ============================================== -->
+
+            <fieldset class="donation-form-section">
+
+              <legend class="donation-form-section__legend">
+
+                <span class="donation-form-section__number">
+                  2
+                </span>
+
+                <span>
+                  Choose donation amount
+                </span>
+
+              </legend>
+
+
+              <p class="donation-form-section__description">
+                Minimum donation amount is ₹10.
+              </p>
+
+
+              <div class="donation-amount-grid" id="donation-amount-options">
+
+
+                <label class="donation-amount-option">
+
+                  <input type="radio" name="presetAmount" value="500" class="donation-choice-input" />
+
+                  <span class="donation-amount-option__content">
+                    ₹500
+                  </span>
+
+                </label>
+
+
+                <label class="donation-amount-option">
+
+                  <input type="radio" name="presetAmount" value="1000" class="donation-choice-input" />
+
+                  <span class="donation-amount-option__content">
+                    ₹1,000
+                  </span>
+
+                </label>
+
+
+                <label class="donation-amount-option">
+
+                  <input type="radio" name="presetAmount" value="2500" class="donation-choice-input" />
+
+                  <span class="donation-amount-option__content">
+                    ₹2,500
+                  </span>
+
+                </label>
+
+
+                <label class="donation-amount-option">
+
+                  <input type="radio" name="presetAmount" value="5000" class="donation-choice-input" />
+
+                  <span class="donation-amount-option__content">
+                    ₹5,000
+                  </span>
+
+                </label>
+
+
+              </div>
+
+
+              <div class="form-group donation-custom-amount">
+
+                <label for="donation-amount" class="form-label">
+                  Or enter a custom amount
+                </label>
+
+
+                <div class="donation-amount-input">
+
+                  <span class="donation-amount-input__symbol" aria-hidden="true">
+                    ₹
+                  </span>
+
+                  <input type="number" id="donation-amount" name="amount"
+                    class="form-control donation-amount-input__control" min="10" max="1000000" step="1"
+                    inputmode="decimal" placeholder="Enter amount" required />
+
+                </div>
+
+
+                <span class="form-help">
+                  Enter an amount between ₹10 and ₹10,00,000.
+                </span>
+
+              </div>
+
+            </fieldset>
+
+
+            <!-- =============================================
+                 PAYMENT METHOD
+            ============================================== -->
+
+            <fieldset class="donation-form-section">
+
+              <legend class="donation-form-section__legend">
+
+                <span class="donation-form-section__number">
+                  3
+                </span>
+
+                <span>
+                  Choose payment method
+                </span>
+
+              </legend>
+
+
+              <p class="donation-form-section__description">
+                Available payment methods are controlled by
+                the secure server configuration.
+              </p>
+
+
+              <div class="donation-payment-methods" id="donation-payment-methods">
+
+
+                <!-- UPI -->
+
+                <label class="donation-payment-option" id="upi-payment-option">
+
+                  <input type="radio" name="paymentMethod" value="UPI" class="donation-choice-input" />
+
+
+                  <span class="donation-payment-option__content">
+
+                    <span class="donation-payment-option__header">
+
+                      <strong>
+                        Direct UPI
+                      </strong>
+
+                      <span class="donation-payment-badge" id="upi-availability">
+                        UPI
+                      </span>
+
+                    </span>
+
+
+                    <span class="donation-payment-option__description">
+                      Pay using your preferred UPI app and
+                      submit the transaction reference for
+                      verification.
+                    </span>
+
+                  </span>
+
+                </label>
+
+
+                <!-- RAZORPAY -->
+
+                <label class="donation-payment-option" id="razorpay-payment-option">
+
+                  <input type="radio" name="paymentMethod" value="RAZORPAY" class="donation-choice-input" />
+
+
+                  <span class="donation-payment-option__content">
+
+                    <span class="donation-payment-option__header">
+
+                      <strong>
+                        Razorpay
+                      </strong>
+
+                      <span class="donation-payment-badge" id="razorpay-availability">
+                        Secure Checkout
+                      </span>
+
+                    </span>
+
+
+                    <span class="donation-payment-option__description">
+                      Pay securely using payment methods
+                      available through Razorpay Checkout.
+                    </span>
+
+                  </span>
+
+                </label>
+
+
+              </div>
+
+            </fieldset>
+
+
+
+            <!-- =============================================
+     DIRECT UPI PAYMENT
+============================================== -->
+
+            <section id="upi-payment-panel" class="donation-upi-panel" aria-labelledby="upi-payment-title" hidden>
+
+              <div class="donation-upi-panel__header">
+
+                <div>
+
+                  <span class="section-eyebrow">
+                    Direct UPI
+                  </span>
+
+                  <h3 id="upi-payment-title">
+                    Pay using your UPI app
+                  </h3>
+
+                </div>
+
+
+                <span class="donation-payment-badge" id="upi-panel-status">
+                  Available
+                </span>
+
+              </div>
+
+
+              <div class="donation-upi-summary">
+
+                <div class="donation-upi-summary__item">
+
+                  <span>
+                    Donation amount
+                  </span>
+
+                  <strong id="upi-selected-amount">
+                    ₹0
+                  </strong>
+
+                </div>
+
+
+                <div class="donation-upi-summary__item">
+
+                  <span>
+                    Payee
+                  </span>
+
+                  <strong id="upi-payee-name">
+                    Anjuman Bashindgan-E-Bihar
+                  </strong>
+
+                </div>
+
+              </div>
+
+
+              <div class="donation-upi-payment-grid">
+
+
+                <!-- QR PAYMENT -->
+
+                <div class="donation-upi-qr-card">
+
+                  <span class="donation-upi-qr-card__title">
+                    Scan & Pay
+                  </span>
+
+
+                  <div id="upi-qr-code" class="donation-upi-qr" aria-label="UPI payment QR code"></div>
+
+
+                  <p class="donation-upi-qr-card__help">
+                    Scan this QR using any UPI app on your phone.
+                  </p>
+
+
+                  <strong id="upi-qr-amount" class="donation-upi-qr-card__amount">
+                    ₹0
+                  </strong>
+
+                </div>
+
+
+                <!-- MANUAL / MOBILE PAYMENT -->
+
+                <div class="donation-upi-details">
+
+                  <div>
+
+                    <span class="donation-upi-details__label">
+                      Official UPI ID
+                    </span>
+
+
+                    <div class="donation-upi-id-row">
+
+                      <input type="text" id="upi-id-display" class="form-control" readonly aria-readonly="true" />
+
+
+                      <button type="button" id="copy-upi-id" class="btn btn--outline">
+                        Copy
+                      </button>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="donation-upi-manual-help">
+
+                    <strong>
+                      Paying from another device?
+                    </strong>
+
+                    <p>
+                      Copy the official UPI ID above and enter it
+                      manually in your UPI app.
+                    </p>
+
+                  </div>
+
+
+                  <a href="#" id="upi-pay-link" class="btn btn--primary donation-upi-open-app">
+                    Open UPI App
+                  </a>
+
+
+                  <p class="donation-upi-device-note">
+                    On a laptop or desktop, scan the QR using your
+                    phone. On mobile, you can use Open UPI App.
+                  </p>
+
+                </div>
+
+
+              </div>
+
+
+              <div class="donation-upi-actions">
+
+                <a href="#" id="upi-pay-link" class="btn btn--primary">
+                  Open UPI App
+                </a>
+
+              </div>
+
+
+              <div class="donation-upi-instructions">
 
                 <strong>
-                  Official UPI QR
+                  After completing the payment:
                 </strong>
 
                 <p>
-                  Add after the organization's UPI account
-                  is confirmed.
+                  Return to this page and enter the UPI transaction
+                  reference / UTR shown by your payment app.
                 </p>
+
+              </div>
+
+
+              <div class="form-group">
+
+                <label for="upi-reference" class="form-label">
+                  UPI transaction reference / UTR
+                </label>
+
+                <input type="text" id="upi-reference" name="upiReference" class="form-control" minlength="4"
+                  maxlength="100" autocomplete="off" placeholder="Enter transaction reference" />
+
+                <span class="form-help">
+                  This reference will be checked before the donation is
+                  marked as verified.
+                </span>
+
+              </div>
+
+            </section>
+
+
+            <!-- =============================================
+                 STATUS
+            ============================================== -->
+
+            <div id="donation-form-message" class="donation-form-message" role="status" aria-live="polite" hidden></div>
+
+
+            <div id="donation-config-status" class="donation-config-status" role="status" aria-live="polite">
+              Payment availability will be checked securely
+              before a transaction begins.
+            </div>
+
+
+            <!-- Step 3 / Step 4 will activate this -->
+
+            <button type="button" id="donation-submit" class="btn btn--primary btn--full donation-submit" disabled>
+              Continue to Payment
+            </button>
+
+
+            <p class="donation-payment-note">
+              A donation is considered successful only after
+              payment confirmation has been verified by the
+              server.
+            </p>
+
+
+          </form>
+
+          <!-- =============================================
+            DONATION RESULT
+          ============================================== -->
+
+          <section id="donation-result" class="donation-result" aria-live="polite" hidden>
+
+            <div id="donation-result-icon" class="donation-result__icon" aria-hidden="true">
+              ✓
+            </div>
+
+
+            <span id="donation-result-eyebrow" class="section-eyebrow">
+              Donation
+            </span>
+
+
+            <h2 id="donation-result-title">
+              Thank you for your support
+            </h2>
+
+
+            <p id="donation-result-message" class="donation-result__message"></p>
+
+
+            <div class="donation-result__summary">
+
+              <div class="donation-result__row">
+
+                <span>
+                  Amount
+                </span>
+
+                <strong id="donation-result-amount">
+                  —
+                </strong>
+
+              </div>
+
+
+              <div class="donation-result__row">
+
+                <span>
+                  Payment method
+                </span>
+
+                <strong id="donation-result-method">
+                  —
+                </strong>
+
+              </div>
+
+
+              <div class="donation-result__row">
+
+                <span>
+                  Status
+                </span>
+
+                <strong id="donation-result-status" class="donation-result__status">
+                  —
+                </strong>
+
+              </div>
+
+
+              <div id="donation-result-reference-row" class="donation-result__row">
+
+                <span>
+                  Donation reference
+                </span>
+
+                <strong id="donation-result-reference">
+                  —
+                </strong>
 
               </div>
 
             </div>
 
-          </article>
+
+            <div id="donation-result-note" class="donation-result__note"></div>
 
 
-          <article class="card donation-card">
+            <div class="donation-result__actions">
 
-            <span class="section-eyebrow">
-              Method 02
-            </span>
-
-            <h2>
-              Donate securely with Razorpay
-            </h2>
-
-            <p>
-              Razorpay will allow donors to make online
-              payments using supported payment methods.
-            </p>
-
-
-            <div class="payment-status">
-
-              Razorpay checkout will be activated during
-              the backend and payment-integration phase.
-
-            </div>
-
-
-            <div style="margin-top: 1rem;">
-
-              <button
-                type="button"
-                class="btn btn--primary btn--full"
-                disabled
-              >
-                Online Donation Coming Soon
+              <button type="button" id="make-another-donation" class="btn btn--primary">
+                Make Another Donation
               </button>
 
+
+              <a href="contact.html" class="btn btn--outline">
+                Contact Anjuman
+              </a>
+
+            </div>
+
+          </section>
+
+        </article>
+
+
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
+
+        <aside class="donation-sidebar">
+
+
+          <article class="card donation-story">
+
+            <img src="./assets/images/general/donation-support.webp"
+              alt="Anjuman Bashindgan-E-Bihar community support activity" class="donation-story__image" width="1200"
+              height="800" />
+
+
+            <div class="donation-story__content">
+
+              <span class="section-eyebrow">
+                Why Give?
+              </span>
+
+              <h2>
+                Contribute to practical community support
+              </h2>
+
+              <p>
+                Contributions can help strengthen community
+                welfare initiatives and assistance related
+                to healthcare, education, livelihood and
+                essential travel needs.
+              </p>
+
             </div>
 
           </article>
 
-        </div>
+
+          <article class="card donation-trust-card">
+
+            <span class="section-eyebrow">
+              Secure Donation
+            </span>
+
+            <h3>
+              Your payment is verified before confirmation
+            </h3>
+
+
+            <ul class="donation-trust-list">
+
+              <li>
+                Razorpay payments are verified on the
+                backend.
+              </li>
+
+              <li>
+                UPI references remain pending until payment
+                is confirmed.
+              </li>
+
+              <li>
+                Payment secrets are never exposed in the
+                browser.
+              </li>
+
+              <li>
+                Failed or unverified payments are not shown
+                as successful donations.
+              </li>
+
+            </ul>
+
+          </article>
+
+
+        </aside>
 
       </div>
 
     </section>
 
+
+    <!-- =====================================================
+         HOW DONATIONS WORK
+    ====================================================== -->
 
     <section class="section section--soft">
 
@@ -217,17 +783,24 @@
         <header class="section-header section-header--center">
 
           <span class="section-eyebrow">
-            Donation Information
+            Simple & Secure
           </span>
 
           <h2 class="section-title">
-            How online donations will work
+            How your donation works
           </h2>
+
+          <p class="section-description">
+            The donation process is designed to keep
+            payment confirmation separate from the browser
+            and verify transactions securely.
+          </p>
 
         </header>
 
 
         <div class="process-grid">
+
 
           <article class="card process-card">
 
@@ -240,8 +813,8 @@
             </h3>
 
             <p>
-              Select or enter the amount you would like to
-              contribute.
+              Select a suggested amount or enter the amount
+              you would like to contribute.
             </p>
 
           </article>
@@ -254,12 +827,12 @@
             </div>
 
             <h3>
-              Make a secure payment
+              Choose how to pay
             </h3>
 
             <p>
-              Payment will be processed through the
-              configured UPI or Razorpay flow.
+              Use direct UPI or secure Razorpay Checkout
+              when the payment method is available.
             </p>
 
           </article>
@@ -276,11 +849,32 @@
             </h3>
 
             <p>
-              The backend will verify the transaction
-              before storing it as a successful donation.
+              Razorpay payments are verified by the server.
+              Direct UPI references remain pending until
+              reconciliation.
             </p>
 
           </article>
+
+
+          <article class="card process-card">
+
+            <div class="process-card__number">
+              4
+            </div>
+
+            <h3>
+              Donation is recorded
+            </h3>
+
+            <p>
+              The donation record is stored with its real
+              payment status for administration and
+              reconciliation.
+            </p>
+
+          </article>
+
 
         </div>
 
@@ -288,6 +882,10 @@
 
     </section>
 
+
+    <!-- =====================================================
+         FAQ
+    ====================================================== -->
 
     <section class="section section--white">
 
@@ -308,16 +906,16 @@
 
         <div class="faq-list">
 
+
           <details class="faq-item">
 
             <summary>
-              Can I donate through UPI?
+              Can I donate without creating an account?
             </summary>
 
             <p>
-              Yes. The verified organization UPI QR and UPI
-              account details will be added before the
-              donation system goes live.
+              Yes. Donations can be made without signing in.
+              Donor contact information is optional.
             </p>
 
           </details>
@@ -326,13 +924,13 @@
           <details class="faq-item">
 
             <summary>
-              Will Razorpay payments be verified?
+              How are direct UPI donations confirmed?
             </summary>
 
             <p>
-              Yes. Payment confirmation will be verified on
-              the backend before a donation is marked as
-              successful.
+              After paying through UPI, you submit the
+              transaction reference. The donation remains
+              pending until the payment is verified.
             </p>
 
           </details>
@@ -341,17 +939,34 @@
           <details class="faq-item">
 
             <summary>
-              Will I receive a donation record?
+              Are Razorpay payments verified?
             </summary>
 
             <p>
-              The backend will maintain transaction
-              records. Receipt functionality can be added
-              once the organization's final receipt and
-              compliance requirements are confirmed.
+              Yes. A Razorpay Checkout response is not
+              treated as final proof of payment. The server
+              verifies the payment before the donation is
+              marked as verified.
             </p>
 
           </details>
+
+
+          <details class="faq-item">
+
+            <summary>
+              Will I receive a receipt?
+            </summary>
+
+            <p>
+              Donation records are maintained by the
+              system. Formal receipt functionality will
+              follow the organization's approved receipt
+              and compliance process.
+            </p>
+
+          </details>
+
 
         </div>
 
@@ -359,17 +974,20 @@
 
     </section>
 
+
   </main>
 
 
   <div id="site-footer"></div>
 
 
-  <script
-    src="./js/main.js"
-    defer
-  ></script>
+  <script src="./js/main.js" defer></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+
+  <script src="./js/donate.js" defer></script>
 </body>
 
 </html>

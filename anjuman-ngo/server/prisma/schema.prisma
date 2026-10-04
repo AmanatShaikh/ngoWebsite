@@ -276,8 +276,7 @@ model Donation {
 
   /* Manual / direct UPI verification */
 
-  upiReference       String?
-
+  upiReference       String?        @unique
 
   user               User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
 
