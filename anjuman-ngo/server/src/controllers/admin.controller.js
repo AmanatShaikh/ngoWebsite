@@ -295,6 +295,12 @@ export async function getAdminOverview(
             applicantName:
               true,
 
+            phone:
+              true,
+
+            email:
+              true,
+
             type:
               true,
 
@@ -305,6 +311,9 @@ export async function getAdminOverview(
               true,
 
             createdAt:
+              true,
+
+            updatedAt:
               true,
           },
         }),

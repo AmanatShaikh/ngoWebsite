@@ -152,57 +152,112 @@
 
             </header>
 
-            <div class="admin-branch-mini-stat">
 
-              <strong id="nagpada-completed">
-                0
-              </strong>
+            <div class="admin-stats">
 
-              <span>
-                Completed
-              </span>
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">
+                  Applications
+                </span>
+
+                <strong id="admin-stat-applications" class="admin-stat-card__value">
+                  0
+                </strong>
+
+                <span class="admin-stat-card__meta">
+                  Total submitted
+                </span>
+
+              </article>
+
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">
+                  Pending
+                </span>
+
+                <strong id="admin-stat-pending" class="admin-stat-card__value">
+                  0
+                </strong>
+
+                <span class="admin-stat-card__meta">
+                  Awaiting review
+                </span>
+
+              </article>
+
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">
+                  Under Review
+                </span>
+
+                <strong id="admin-stat-review" class="admin-stat-card__value">
+                  0
+                </strong>
+
+                <span class="admin-stat-card__meta">
+                  In progress
+                </span>
+
+              </article>
+
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">
+                  Approved
+                </span>
+
+                <strong id="admin-stat-approved" class="admin-stat-card__value">
+                  0
+                </strong>
+
+                <span class="admin-stat-card__meta">
+                  Assistance approved
+                </span>
+
+              </article>
+
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">
+                  Registered Users
+                </span>
+
+                <strong id="admin-stat-users" class="admin-stat-card__value">
+                  0
+                </strong>
+
+                <span class="admin-stat-card__meta">
+                  Applicant accounts
+                </span>
+
+              </article>
+
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">
+                  Verified Donations
+                </span>
+
+                <strong id="admin-stat-donations" class="admin-stat-card__value">
+                  ₹0
+                </strong>
+
+                <span id="admin-stat-donation-count" class="admin-stat-card__meta">
+                  0 verified transactions
+                </span>
+
+              </article>
 
             </div>
-
-
-            <div class="admin-branch-mini-stat">
-
-              <strong id="nagpada-rejected">
-                0
-              </strong>
-
-              <span>
-                Rejected
-              </span>
-
-            </div>
-
-            <div class="admin-branch-mini-stat">
-
-              <strong id="dharavi-completed">
-                0
-              </strong>
-
-              <span>
-                Completed
-              </span>
-
-            </div>
-
-
-            <div class="admin-branch-mini-stat">
-
-              <strong id="dharavi-rejected">
-                0
-              </strong>
-
-              <span>
-                Rejected
-              </span>
-
-            </div>
-
-
 
 
             <div class="admin-branch-grid">
@@ -268,6 +323,32 @@
 
                     <span>
                       Approved
+                    </span>
+
+                  </div>
+
+
+                  <div class="admin-branch-mini-stat">
+
+                    <strong id="nagpada-completed">
+                      0
+                    </strong>
+
+                    <span>
+                      Completed
+                    </span>
+
+                  </div>
+
+
+                  <div class="admin-branch-mini-stat">
+
+                    <strong id="nagpada-rejected">
+                      0
+                    </strong>
+
+                    <span>
+                      Rejected
                     </span>
 
                   </div>
@@ -341,6 +422,32 @@
 
                   </div>
 
+
+                  <div class="admin-branch-mini-stat">
+
+                    <strong id="dharavi-completed">
+                      0
+                    </strong>
+
+                    <span>
+                      Completed
+                    </span>
+
+                  </div>
+
+
+                  <div class="admin-branch-mini-stat">
+
+                    <strong id="dharavi-rejected">
+                      0
+                    </strong>
+
+                    <span>
+                      Rejected
+                    </span>
+
+                  </div>
+
                 </div>
 
               </article>
@@ -372,9 +479,10 @@
           </section>
 
 
+
           <!-- ===============================================
-               APPLICATIONS
-          ================================================ -->
+             APPLICATIONS
+================================================ -->
 
           <section id="admin-view-applications" class="admin-view">
 
@@ -387,7 +495,7 @@
                 </h2>
 
                 <p>
-                  Review requests from Nagpada and Dharavi.
+                  Search, filter and review assistance applications.
                 </p>
 
               </div>
@@ -396,7 +504,6 @@
 
 
             <div class="admin-filters">
-
 
               <input type="search" id="admin-application-search" class="admin-filter-control"
                 placeholder="Search name, reference, phone or email..." aria-label="Search applications"
@@ -410,11 +517,11 @@
                 </option>
 
                 <option value="NAGPADA">
-                  Nagpada
+                  Nagpada Head Office
                 </option>
 
                 <option value="DHARAVI">
-                  Dharavi
+                  Dharavi Branch
                 </option>
 
               </select>
@@ -427,19 +534,19 @@
                 </option>
 
                 <option value="MEDICAL">
-                  Medical
+                  Medical Assistance
                 </option>
 
                 <option value="SCHOLARSHIP">
-                  Education
+                  Scholarship / Education
                 </option>
 
                 <option value="LIVELIHOOD">
-                  Livelihood
+                  Livelihood / Work
                 </option>
 
                 <option value="TRAVEL">
-                  Travel
+                  Travel Assistance
                 </option>
 
               </select>
@@ -471,13 +578,15 @@
                   Completed
                 </option>
 
-                <button type="button" id="admin-application-clear-filters" class="btn btn--outline admin-filter-clear">
-                  Clear
-                </button>
-
               </select>
 
+
+              <button type="button" id="admin-application-clear-filters" class="btn btn--outline admin-filter-clear">
+                Clear
+              </button>
+
             </div>
+
 
             <div class="admin-filter-summary">
 
@@ -498,7 +607,6 @@
 
           </section>
 
-
           <!-- ===============================================
                USERS
           ================================================ -->
@@ -514,13 +622,69 @@
                 </h2>
 
                 <p>
-                  Registered applicant and administrative
-                  accounts.
+                  Search and manage registered applicant accounts.
                 </p>
 
               </div>
 
             </header>
+
+
+            <div class="admin-filters admin-user-filters">
+
+              <input type="search" id="admin-user-search" class="admin-filter-control"
+                placeholder="Search name, username, email or phone..." aria-label="Search users" autocomplete="off" />
+
+
+              <select id="admin-user-role-filter" class="admin-filter-control" aria-label="Filter users by role">
+
+                <option value="">
+                  All roles
+                </option>
+
+                <option value="USER">
+                  User
+                </option>
+
+                <option value="ADMIN">
+                  Admin
+                </option>
+
+              </select>
+
+
+              <select id="admin-user-status-filter" class="admin-filter-control"
+                aria-label="Filter users by account status">
+
+                <option value="">
+                  All account statuses
+                </option>
+
+                <option value="ACTIVE">
+                  Active
+                </option>
+
+                <option value="DISABLED">
+                  Disabled
+                </option>
+
+              </select>
+
+
+              <button type="button" id="admin-user-clear-filters" class="btn btn--outline admin-filter-clear">
+                Clear
+              </button>
+
+            </div>
+
+
+            <div class="admin-filter-summary">
+
+              <span id="admin-user-filter-count">
+                0 users
+              </span>
+
+            </div>
 
 
             <div class="admin-table-card">
@@ -532,8 +696,6 @@
             </div>
 
           </section>
-
-
           <!-- ===============================================
                DONATIONS
           ================================================ -->
