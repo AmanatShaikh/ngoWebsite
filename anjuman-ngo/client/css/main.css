@@ -186,6 +186,27 @@ ol {
 /* =========================================================
    3. ACCESSIBILITY
 ========================================================= */
+.sr-only {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+
+  padding: 0;
+  margin: -1px;
+
+  overflow: hidden;
+
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+
+  white-space: nowrap;
+
+  border: 0;
+}
+
+
+
 
 .skip-link {
   position: fixed;
@@ -1708,18 +1729,6 @@ p {
   color: var(--color-primary-700);
 
   font-weight: 700;
-}
-
-.contact-notice {
-  padding: var(--space-5);
-
-  color: var(--color-warning);
-  background: var(--color-warning-light);
-
-  border: 1px solid #f0d5ad;
-  border-radius: var(--radius-md);
-
-  font-size: var(--text-sm);
 }
 
 .contact-form-card {

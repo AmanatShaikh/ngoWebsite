@@ -1218,8 +1218,8 @@ function initializeApplicationForm() {
           error instanceof TypeError
         ) {
           showApplicationAlert(
-            "The backend server is not running yet. Your application form is ready, but submissions will become active when the Express API is connected.",
-            "info"
+            "Unable to connect to the server. Check your connection and try again.",
+            "error"
           );
 
           return;

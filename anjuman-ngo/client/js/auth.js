@@ -646,7 +646,7 @@ function initializeLoginForm() {
           error instanceof TypeError
         ) {
           showAuthAlert(
-            "The authentication server is not running yet. Your frontend form is working correctly; login will become active when we build and connect the backend.",
+            "The backend is not running yet. Your signup form and frontend validation are working correctly. Registration will become active when we connect the Express API.",
             "info"
           );
 
@@ -1045,8 +1045,8 @@ function initializeSignupForm() {
           error instanceof TypeError
         ) {
           showAuthAlert(
-            "The backend is not running yet. Your signup form and frontend validation are working correctly. Registration will become active when we connect the Express API.",
-            "info"
+            "Unable to connect to the server. Check your connection and try again.",
+            "error"
           );
 
           return;
