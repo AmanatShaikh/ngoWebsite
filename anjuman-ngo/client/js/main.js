@@ -492,7 +492,7 @@ function renderHeader() {
             href="apply.html"
             class="btn btn--outline"
           >
-            Request Assistance
+            Apply for Assistance
           </a>
 
 
@@ -577,7 +577,7 @@ function renderHeader() {
               href="apply.html"
               class="btn btn--outline"
             >
-              Request Assistance
+              Apply for Assistance
             </a>
 
 
