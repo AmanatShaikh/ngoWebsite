@@ -76,8 +76,43 @@ app.disable(
    SECURITY
 ========================================================= */
 
+const defaultCspDirectives =
+  helmet
+    .contentSecurityPolicy
+    .getDefaultDirectives();
+
+
 app.use(
   helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...defaultCspDirectives,
+
+        "script-src": [
+          "'self'",
+          "https://cdnjs.cloudflare.com",
+          "https://checkout.razorpay.com",
+          "https://cdn.razorpay.com",
+        ],
+
+        "connect-src": [
+          "'self'",
+          "https://*.razorpay.com",
+        ],
+
+        "frame-src": [
+          "'self'",
+          "https://*.razorpay.com",
+        ],
+
+        "img-src": [
+          "'self'",
+          "data:",
+          "https://*.razorpay.com",
+        ],
+      },
+    },
+
     crossOriginResourcePolicy: {
       policy:
         "cross-origin",
@@ -493,7 +528,7 @@ app.use(
         status === 500
           ? "Internal server error."
           : error.message ||
-            "The request could not be completed.",
+          "The request could not be completed.",
     };
 
 
@@ -504,7 +539,7 @@ app.use(
 
     if (
       process.env.NODE_ENV ===
-        "development" &&
+      "development" &&
       error.validation
     ) {
       response.validation =
