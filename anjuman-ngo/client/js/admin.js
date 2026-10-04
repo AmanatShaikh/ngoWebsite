@@ -874,63 +874,274 @@ function createAdminTable(
    RECENT APPLICATIONS
 ========================================================= */
 
-function renderRecentApplications(
-  applications
+function createApplicationTableRow(
+  application
 ) {
-  const root =
-    adminGet(
-      "admin-recent-applications"
+  const row =
+    document.createElement(
+      "tr"
     );
 
 
-  if (!root) {
-    return;
-  }
+  /* =======================================================
+     APPLICANT
+  ======================================================= */
 
-
-  if (!applications.length) {
-    renderAdminEmpty(
-      root,
-      "No recent applications",
-      "New assistance applications will appear here."
+  const applicantCell =
+    document.createElement(
+      "td"
     );
 
-    return;
-  }
+
+  const applicantName =
+    document.createElement(
+      "span"
+    );
 
 
-  root.className = "";
+  applicantName.className =
+    "admin-table__primary";
 
 
-  root.textContent = "";
+  applicantName.textContent =
+    adminText(
+      application.applicantName
+    );
 
 
-  const {
-    wrapper,
-    tbody,
-  } =
-    createAdminTable([
-      "Applicant",
-      "Service",
-      "Branch",
-      "Status",
-      "Submitted",
-      "",
-    ]);
+  const reference =
+    document.createElement(
+      "span"
+    );
 
 
-  applications
-    .slice(0, 6)
-    .forEach((application) => {
-      tbody.append(
-        createApplicationTableRow(
-          application
-        )
+  reference.className =
+    "admin-table__secondary";
+
+
+  reference.textContent =
+    application.referenceNumber ||
+    application.id ||
+    "—";
+
+
+  const contact =
+    document.createElement(
+      "span"
+    );
+
+
+  contact.className =
+    "admin-table__contact";
+
+
+  const contactParts = [
+    application.phone,
+    application.email,
+  ].filter(Boolean);
+
+
+  contact.textContent =
+    contactParts.length
+      ? contactParts.join(" • ")
+      : "No contact information";
+
+
+  applicantCell.append(
+    applicantName,
+    reference,
+    contact
+  );
+
+
+  /* =======================================================
+     SERVICE
+  ======================================================= */
+
+  const serviceCell =
+    document.createElement(
+      "td"
+    );
+
+
+  const serviceName =
+    document.createElement(
+      "span"
+    );
+
+
+  serviceName.className =
+    "admin-table__primary";
+
+
+  serviceName.textContent =
+    ADMIN_SERVICE_NAMES[
+      application.type
+    ] ||
+    adminText(
+      application.type
+    );
+
+
+  serviceCell.append(
+    serviceName
+  );
+
+
+  /* =======================================================
+     BRANCH
+  ======================================================= */
+
+  const branchCell =
+    document.createElement(
+      "td"
+    );
+
+
+  branchCell.textContent =
+    ADMIN_BRANCH_NAMES[
+      application.branch
+    ] ||
+    adminText(
+      application.branch
+    );
+
+
+  /* =======================================================
+     STATUS
+  ======================================================= */
+
+  const statusCell =
+    document.createElement(
+      "td"
+    );
+
+
+  statusCell.append(
+    createAdminStatusBadge(
+      application.status
+    )
+  );
+
+
+  /* =======================================================
+     DATES
+  ======================================================= */
+
+  const dateCell =
+    document.createElement(
+      "td"
+    );
+
+
+  const submitted =
+    document.createElement(
+      "span"
+    );
+
+
+  submitted.className =
+    "admin-table__primary";
+
+
+  submitted.textContent =
+    adminFormatDate(
+      application.createdAt
+    );
+
+
+  const updated =
+    document.createElement(
+      "span"
+    );
+
+
+  updated.className =
+    "admin-table__secondary";
+
+
+  updated.textContent =
+    application.updatedAt
+      ? `Updated ${adminFormatDate(
+          application.updatedAt
+        )}`
+      : "Not updated";
+
+
+  dateCell.append(
+    submitted,
+    updated
+  );
+
+
+  /* =======================================================
+     ACTION
+  ======================================================= */
+
+  const actionCell =
+    document.createElement(
+      "td"
+    );
+
+
+  actionCell.className =
+    "admin-table__action-cell";
+
+
+  const button =
+    document.createElement(
+      "button"
+    );
+
+
+  button.type =
+    "button";
+
+
+  button.className =
+    "admin-table__review-button";
+
+
+  button.textContent =
+    "Review";
+
+
+  button.setAttribute(
+    "aria-label",
+    `Review application ${
+      application.referenceNumber ||
+      application.id ||
+      ""
+    }`
+  );
+
+
+  button.addEventListener(
+    "click",
+    () => {
+      openAdminApplication(
+        application.id
       );
-    });
+    }
+  );
 
 
-  root.append(wrapper);
+  actionCell.append(
+    button
+  );
+
+
+  row.append(
+    applicantCell,
+    serviceCell,
+    branchCell,
+    statusCell,
+    dateCell,
+    actionCell
+  );
+
+
+  return row;
 }
 
 
