@@ -164,6 +164,11 @@ const upiPayLink =
         "upi-pay-link"
     );
 
+const upiPayLinkSecondary =
+    document.getElementById(
+        "upi-pay-link-secondary"
+    );
+
 const upiQrCode =
     document.getElementById(
         "upi-qr-code"
@@ -1059,6 +1064,11 @@ function updateUpiDeepLink() {
             "is-disabled"
         );
 
+        upiPayLinkSecondary?.setAttribute(
+            "href",
+            "#"
+        );
+
 
         return;
     }
@@ -1076,6 +1086,12 @@ function updateUpiDeepLink() {
     upiPayLink.classList.remove(
         "is-disabled"
     );
+
+    if (upiPayLinkSecondary) {
+        upiPayLinkSecondary.href = paymentUri;
+        upiPayLinkSecondary.removeAttribute("aria-disabled");
+        upiPayLinkSecondary.classList.remove("is-disabled");
+    }
 }
 /* =========================================================
    COPY UPI ID

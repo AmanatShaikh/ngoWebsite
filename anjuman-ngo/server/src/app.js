@@ -12,6 +12,9 @@ import multer from "multer";
 
 import path from "node:path";
 
+import contactRoutes
+  from "./routes/contact.routes.js";
+
 import {
   fileURLToPath,
 } from "node:url";
@@ -357,6 +360,11 @@ app.use(
 app.use(
   "/api/donations",
   donationRoutes
+);
+
+app.use(
+  "/api/contact",
+  contactRoutes
 );
 
 

@@ -60,6 +60,21 @@ const BRANCHES = [
   "DHARAVI",
 ];
 
+const CONTACT_SUBJECTS = [
+  "medical",
+  "education",
+  "livelihood",
+  "travel",
+  "donation",
+  "general",
+];
+
+const CONTACT_STATUS_TRANSITIONS = {
+  NEW: ["READ", "RESOLVED"],
+  READ: ["RESOLVED"],
+  RESOLVED: [],
+};
+
 /* =========================================================
    VALIDATION
 ========================================================= */
@@ -98,6 +113,11 @@ const updateUserStatusSchema =
   z.object({
     isActive:
       z.boolean(),
+  });
+
+const updateContactStatusSchema =
+  z.object({
+    status: z.enum(["NEW", "READ", "RESOLVED"]),
   });
 
 
@@ -200,6 +220,8 @@ export async function getAdminOverview(
       totalUsers,
       verifiedDonationAggregate,
       verifiedDonationCount,
+      totalEnquiries,
+      newEnquiries,
       branchStatusGroups,
       recentApplications,
     ] =
@@ -256,6 +278,12 @@ export async function getAdminOverview(
             status:
               "VERIFIED",
           },
+        }),
+
+        prisma.contactMessage.count(),
+
+        prisma.contactMessage.count({
+          where: { status: "NEW" },
         }),
 
 
@@ -477,6 +505,11 @@ export async function getAdminOverview(
             donationTotal,
         },
 
+        enquiries: {
+          total: totalEnquiries,
+          new: newEnquiries,
+        },
+
         branches: {
           NAGPADA:
             buildBranchOverview(
@@ -493,6 +526,132 @@ export async function getAdminOverview(
       },
     });
 
+  } catch (error) {
+    next(error);
+  }
+}
+
+/* =========================================================
+   ADMIN ENQUIRIES
+========================================================= */
+
+export async function getAdminEnquiries(req, res, next) {
+  try {
+    const search = parseQueryValue(req.query.search);
+    const status = parseQueryValue(req.query.status);
+    const subject = parseQueryValue(req.query.subject);
+
+    if (status && !["NEW", "READ", "RESOLVED"].includes(status)) {
+      return res.status(400).json({ success: false, message: "Invalid enquiry status." });
+    }
+
+    if (subject && !CONTACT_SUBJECTS.includes(subject)) {
+      return res.status(400).json({ success: false, message: "Invalid enquiry subject." });
+    }
+
+    const searchFilter = search
+      ? {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { email: { contains: search, mode: "insensitive" } },
+            { phone: { contains: search, mode: "insensitive" } },
+            { message: { contains: search, mode: "insensitive" } },
+          ],
+        }
+      : {};
+
+    const enquiries = await prisma.contactMessage.findMany({
+      where: {
+        ...searchFilter,
+        ...(status ? { status } : {}),
+        ...(subject ? { subject } : {}),
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        email: true,
+        subject: true,
+        message: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return res.json({ success: true, enquiries });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getAdminEnquiryById(req, res, next) {
+  try {
+    const enquiry = await prisma.contactMessage.findUnique({
+      where: { id: req.params.id },
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        email: true,
+        subject: true,
+        message: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!enquiry) {
+      return res.status(404).json({ success: false, message: "Enquiry not found." });
+    }
+
+    return res.json({ success: true, enquiry });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateAdminEnquiryStatus(req, res, next) {
+  try {
+    const validation = updateContactStatusSchema.safeParse(req.body);
+
+    if (!validation.success) {
+      return res.status(400).json({ success: false, message: "Status must be NEW, READ or RESOLVED." });
+    }
+
+    const enquiry = await prisma.contactMessage.findUnique({
+      where: { id: req.params.id },
+      select: { id: true, status: true },
+    });
+
+    if (!enquiry) {
+      return res.status(404).json({ success: false, message: "Enquiry not found." });
+    }
+
+    const nextStatus = validation.data.status;
+    if (enquiry.status === nextStatus || !CONTACT_STATUS_TRANSITIONS[enquiry.status]?.includes(nextStatus)) {
+      return res.status(409).json({ success: false, message: "This enquiry status transition is not allowed." });
+    }
+
+    const updated = await prisma.contactMessage.update({
+      where: { id: enquiry.id },
+      data: { status: nextStatus },
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        email: true,
+        subject: true,
+        message: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return res.json({ success: true, enquiry: updated });
   } catch (error) {
     next(error);
   }

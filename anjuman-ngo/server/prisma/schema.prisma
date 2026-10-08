@@ -5,27 +5,25 @@ generator client {
   importFileExtension = "ts"
 }
 
-
 datasource db {
   provider = "postgresql"
 }
 
-
-/* =========================================================
-   ENUMS
-========================================================= */
+/**
+ * =========================================================
+ * ENUMS
+ * =========================================================
+ */
 
 enum Role {
   USER
   ADMIN
 }
 
-
 enum Branch {
   NAGPADA
   DHARAVI
 }
-
 
 enum ApplicationType {
   MEDICAL
@@ -34,7 +32,6 @@ enum ApplicationType {
   TRAVEL
 }
 
-
 enum ApplicationStatus {
   PENDING
   UNDER_REVIEW
@@ -42,7 +39,6 @@ enum ApplicationStatus {
   REJECTED
   COMPLETED
 }
-
 
 enum DocumentType {
   IDENTITY
@@ -54,12 +50,10 @@ enum DocumentType {
   OTHER
 }
 
-
 enum DonationMethod {
   UPI
   RAZORPAY
 }
-
 
 enum DonationStatus {
   PENDING
@@ -68,227 +62,245 @@ enum DonationStatus {
   REFUNDED
 }
 
+enum ContactStatus {
+  NEW
+  READ
+  RESOLVED
+}
 
-/* =========================================================
-   USER
-========================================================= */
+/**
+ * =========================================================
+ * USER
+ * =========================================================
+ */
 
 model User {
-  id           String   @id @default(cuid())
+  id String @id @default(cuid())
 
-  name         String
+  name String
 
-  username     String   @unique
+  username String @unique
 
-  email        String   @unique
+  email String @unique
 
-  phone        String?
+  phone String?
 
   passwordHash String
 
-  role         Role     @default(USER)
+  role Role @default(USER)
 
-  isActive     Boolean  @default(true)
+  isActive Boolean @default(true)
 
   applications Application[]
 
-  donations    Donation[]
+  donations Donation[]
 
   statusChanges ApplicationStatusHistory[] @relation("StatusChangedBy")
 
-  createdAt    DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  updatedAt    DateTime @updatedAt
-
+  updatedAt DateTime @updatedAt
 
   @@index([role])
   @@index([createdAt])
 }
 
-
-/* =========================================================
-   APPLICATION
-========================================================= */
+/**
+ * =========================================================
+ * APPLICATION
+ * =========================================================
+ */
 
 model Application {
-  id              String            @id @default(cuid())
+  id String @id @default(cuid())
 
-  referenceNumber String            @unique
+  referenceNumber String @unique
 
-  userId          String
+  userId String
 
-  type            ApplicationType
+  type ApplicationType
 
-  branch          Branch
+  branch Branch
 
-  status          ApplicationStatus @default(PENDING)
+  status ApplicationStatus @default(PENDING)
 
+  /**
+   * Applicant information
+   */
 
-  /* Applicant information */
+  applicantName String
 
-  applicantName   String
+  phone String
 
-  phone           String
+  email String?
 
-  email           String?
+  age Int?
 
-  age             Int?
+  address String @db.Text
 
-  address         String            @db.Text
+  city String?
 
-  city            String?
+  pincode String?
 
-  pincode         String?
+  /**
+   * Request
+   */
 
+  description String @db.Text
 
-  /* Request */
+  details Json
 
-  description     String            @db.Text
+  /**
+   * Admin
+   */
 
-  details         Json
+  adminNote String? @db.Text
 
+  /**
+   * Relations
+   */
 
-  /* Admin */
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
 
-  adminNote       String?           @db.Text
+  documents ApplicationDocument[]
 
+  statusHistory ApplicationStatusHistory[]
 
-  /* Relations */
+  createdAt DateTime @default(now())
 
-  user            User              @relation(fields: [userId], references: [id], onDelete: Restrict)
-
-  documents       ApplicationDocument[]
-
-  statusHistory   ApplicationStatusHistory[]
-
-
-  createdAt       DateTime          @default(now())
-
-  updatedAt       DateTime          @updatedAt
-
+  updatedAt DateTime @updatedAt
 
   @@index([userId, createdAt])
-
   @@index([branch, status])
-
   @@index([type, status])
-
   @@index([createdAt])
 }
 
-
-/* =========================================================
-   APPLICATION DOCUMENT
-========================================================= */
+/**
+ * =========================================================
+ * APPLICATION DOCUMENT
+ * =========================================================
+ */
 
 model ApplicationDocument {
-  id            String       @id @default(cuid())
+  id String @id @default(cuid())
 
   applicationId String
 
-  type          DocumentType
+  type DocumentType
 
-  originalName  String
+  originalName String
 
-  storageKey    String       @unique
+  storageKey String @unique
 
-  mimeType      String
+  mimeType String
 
-  size          Int
+  size Int
 
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
-  application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-
-
-  createdAt     DateTime     @default(now())
-
+  createdAt DateTime @default(now())
 
   @@index([applicationId])
 }
 
-
-/* =========================================================
-   APPLICATION STATUS HISTORY
-========================================================= */
+/**
+ * =========================================================
+ * APPLICATION STATUS HISTORY
+ * =========================================================
+ */
 
 model ApplicationStatusHistory {
-  id            String            @id @default(cuid())
+  id String @id @default(cuid())
 
   applicationId String
 
-  fromStatus    ApplicationStatus?
+  fromStatus ApplicationStatus?
 
-  toStatus      ApplicationStatus
+  toStatus ApplicationStatus
 
-  note          String?           @db.Text
+  note String? @db.Text
 
-  changedById   String?
+  changedById String?
 
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 
-  application   Application       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  changedBy User? @relation("StatusChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
 
-  changedBy     User?             @relation("StatusChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
-
-
-  createdAt     DateTime          @default(now())
-
+  createdAt DateTime @default(now())
 
   @@index([applicationId, createdAt])
-
   @@index([changedById])
 }
 
-
-/* =========================================================
-   DONATION
-========================================================= */
+/**
+ * =========================================================
+ * DONATION
+ * =========================================================
+ */
 
 model Donation {
-  id                 String         @id @default(cuid())
+  id String @id @default(cuid())
 
-  userId             String?
+  userId String?
 
+  donorName String?
 
-  donorName          String?
+  email String?
 
-  email              String?
+  phone String?
 
-  phone              String?
+  amount Decimal @db.Decimal(12, 2)
 
+  currency String @default("INR")
 
-  amount             Decimal        @db.Decimal(12, 2)
+  method DonationMethod
 
-  currency           String         @default("INR")
+  status DonationStatus @default(PENDING)
 
-  method             DonationMethod
+  /**
+   * Razorpay
+   */
 
-  status             DonationStatus @default(PENDING)
+  razorpayOrderId String? @unique
 
+  razorpayPaymentId String? @unique
 
-  /* Razorpay */
+  razorpaySignature String?
 
-  razorpayOrderId    String?        @unique
+  /**
+   * Manual / direct UPI verification
+   */
 
-  razorpayPaymentId  String?        @unique
+  upiReference String? @unique
 
-  razorpaySignature  String?
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
+  createdAt DateTime @default(now())
 
-  /* Manual / direct UPI verification */
-
-  upiReference       String?        @unique
-
-  user               User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-
-  createdAt          DateTime       @default(now())
-
-  updatedAt          DateTime       @updatedAt
-
+  updatedAt DateTime @updatedAt
 
   @@index([userId])
+  @@index([status, createdAt])
+  @@index([method])
+}
+
+model ContactMessage {
+  id String @id @default(cuid())
+
+  name  String
+  phone String?
+  email String?
+
+  subject String
+
+  message String @db.Text
+
+  status ContactStatus @default(NEW)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status, createdAt])
-
-  @@index([method])
+  @@index([createdAt])
 }

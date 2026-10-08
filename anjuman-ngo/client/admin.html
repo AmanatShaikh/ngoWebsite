@@ -114,6 +114,11 @@
             </button>
 
 
+            <button type="button" class="admin-nav__button" data-admin-view="enquiries">
+              Enquiries
+            </button>
+
+
             <button type="button" id="admin-logout" class="admin-nav__button admin-nav__button--danger">
               Sign Out
             </button>
@@ -254,6 +259,16 @@
                 <span id="admin-stat-donation-count" class="admin-stat-card__meta">
                   0 verified transactions
                 </span>
+
+              </article>
+
+              <article class="card admin-stat-card">
+
+                <span class="admin-stat-card__label">Enquiries</span>
+
+                <strong id="admin-stat-enquiries" class="admin-stat-card__value">0</strong>
+
+                <span id="admin-stat-new-enquiries" class="admin-stat-card__meta">0 new</span>
 
               </article>
 
@@ -474,6 +489,63 @@
                 Loading recent applications...
               </div>
 
+            </div>
+
+          </section>
+
+          <!-- ===============================================
+               ENQUIRIES
+          ================================================ -->
+
+          <section id="admin-enquiries-section" class="admin-view" aria-labelledby="admin-enquiries-title">
+
+            <header class="admin-view__header">
+
+              <div>
+
+                <h2 id="admin-enquiries-title">Enquiries</h2>
+
+                <p>Review and resolve public contact enquiries.</p>
+
+              </div>
+
+            </header>
+
+            <div class="admin-filters admin-enquiry-filters">
+
+              <input type="search" id="admin-enquiry-search" class="admin-filter-control"
+                placeholder="Search name, email, phone or message..." aria-label="Search enquiries"
+                autocomplete="off" />
+
+              <select id="admin-enquiry-status-filter" class="admin-filter-control" aria-label="Filter enquiries by status">
+                <option value="">All statuses</option>
+                <option value="NEW">New</option>
+                <option value="READ">Read</option>
+                <option value="RESOLVED">Resolved</option>
+              </select>
+
+              <select id="admin-enquiry-subject-filter" class="admin-filter-control" aria-label="Filter enquiries by subject">
+                <option value="">All subjects</option>
+                <option value="medical">Medical</option>
+                <option value="education">Education</option>
+                <option value="livelihood">Livelihood</option>
+                <option value="travel">Travel</option>
+                <option value="donation">Donation</option>
+                <option value="general">General</option>
+              </select>
+
+              <button type="button" id="admin-enquiry-clear-filters" class="btn btn--outline admin-filter-clear">
+                Clear
+              </button>
+
+            </div>
+
+            <div class="admin-filter-summary">
+              <span id="admin-enquiry-filter-count">0 enquiries</span>
+            </div>
+
+            <div class="admin-table-card">
+              <div id="admin-enquiries-root" class="admin-loading">Loading enquiries...</div>
             </div>
 
           </section>

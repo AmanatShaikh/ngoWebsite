@@ -6,24 +6,15 @@
 
   <meta charset="UTF-8" />
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta
-    name="description"
-    content="Contact Anjuman Bashindgan-E-Bihar in Mumbai."
-  />
+  <meta name="description" content="Contact Anjuman Bashindgan-E-Bihar in Mumbai." />
 
   <title>
     Contact | Anjuman Bashindgan-E-Bihar
   </title>
 
-  <link
-    rel="stylesheet"
-    href="./css/main.css"
-  />
+  <link rel="stylesheet" href="./css/main.css" />
 
 </head>
 
@@ -33,10 +24,7 @@
   <div id="site-header"></div>
 
 
-  <main
-    id="main-content"
-    class="page-main"
-  >
+  <main id="main-content" class="page-main">
 
     <section class="page-intro">
 
@@ -93,31 +81,29 @@
           <article class="card contact-card">
 
             <p class="contact-card__label">
-              Govandi
+              Dharavi
             </p>
 
             <h2>
-              Govandi listing
+              Dharavi Branch
             </h2>
 
             <address>
-              Ahilyabai Holkar Marg<br />
-              Govandi West, Adasa Nagar<br />
-              Shivaji Nagar<br />
-              Mumbai – 400043<br />
-              Maharashtra, India
+              Dharavi<br />
+              Mumbai, Maharashtra, India
             </address>
 
-            <p style="margin-top: 1rem;">
-              <a href="tel:+912223010953">
-                +91 22 2301 0953
-              </a>
+            <p>
+              Please contact Anjuman for the current branch
+              address and visiting information.
             </p>
 
           </article>
 
 
         </div>
+
+
 
 
         <article class="card contact-form-card">
@@ -131,92 +117,55 @@
           </h2>
 
           <p style="margin-bottom: 2rem;">
-            The form design is ready now. Actual message
-            submission will be connected when we build the
-            backend.
+            Share your enquiry and our team will get back to you.
           </p>
 
 
-          <form>
+          <form id="contact-form">
 
             <div class="form-grid">
 
 
               <div class="form-group">
 
-                <label
-                  for="contact-name"
-                  class="form-label"
-                >
+                <label for="contact-name" class="form-label">
                   Full name
                 </label>
 
-                <input
-                  type="text"
-                  id="contact-name"
-                  name="name"
-                  class="form-control"
-                  autocomplete="name"
-                  required
-                />
+                <input type="text" id="contact-name" name="name" class="form-control" autocomplete="name" required />
 
               </div>
 
 
               <div class="form-group">
 
-                <label
-                  for="contact-phone"
-                  class="form-label"
-                >
+                <label for="contact-phone" class="form-label">
                   Phone number
                 </label>
 
-                <input
-                  type="tel"
-                  id="contact-phone"
-                  name="phone"
-                  class="form-control"
-                  autocomplete="tel"
-                />
+                <input type="tel" id="contact-phone" name="phone" class="form-control" autocomplete="tel" />
 
               </div>
 
 
               <div class="form-group form-group--full">
 
-                <label
-                  for="contact-email"
-                  class="form-label"
-                >
+                <label for="contact-email" class="form-label">
                   Email address
                 </label>
 
-                <input
-                  type="email"
-                  id="contact-email"
-                  name="email"
-                  class="form-control"
-                  autocomplete="email"
-                />
+                <input type="email" id="contact-email" name="email" class="form-control" autocomplete="email" />
 
               </div>
 
 
               <div class="form-group form-group--full">
 
-                <label
-                  for="contact-subject"
-                  class="form-label"
-                >
+                <label for="contact-subject" class="form-label">
                   Subject
                 </label>
 
-                <select
-                  id="contact-subject"
-                  name="subject"
-                  class="form-control"
-                >
+                <select id="contact-subject" name="subject" class="form-control" required>
 
                   <option value="">
                     Choose a subject
@@ -253,20 +202,12 @@
 
               <div class="form-group form-group--full">
 
-                <label
-                  for="contact-message"
-                  class="form-label"
-                >
+                <label for="contact-message" class="form-label">
                   Message
                 </label>
 
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  class="form-control"
-                  placeholder="Tell us how we can help."
-                  required
-                ></textarea>
+                <textarea id="contact-message" name="message" class="form-control"
+                  placeholder="Tell us how we can help." required></textarea>
 
                 <p class="form-help">
                   Do not send sensitive medical or identity
@@ -275,16 +216,13 @@
 
               </div>
 
-
               <div class="form-group form-group--full">
 
-                <button
-                  type="button"
-                  class="btn btn--primary"
-                  disabled
-                >
-                  Message Submission Coming Soon
+                <button type="submit" id="contact-submit" class="btn btn--primary">
+                  Send Enquiry
                 </button>
+
+                <p id="contact-form-message" class="form-help" aria-live="polite" hidden></p>
 
               </div>
 
@@ -315,9 +253,8 @@
           </h2>
 
           <p class="section-description">
-            When the application system is completed,
-            registered users will be able to submit and
-            track assistance requests directly.
+            Registered users can submit and track assistance
+            requests through the application system.
           </p>
 
         </header>
@@ -325,12 +262,8 @@
 
         <div class="text-center">
 
-          <a
-            href="apply.html"
-            class="btn btn--primary"
-          >
-            Request Assistance
-          </a>
+          <a href="apply.html" class="btn btn--primary">
+            Apply for Assistance </a>
 
         </div>
 
@@ -344,10 +277,8 @@
   <div id="site-footer"></div>
 
 
-  <script
-    src="./js/main.js"
-    defer
-  ></script>
+  <script src="./js/main.js" defer></script>
+  <script src="./js/contact.js" defer></script>
 
 </body>
 

@@ -8,9 +8,12 @@ import {
   getAdminApplicationById,
   getAdminApplications,
   getAdminDonations,
+  getAdminEnquiryById,
+  getAdminEnquiries,
   getAdminOverview,
   getAdminUsers,
   updateAdminUserStatus,
+  updateAdminEnquiryStatus,
   updateApplicationStatus,
   updateUpiDonationStatus,
 } from "../controllers/admin.controller.js";
@@ -113,6 +116,25 @@ router.get(
 router.patch(
   "/donations/:id/status",
   updateUpiDonationStatus
+);
+
+/* =========================================================
+   ENQUIRIES
+========================================================= */
+
+router.get(
+  "/enquiries",
+  getAdminEnquiries
+);
+
+router.get(
+  "/enquiries/:id",
+  getAdminEnquiryById
+);
+
+router.patch(
+  "/enquiries/:id/status",
+  updateAdminEnquiryStatus
 );
 
 

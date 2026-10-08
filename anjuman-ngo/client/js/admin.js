@@ -419,6 +419,13 @@ function activateAdminView(
   ) {
     loadAdminDonations();
   }
+
+  if (
+    viewName ===
+    "enquiries"
+  ) {
+    loadAdminEnquiries();
+  }
 }
 
 
@@ -709,6 +716,17 @@ function renderAdminOverview(
     overview?.users?.total ??
     0
   );
+
+  updateOverviewValue(
+    "admin-stat-enquiries",
+    overview?.enquiries?.total ?? 0
+  );
+
+  const newEnquiries = adminGet("admin-stat-new-enquiries");
+  if (newEnquiries) {
+    const count = overview?.enquiries?.new ?? 0;
+    newEnquiries.textContent = `${count} new`;
+  }
 
 
   const donations =
@@ -5375,6 +5393,148 @@ function initializeDonationFilters() {
 
 
 /* =========================================================
+   ENQUIRIES
+========================================================= */
+
+const ADMIN_ENQUIRY_SUBJECT_NAMES = {
+  medical: "Medical",
+  education: "Education",
+  livelihood: "Livelihood",
+  travel: "Travel",
+  donation: "Donation",
+  general: "General",
+};
+
+const ADMIN_ENQUIRY_STATUS_NAMES = {
+  NEW: "New",
+  READ: "Read",
+  RESOLVED: "Resolved",
+};
+
+function createEnquiryStatusBadge(status) {
+  const badge = document.createElement("span");
+  badge.className = `status-badge status-badge--${String(status || "new").toLowerCase()}`;
+  badge.textContent = ADMIN_ENQUIRY_STATUS_NAMES[status] || adminText(status);
+  return badge;
+}
+
+function createEnquiryStatusSelect(enquiry) {
+  const select = document.createElement("select");
+  select.className = "admin-filter-control";
+  select.setAttribute("aria-label", `Update status for enquiry from ${adminText(enquiry.name)}`);
+
+  ["NEW", "READ", "RESOLVED"].forEach((status) => {
+    const option = document.createElement("option");
+    option.value = status;
+    option.textContent = ADMIN_ENQUIRY_STATUS_NAMES[status];
+    option.disabled = status === "NEW" && enquiry.status !== "NEW";
+    option.selected = enquiry.status === status;
+    select.append(option);
+  });
+
+  select.addEventListener("change", async () => {
+    const nextStatus = select.value;
+    select.disabled = true;
+    try {
+      await adminApi(`/admin/enquiries/${encodeURIComponent(enquiry.id)}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: nextStatus }),
+      });
+      showAdminAlert("Enquiry status updated.", "success");
+      loadAdminEnquiries();
+    } catch (error) {
+      select.value = enquiry.status;
+      showAdminAlert(error.message, "error");
+      select.disabled = false;
+    }
+  });
+  return select;
+}
+
+function createEnquiryTableRow(enquiry) {
+  const row = document.createElement("tr");
+  const nameCell = document.createElement("td");
+  const name = document.createElement("span");
+  name.className = "admin-table__primary";
+  name.textContent = adminText(enquiry.name);
+  nameCell.append(name);
+
+  const contactCell = document.createElement("td");
+  contactCell.textContent = [enquiry.email, enquiry.phone].filter(Boolean).join(" • ") || "No contact information";
+
+  const subjectCell = document.createElement("td");
+  subjectCell.textContent = ADMIN_ENQUIRY_SUBJECT_NAMES[enquiry.subject] || adminText(enquiry.subject);
+
+  const messageCell = document.createElement("td");
+  const preview = adminText(enquiry.message);
+  messageCell.textContent = preview.length > 120 ? `${preview.slice(0, 117)}...` : preview;
+  messageCell.title = preview;
+
+  const statusCell = document.createElement("td");
+  statusCell.append(createEnquiryStatusBadge(enquiry.status));
+
+  const receivedCell = document.createElement("td");
+  receivedCell.textContent = adminFormatDate(enquiry.createdAt);
+
+  const actionCell = document.createElement("td");
+  actionCell.append(createEnquiryStatusSelect(enquiry));
+  row.append(nameCell, contactCell, subjectCell, messageCell, statusCell, receivedCell, actionCell);
+  return row;
+}
+
+function renderAdminEnquiries(enquiries) {
+  const root = adminGet("admin-enquiries-root");
+  const count = adminGet("admin-enquiry-filter-count");
+  if (count) count.textContent = `${enquiries.length} ${enquiries.length === 1 ? "enquiry" : "enquiries"}`;
+  if (!enquiries.length) {
+    renderAdminEmpty(root, "No enquiries found", "Try changing the search or filters.");
+    return;
+  }
+  const table = createAdminTable(["Name", "Contact", "Subject", "Message", "Status", "Received", "Action"]);
+  enquiries.forEach((enquiry) => table.tbody.append(createEnquiryTableRow(enquiry)));
+  root.className = "";
+  root.textContent = "";
+  root.append(table.wrapper);
+}
+
+async function loadAdminEnquiries() {
+  const root = adminGet("admin-enquiries-root");
+  renderAdminLoading(root, "Loading enquiries...");
+  const params = new URLSearchParams();
+  const search = adminGet("admin-enquiry-search")?.value.trim();
+  const status = adminGet("admin-enquiry-status-filter")?.value;
+  const subject = adminGet("admin-enquiry-subject-filter")?.value;
+  if (search) params.set("search", search);
+  if (status) params.set("status", status);
+  if (subject) params.set("subject", subject);
+  try {
+    const data = await adminApi(`/admin/enquiries?${params.toString()}`);
+    renderAdminEnquiries(data.enquiries || []);
+  } catch (error) {
+    renderAdminError(root, { message: error.message, retry: loadAdminEnquiries });
+  }
+}
+
+function initializeEnquiryFilters() {
+  const search = adminGet("admin-enquiry-search");
+  const status = adminGet("admin-enquiry-status-filter");
+  const subject = adminGet("admin-enquiry-subject-filter");
+  const clear = adminGet("admin-enquiry-clear-filters");
+  let timer = null;
+  search?.addEventListener("input", () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(loadAdminEnquiries, 350);
+  });
+  [status, subject].forEach((element) => element?.addEventListener("change", loadAdminEnquiries));
+  clear?.addEventListener("click", () => {
+    if (search) search.value = "";
+    if (status) status.value = "";
+    if (subject) subject.value = "";
+    loadAdminEnquiries();
+  });
+}
+
+/* =========================================================
    LOGOUT
 ========================================================= */
 
@@ -5430,6 +5590,8 @@ async function initializeAdminPortal() {
 
   initializeDonationFilters();
 
+  initializeEnquiryFilters();
+
   initializeAdminDrawer();
 
   initializeAdminLogout();
@@ -5452,5 +5614,3 @@ document.addEventListener(
   "DOMContentLoaded",
   initializeAdminPortal
 );
-
-
